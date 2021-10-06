@@ -34,6 +34,9 @@ The ``connPFM`` package is a Python package for running connPFM quality control 
    :target: https://codecov.io/gh/SPiN-Lab/connPFM
    :alt: Codecov
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Code style: black
 
 *****
 About

@@ -8,6 +8,7 @@ A template repo to use for new repositories.
 [![CircleCI](https://circleci.com/gh/SPiN-Lab/connPFM.svg?style=shield)](https://circleci.com/gh/SPiN-Lab/connPFM)
 [![Documentation Status](https://readthedocs.org/projects/connPFM/badge/?version=latest)](http://connPFM.readthedocs.io/en/latest/?badge=latest)
 [![Codecov](https://codecov.io/gh/SPiN-Lab/connPFM/branch/main/graph/badge.svg)](https://codecov.io/gh/SPiN-Lab/connPFM)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Instructions
 

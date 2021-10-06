@@ -239,7 +239,7 @@ git push -u origin MYBRANCH
 ```
 
 and GitHub will respond by giving you a link to open a pull request to
-ME-ICA/tedana.
+SPiN-Lab/tedana.
 Once you have pushed changes to the repository, please do not use commands such as rebase and
 amend, as they will rewrite your history and make it difficult for developers to work with you on
 your pull request. You can read more about that [here][link_git_rewriting].
@@ -331,7 +331,7 @@ You're awesome. :wave::smiley:
 
 [link_git]: https://git-scm.com
 [link_github]: https://github.com/
-[link_tedana]: https://github.com/ME-ICA/tedana
+[link_tedana]: https://github.com/SPiN-Lab/tedana
 [link_signupinstructions]: https://help.github.com/articles/signing-up-for-a-new-github-account
 
 [writing_formatting_github]: https://help.github.com/articles/getting-started-with-writing-and-formatting-on-github
@@ -341,18 +341,18 @@ You're awesome. :wave::smiley:
 [sphinx]: http://www.sphinx-doc.org/en/master/index.html
 [readthedocs]: https://docs.readthedocs.io/en/latest/index.html
 
-[link_issues]: https://github.com/ME-ICA/tedana/issues
-[link_milestones]: https://github.com/ME-ICA/tedana/milestones/
-[link_project_boards]: https://github.com/ME-ICA/tedana/projects
-[link_gitter]: https://gitter.im/me-ica/tedana
-[link_coc]: https://github.com/ME-ICA/tedana/blob/main/CODE_OF_CONDUCT.md
+[link_issues]: https://github.com/SPiN-Lab/tedana/issues
+[link_milestones]: https://github.com/SPiN-Lab/tedana/milestones/
+[link_project_boards]: https://github.com/SPiN-Lab/tedana/projects
+[link_gitter]: https://gitter.im/SPiN-Lab/tedana
+[link_coc]: https://github.com/SPiN-Lab/tedana/blob/main/CODE_OF_CONDUCT.md
 [link_stale-bot]: https://github.com/probot/stale
 
-[link_labels]: https://github.com/ME-ICA/tedana/labels
-[link_paused]: https://github.com/ME-ICA/tedana/labels/paused
-[link_bugs]: https://github.com/ME-ICA/tedana/labels/bug
-[link_helpwanted]: https://github.com/ME-ICA/tedana/labels/help%20wanted
-[link_enhancement]: https://github.com/ME-ICA/tedana/labels/enhancement
+[link_labels]: https://github.com/SPiN-Lab/tedana/labels
+[link_paused]: https://github.com/SPiN-Lab/tedana/labels/paused
+[link_bugs]: https://github.com/SPiN-Lab/tedana/labels/bug
+[link_helpwanted]: https://github.com/SPiN-Lab/tedana/labels/help%20wanted
+[link_enhancement]: https://github.com/SPiN-Lab/tedana/labels/enhancement
 
 [link_kanban]: https://en.wikipedia.org/wiki/Kanban_board
 [link_pullrequest]: https://help.github.com/articles/creating-a-pull-request/
@@ -369,7 +369,7 @@ You're awesome. :wave::smiley:
 [link_pep8]: https://www.python.org/dev/peps/pep-0008/
 [link_rst_guide]: http://docs.sphinxdocs.com/en/latest/step-1.html
 
-[link_contributors]: https://github.com/ME-ICA/tedana/graphs/contributors
+[link_contributors]: https://github.com/SPiN-Lab/tedana/graphs/contributors
 [link_all-contributors-spec]: https://allcontributors.org/docs/en/specification
 [link_all-contributors-bot]: https://allcontributors.org/docs/en/bot/overview
 [link_all-contributors-bot-usage]: https://allcontributors.org/docs/en/bot/usage

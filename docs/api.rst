@@ -1,6 +1,6 @@
 .. _api_ref:
 
-.. currentmodule:: template-package
+.. currentmodule:: connPFM
 
 ###
 API
@@ -10,21 +10,21 @@ API
 .. _api_module_ref:
 
 **************************************************
-:mod:`template-package.module`: Module description
+:mod:`connPFM.module`: Module description
 **************************************************
 
-.. automodule:: template-package.module
+.. automodule:: connPFM.module
    :no-members:
    :no-inherited-members:
 
-.. currentmodule:: template-package.module
+.. currentmodule:: connPFM.module
 
 .. autosummary::
    :toctree: generated/
    :template: class.rst
 
-   template-package.module.Class
+   connPFM.module.Class
 
    :template: function.rst
 
-   template-package.module.function
+   connPFM.module.function

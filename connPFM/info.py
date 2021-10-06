@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Get version
 spec = importlib.util.spec_from_file_location(
-    "_version", op.join(op.dirname(__file__), "template-package/_version.py")
+    "_version", op.join(op.dirname(__file__), "connPFM/_version.py")
 )
 _version = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(_version)
@@ -32,19 +32,19 @@ readme_path = Path(__file__).parent.joinpath("README.md")
 longdesc = readme_path.open().read()
 
 # Fields
-AUTHOR = "ME-ICA developers"
-COPYRIGHT = "Copyright 2021, ME-ICA developers"
+AUTHOR = "SPiN-Lab developers"
+COPYRIGHT = "Copyright 2021, SPiN-Lab developers"
 CREDITS = author_names
 LICENSE = "LGPL 2.1"
 MAINTAINER = ""
 EMAIL = ""
 STATUS = "Prototype"
-URL = "https://github.com/ME-ICA/template-package"
-PACKAGENAME = "template-package"
+URL = "https://github.com/SPiN-Lab/connPFM"
+PACKAGENAME = "connPFM"
 DESCRIPTION = ""
 LONGDESC = longdesc
 
-DOWNLOAD_URL = "https://github.com/ME-ICA/{name}/archive/{ver}.tar.gz".format(
+DOWNLOAD_URL = "https://github.com/SPiN-Lab/{name}/archive/{ver}.tar.gz".format(
     name=PACKAGENAME, ver=VERSION
 )
 

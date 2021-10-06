@@ -61,8 +61,7 @@ def generate_surrogate(data, atlas, atlas_orig, output):
         # information to generate surrogate data
         surrogate[:, iter_tc] = np.real(
             np.fft.ifft(
-                np.exp(1j * phase_signal)
-                * abs(np.fft.fft(data_masked[:, iter_tc].T, nscans)),
+                np.exp(1j * phase_signal) * abs(np.fft.fft(data_masked[:, iter_tc].T, nscans)),
                 nscans,
             )
         )
@@ -82,13 +81,11 @@ def _main(argv=None):
     options = _get_parser().parse_args(argv)
 
     args_str = str(options)[9:]
-    history_str = (
-        "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
-            username=getpass.getuser(),
-            hostname=socket.gethostname(),
-            date=datetime.datetime.now().strftime("%c"),
-            arguments=args_str,
-        )
+    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
+        username=getpass.getuser(),
+        hostname=socket.gethostname(),
+        date=datetime.datetime.now().strftime("%c"),
+        arguments=args_str,
     )
 
     kwargs = vars(options)
@@ -189,8 +186,7 @@ def _main(argv=None):
             # Generate surrogate
             surrogate_name = os.path.join(temp_dir, f"surrogate_{n_sur}.nii.gz")
             surrogate_masked = generate_surrogate(
-                data=data, atlas=atlas, atlas_orig=atlas_old,
-                output=surrogate_name
+                data=data, atlas=atlas, atlas_orig=atlas_old, output=surrogate_name
             )
             # Calculate AUC
             auc = run_stability_lars(

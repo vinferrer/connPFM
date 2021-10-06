@@ -20,27 +20,19 @@ def _get_parser():
     # Required options
     reqoptions = parser.add_argument_group("Required arguments")
     reqoptions.add_argument(
-        "-i", "--input",
-        dest="data",
-        required=True,
-        help="Input dataset.",
-        nargs='+'
+        "-i", "--input", dest="data", required=True, help="Input dataset.", nargs="+"
     )
     reqoptions.add_argument(
-        "-a", "--atlas",
-        dest="atlas",
-        required=True,
-        help="Input ROI or Atlas.",
-        type=str,
-        nargs=1
+        "-a", "--atlas", dest="atlas", required=True, help="Input ROI or Atlas.", type=str, nargs=1
     )
     reqoptions.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         dest="output",
         required=True,
         help="Name of the output dataset.",
         type=str,
-        nargs=1
+        nargs=1,
     )
     reqoptions.add_argument(
         "-tr",
@@ -48,18 +40,17 @@ def _get_parser():
         dest="tr",
         type=float,
         required=True,
-        help=(
-            "TR of the acquisition."
-        ),
-        nargs=1
+        help=("TR of the acquisition."),
+        nargs=1,
     )
     reqoptions.add_argument(
-        "-u", "--username",
+        "-u",
+        "--username",
         dest="username",
         required=True,
         help="Username for HPC cluster.",
         type=str,
-        nargs=1
+        nargs=1,
     )
 
     # Optional options
@@ -74,17 +65,15 @@ def _get_parser():
             "List of echo times (default=None). If no TE is given, "
             "the single echo version will be run."
         ),
-        nargs=1
+        nargs=1,
     )
     optoptions.add_argument(
         "-d",
         "--dir",
         dest="dir",
         type=str,
-        default='temp',
-        help=(
-            "Temporary directory to store computed files (default='temp')."
-        )
+        default="temp",
+        help=("Temporary directory to store computed files (default='temp')."),
     )
     optoptions.add_argument(
         "-block",
@@ -99,21 +88,17 @@ def _get_parser():
         "--jobs",
         dest="jobs",
         type=int,
-        help=(
-            "Number of jobs to run in parallel (default = 50)."
-        ),
+        help=("Number of jobs to run in parallel (default = 50)."),
         default=50,
-        nargs=1
+        nargs=1,
     )
     optoptions.add_argument(
         "-nsurrogates",
         "--nsurrogates",
         dest="nsurrogates",
         type=int,
-        help=(
-            "Number of surrogates to calculate AUC on (default = 0)."
-        ),
+        help=("Number of surrogates to calculate AUC on (default = 0)."),
         default=0,
-        nargs=1
+        nargs=1,
     )
     return parser

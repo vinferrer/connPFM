@@ -44,13 +44,11 @@ def main(argv=None):
     """
     options = _get_parser().parse_args(argv)
     args_str = str(options)[9:]
-    history_str = (
-        "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
-            username=getpass.getuser(),
-            hostname=socket.gethostname(),
-            date=datetime.datetime.now().strftime("%c"),
-            arguments=args_str,
-        )
+    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
+        username=getpass.getuser(),
+        hostname=socket.gethostname(),
+        date=datetime.datetime.now().strftime("%c"),
+        arguments=args_str,
     )
     kwargs = vars(options)
 

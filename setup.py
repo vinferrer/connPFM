@@ -4,7 +4,7 @@
 
 
 def main():
-    """ Install entry-point """
+    """Install entry-point"""
     import os.path as op
     from inspect import currentframe, getfile
     from io import open

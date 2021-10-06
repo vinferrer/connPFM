@@ -18,8 +18,8 @@ The ``connPFM`` package is a Python package for running connPFM quality control 
    :target: https://zenodo.org/badge/latestdoi/110845855
    :alt: DOI
 
-.. image:: https://circleci.com/gh/ME-ICA/connPFM.svg?style=shield
-   :target: https://circleci.com/gh/ME-ICA/connPFM
+.. image:: https://circleci.com/gh/SPiN-Lab/connPFM.svg?style=shield
+   :target: https://circleci.com/gh/SPiN-Lab/connPFM
    :alt: CircleCI
 
 .. image:: http://img.shields.io/badge/License-LGPL%202.1-blue.svg
@@ -30,8 +30,8 @@ The ``connPFM`` package is a Python package for running connPFM quality control 
    :target: http://connPFM.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://codecov.io/gh/me-ica/connPFM/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/me-ica/connPFM
+.. image:: https://codecov.io/gh/SPiN-Lab/connPFM/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/SPiN-Lab/connPFM
    :alt: Codecov
 
 

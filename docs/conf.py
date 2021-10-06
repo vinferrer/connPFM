@@ -73,8 +73,8 @@ master_doc = "index"
 # General information about the project.
 
 project = "connPFM"
-copyright = "2021-" + datetime.today().strftime("%Y") + ", ME-ICA Developers"
-author = "ME-ICA Developers"
+copyright = "2021-" + datetime.today().strftime("%Y") + ", SPiN-Lab Developers"
+author = "SPiN-Lab Developers"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -164,7 +164,7 @@ htmlhelp_basename = "connPFMdoc"
 # The following is used by sphinx.ext.linkcode to provide links to github
 linkcode_resolve = make_linkcode_resolve(
     "connPFM",
-    "https://github.com/me-ica/connPFM/blob/{revision}/{package}/{path}#L{lineno}",
+    "https://github.com/SPiN-Lab/connPFM/blob/{revision}/{package}/{path}#L{lineno}",
 )
 
 # Example configuration for intersphinx: refer to the Python standard library.

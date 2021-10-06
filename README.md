@@ -5,9 +5,9 @@ A template repo to use for new repositories.
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/connPFM.svg)](https://pypi.python.org/pypi/connPFM/)
 [![DOI](https://zenodo.org/badge/111111.svg)](https://zenodo.org/badge/latestdoi/111111)
 [![License](https://img.shields.io/badge/License-LGPL%202.1-blue.svg)](https://opensource.org/licenses/LGPL-2.1)
-[![CircleCI](https://circleci.com/gh/ME-ICA/connPFM.svg?style=shield)](https://circleci.com/gh/ME-ICA/connPFM)
+[![CircleCI](https://circleci.com/gh/SPiN-Lab/connPFM.svg?style=shield)](https://circleci.com/gh/SPiN-Lab/connPFM)
 [![Documentation Status](https://readthedocs.org/projects/connPFM/badge/?version=latest)](http://connPFM.readthedocs.io/en/latest/?badge=latest)
-[![Codecov](https://codecov.io/gh/me-ica/connPFM/branch/main/graph/badge.svg)](https://codecov.io/gh/me-ica/connPFM)
+[![Codecov](https://codecov.io/gh/SPiN-Lab/connPFM/branch/main/graph/badge.svg)](https://codecov.io/gh/SPiN-Lab/connPFM)
 
 ## Instructions
 

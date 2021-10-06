@@ -10,9 +10,11 @@ A template repo to use for new repositories.
 [![Codecov](https://codecov.io/gh/SPiN-Lab/connPFM/branch/main/graph/badge.svg)](https://codecov.io/gh/SPiN-Lab/connPFM)
 
 ## Installation
-1. Clone `connPFM` repository
-1. move to the `connPFM`
-1. pip3 install -e .[all]
+```
+    git clone https://github.com/SPiN-Lab/connPFM.git
+    cd connPFM
+    pip3 install -e .[all]
+```
 ## Instructions
 
 1. Replace `connPFM` with the new repo name across the whole repository.

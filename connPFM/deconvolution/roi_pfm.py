@@ -1,5 +1,6 @@
 import datetime
 import getpass
+import logging
 import os
 import socket
 import subprocess
@@ -13,6 +14,7 @@ from cli import _get_parser
 from Scripts.hrf_matrix import HRFMatrix
 from Scripts.run_stability_lars_bcbl import run_stability_lars
 
+LGR = logging.getLogger(__name__)
 
 def splitext_(path):
     if len(path.split(".")) > 2:
@@ -40,12 +42,12 @@ def generate_surrogate(data, atlas, atlas_orig, output):
     """
 
     # Mask data
-    print("Masking data...")
+    LGR.info("Masking data...")
     surrogate_masker = NiftiLabelsMasker(
         labels_img=atlas, standardize="psc", memory="nilearn_cache", strategy="mean"
     )
     data_masked = surrogate_masker.fit_transform(data)
-    print("Data masked.")
+    LGR.info("Data masked.")
 
     surrogate = np.zeros(data_masked.shape)
     nscans = data_masked.shape[0]
@@ -136,15 +138,15 @@ def _main(argv=None):
     ###########  DO NOT  EDIT BELOW    ############
     ###############################################
     temp = os.makedirs(temp_dir, exist_ok=True)
-    print("Masking data...")
+    LGR.info("Masking data...")
     atlas_old = atlas
     atlas = atlas_mod.transform(atlas, data, temp_dir)
     masker = NiftiLabelsMasker(
         labels_img=atlas, standardize="psc", memory="nilearn_cache", strategy="mean"
     )
     data_masked = masker.fit_transform(data)
-    print("Data masked.")
-    print("Generating HRF...")
+    LGR.info("Data masked.")
+    LGR.info("Generating HRF...")
     # Generates HRF matrix
     hrf_matrix = HRFMatrix(
         TR=tr,
@@ -158,9 +160,9 @@ def _main(argv=None):
     )
     hrf_matrix.generate_hrf()
     hrf = hrf_matrix.hrf_norm
-    print("HRF generated.")
+    LGR.info("HRF generated.")
 
-    print("Running stability selection on original data...")
+    LGR.info("Running stability selection on original data...")
     auc = run_stability_lars(
         data=data_masked,
         hrf=hrf,
@@ -170,21 +172,21 @@ def _main(argv=None):
         niter=n_stability_surrogates,
         maxiterfactor=maxiterfactor,
     )
-    print("Stability selection on original data finished.")
+    LGR.info("Stability selection on original data finished.")
 
-    print("Saving AUC results of original data...")
+    LGR.info("Saving AUC results of original data...")
     auc_4d = masker.inverse_transform(auc)
     auc_4d.to_filename(output_file)
     atlas_mod.inverse_transform(output_file, data)
-    print("AUC results on original data saved.")
+    LGR.info("AUC results on original data saved.")
 
-    print("Updating file history...")
+    LGR.info("Updating file history...")
     subprocess.run('3dNotes -h "' + history_str + '" ' + output_file, shell=True)
-    print("File history updated.")
+    LGR.info("File history updated.")
 
     if n_auc_surrogates:
-        print(f"Performing PFM on {n_auc_surrogates} surrogates...")
-        print(f"Make yourself a cup of coffee while it runs :)")
+        LGR.info(f"Performing PFM on {n_auc_surrogates} surrogates...")
+        LGR.info(f"Make yourself a cup of coffee while it runs :)")
         for n_sur in range(n_auc_surrogates):
             # Generate surrogate
             surrogate_name = os.path.join(temp_dir, f"surrogate_{n_sur}.nii.gz")
@@ -210,11 +212,11 @@ def _main(argv=None):
             surrogate_out = os.path.join(temp_dir, f"surrogate_AUC_{n_sur}.nii.gz")
             auc_4d.to_filename(surrogate_out)
             atlas_mod.inverse_transform(surrogate_out, data)
-            print(f"{n_sur}/{n_auc_surrogates -1 }")
+            LGR.info(f"{n_sur}/{n_auc_surrogates -1 }")
 
-        print(f"PFM on {n_auc_surrogates} surrogates finished.")
+        LGR.info(f"PFM on {n_auc_surrogates} surrogates finished.")
 
-    print("PFM finished.")
+    LGR.info("PFM finished.")
 
 
 if __name__ == "__main__":

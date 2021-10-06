@@ -19,9 +19,9 @@ exclude = '''
   )/
   | get_version.py
   | versioneer.py
-  | template-package/info.py
-  | template-package/_version.py
-  | template-package/due.py
+  | connPFM/info.py
+  | connPFM/_version.py
+  | connPFM/due.py
 )
 '''
 

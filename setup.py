@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" template-package setup script """
+""" connPFM setup script """
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
     import versioneer
 
-    ver_file = op.join("template-package", "info.py")
+    ver_file = op.join("connPFM", "info.py")
     with open(ver_file) as f:
         exec(f.read())
     vars = locals()
@@ -22,7 +22,7 @@ def main():
     cmdclass = versioneer.get_cmdclass()
 
     pkg_data = {
-        "template-package": [
+        "connPFM": [
             "tests/data/*",
         ]
     }

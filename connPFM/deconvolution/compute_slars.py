@@ -155,8 +155,9 @@ def main(argv):
     for vox_idx in range(nvoxels):
         sl.stability_lars(hrf, y[:, voxel + vox_idx])
         auc[:, vox_idx] = np.squeeze(sl.auc)
-        LGR.info("AUC of voxel {}/{} calculated and stored...".format(str(vox_idx + 1),
-                 str(nvoxels)))
+        LGR.info(
+            "AUC of voxel {}/{} calculated and stored...".format(str(vox_idx + 1), str(nvoxels))
+        )
 
     filename = args.tempdir[0] + "/auc_" + str(n_job) + ".npy"
     np.save(filename, auc)

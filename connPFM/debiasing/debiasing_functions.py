@@ -1,6 +1,6 @@
 import numpy as np
-from sklearn.linear_model import RidgeCV
 import scipy as sci
+from sklearn.linear_model import RidgeCV
 
 
 def fusion_mask(hrf, non_zero_idxs):

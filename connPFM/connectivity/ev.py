@@ -3,12 +3,11 @@ import subprocess
 from os.path import basename, join
 
 import numpy as np
+from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
-
 from utils import atlas_mod
-from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from utils.hrf_matrix import HRFMatrix
 
 

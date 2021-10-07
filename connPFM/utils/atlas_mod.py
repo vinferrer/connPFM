@@ -1,8 +1,9 @@
-import nibabel as nib
-import numpy as np
 import os
 import subprocess
 from time import sleep
+
+import nibabel as nib
+import numpy as np
 
 
 def transform(atlas_orig, data_tlrc, temp_dir):

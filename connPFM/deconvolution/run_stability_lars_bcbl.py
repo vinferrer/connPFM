@@ -1,11 +1,12 @@
 import os
-import numpy as np
 import subprocess
 import time
 
+import numpy as np
+
 
 def bget(cmd):
-    from subprocess import Popen, PIPE
+    from subprocess import PIPE, Popen
 
     out = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     (stdout, stderr) = out.communicate()

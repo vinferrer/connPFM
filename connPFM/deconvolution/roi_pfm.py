@@ -5,12 +5,11 @@ import socket
 import subprocess
 
 import numpy as np
-from nilearn.input_data import NiftiLabelsMasker
-
-from utils import atlas_mod
 from cli import _get_parser
-from utils.hrf_matrix import HRFMatrix
 from deconvolution.run_stability_lars_bcbl import run_stability_lars
+from nilearn.input_data import NiftiLabelsMasker
+from utils import atlas_mod
+from utils.hrf_matrix import HRFMatrix
 
 
 def splitext_(path):

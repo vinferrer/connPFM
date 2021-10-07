@@ -7,13 +7,11 @@ import sys
 from os.path import basename
 from os.path import join as opj
 
-
 import numpy as np
-from nilearn.input_data import NiftiLabelsMasker
-
-from utils import atlas_mod
 from cli.debiasing import _get_parser
 from debiasing.debiasing_functions import debiasing_block, debiasing_spike
+from nilearn.input_data import NiftiLabelsMasker
+from utils import atlas_mod
 from utils.hrf_matrix import HRFMatrix
 
 # AUC = "sub-002ParkMabCm_AUC_200.nii.gz"

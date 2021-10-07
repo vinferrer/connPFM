@@ -1,16 +1,15 @@
 """Plotting script for event detection."""
 
-from cli.cli_plotting import _get_parser
 from os.path import join as opj
 
+import ev
 import matplotlib
+import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
 import numpy as np
+from cli.cli_plotting import _get_parser
 from matplotlib import cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import matplotlib.pylab as pylab
-
-import ev
 
 fontsize = 28
 params = {

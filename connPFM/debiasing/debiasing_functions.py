@@ -1,6 +1,10 @@
+import logging
+
 import numpy as np
 import scipy as sci
 from sklearn.linear_model import RidgeCV
+
+LGR = logging.getLogger(__name__)
 
 
 def fusion_mask(hrf, non_zero_idxs):
@@ -143,7 +147,7 @@ def debiasing_spike(x, y, beta, fusion=False, nlambdas=20, groups=False, group_d
             fitts_out[:, index_voxels[voxidx]] = np.dot(X_events, coef_LSfitdebias)
             beta_out[:, index_voxels[voxidx]] = beta2save.reshape(len(beta2save))
 
-        print(f"Voxel {voxidx + 1} of {len(index_voxels)} debiased...")
+        LGR.info(f"Voxel {voxidx + 1} of {len(index_voxels)} debiased...")
 
     # Output dictionary
     debiasing_out = {"beta": beta_out, "betafitts": fitts_out}

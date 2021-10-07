@@ -1,5 +1,5 @@
 """Plotting script for event detection."""
-
+import logging
 from os.path import join as opj
 
 import ev
@@ -28,6 +28,8 @@ HISTORY = "Deconvolution based on event-detection."
 # Font size for plots
 font = {"weight": "normal", "size": 28}
 matplotlib.rc("font", **font)
+
+LGR = logging.getLogger(__name__)
 
 
 def plot_comparison(
@@ -249,7 +251,7 @@ def main(argv=None):
     FITTFILE = opj(MAINDIR, f"pb06.{SUBJECT}.denoised_no_censor_fitt_95.nii.gz")
     AUCFILE = opj(MAINDIR, f"{SUBJECT}_AUC_{NROIS}.nii.gz")
     # Perform event detection on BETAS
-    print("Performing event-detection on betas...")
+    LGR.info("Performing event-detection on betas...")
     (
         ets_beta,
         rss_beta,
@@ -263,7 +265,7 @@ def main(argv=None):
     ) = ev.event_detection(BETAFILE, ATLAS, opj(TEMPDIR, "surrogate_"), "_beta_95")
 
     # Perform event detection on ORIGINAL data
-    print("Performing event-detection on original data...")
+    LGR.info("Performing event-detection on original data...")
     (
         ets_orig_sur,
         rss_orig_sur,
@@ -277,7 +279,7 @@ def main(argv=None):
     ) = ev.event_detection(DATAFILE, ATLAS, opj(TEMPDIR, "surrogate_"))
 
     # Perform event detection on FITTED signal
-    print("Performing event-detection on fitted signal...")
+    LGR.info("Performing event-detection on fitted signal...")
     (
         ets_fitt,
         rss_fitt,
@@ -291,7 +293,7 @@ def main(argv=None):
     ) = ev.event_detection(FITTFILE, ATLAS, opj(TEMPDIR, "surrogate_"), "_fitt_95")
 
     # Perform event detection on AUC
-    print("Performing event-detection on AUC...")
+    LGR.info("Performing event-detection on AUC...")
     (
         ets_auc,
         rss_auc,
@@ -304,7 +306,7 @@ def main(argv=None):
         idx_v,
     ) = ev.event_detection(AUCFILE, ATLAS, opj(TEMPDIR, "surrogate_AUC_"))
 
-    print("Making plots...")
+    LGR.info("Making plots...")
     # Plot comparison of rss time series, null, and significant peaks for
     # original, betas, fitted, AUC and ATS
     plot_comparison(
@@ -329,7 +331,7 @@ def main(argv=None):
         rss_orig_sur, idxpeak_orig_sur, rss_beta, idxpeak_beta, rss_fitt, idxpeak_fitt, MAINDIR
     )
 
-    print("Plotting original, AUC, and AUC-denoised ETS matrices...")
+    LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     # Plot ETS matrix of original signal
     DVARS = np.loadtxt(opj(ORIGDIR, SUBJECT + "_dvars.1D"))
     ENORM = np.loadtxt(opj(ORIGDIR, SUBJECT + "_Motion_enorm.1D"))
@@ -347,11 +349,11 @@ def main(argv=None):
     # Perform debiasing based on thresholded edge-time matrix
     beta, _ = ev.debiasing(DATAFILE, ATLAS, ets_auc_denoised, idx_u, idx_v, TR, MAINDIR, HISTORY)
 
-    print("Plotting edge-time matrix of ETS-based deconvolution.")
+    LGR.info("Plotting edge-time matrix of ETS-based deconvolution.")
     denoised_beta_ets, _, _ = ev.calculate_ets(beta, beta.shape[1])
     plot_ets_matrix(denoised_beta_ets, MAINDIR, "_beta_denoised", DVARS, ENORM, idxpeak_auc)
 
-    print("THE END")
+    LGR.info("THE END")
 
 
 if __name__ == "__main__":

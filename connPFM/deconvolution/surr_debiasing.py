@@ -1,5 +1,6 @@
 import datetime
 import getpass
+import logging
 import os
 import socket
 import subprocess
@@ -26,6 +27,8 @@ from utils.hrf_matrix import HRFMatrix
 # "/bcbl/home/public/PARK_VFERRER/PREPROC/sub-002ParkMabCm/func/task-restNorm_acq-MB3_run-01"
 # TR = 0.83
 # BLOCK = False
+
+LGR = logging.getLogger(__name__)
 
 
 def threshold(y, thr):
@@ -92,10 +95,10 @@ def main(argv=None):
     # Read AUC data of surrogates and save into matrix.
     sur_auc_mtx = np.zeros((auc.shape[0], auc.shape[1], N_SUR))
     for sur_idx, surr_file in enumerate(surr_files):
-        print(f"Reading {surr_file}...")
+        LGR.info(f"Reading {surr_file}...")
         sur_auc_mtx[:, :, sur_idx] = masker.fit_transform(opj(TEMP, surr_file))
 
-    print("All AUC data read.")
+    LGR.info("All AUC data read.")
 
     # Calculate percentile of each ROI with data from all surrogates and apply
     # threshold to AUC of original data.

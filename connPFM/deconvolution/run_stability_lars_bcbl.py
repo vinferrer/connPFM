@@ -1,8 +1,11 @@
+import logging
 import os
 import subprocess
 import time
 
 import numpy as np
+
+LGR = logging.getLogger(__name__)
 
 
 def bget(cmd):
@@ -34,7 +37,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
     nTE = int(hrf.shape[0] / nscans)
 
     last = 0
-    print("Numer of voxels: {}".format(nvoxels))
+    LGR.info("Numer of voxels: {}".format(nvoxels))
 
     for job_idx in range(jobs):
         jobs_left = jobs - job_idx
@@ -49,8 +52,8 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
         elif job_idx == (jobs - 1):
             first = last + 1
             last = nvoxels
-        print("First voxel: {}".format(first))
-        print("Last voxel: {}".format(last))
+        LGR.info("First voxel: {}".format(first))
+        LGR.info("Last voxel: {}".format(last))
 
         jobname = "lars" + str(job_idx)
         input_parameters = (

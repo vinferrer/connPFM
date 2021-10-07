@@ -7,14 +7,12 @@ import sys
 from os.path import basename
 from os.path import join as opj
 
-
 import numpy as np
+from cli.debiasing import _get_parser
+from debiasing.debiasing_functions import debiasing_block, debiasing_spike
 from nilearn.input_data import NiftiLabelsMasker
-
-import atlas_mod
-from cli_SD import _get_parser
-from Debiasing.debiasing_functions import debiasing_block, debiasing_spike
-from Scripts.hrf_matrix import HRFMatrix
+from utils import atlas_mod
+from utils.hrf_matrix import HRFMatrix
 
 # AUC = "sub-002ParkMabCm_AUC_200.nii.gz"
 # SUR_PREFIX = "surrogate_AUC_"
@@ -24,7 +22,8 @@ from Scripts.hrf_matrix import HRFMatrix
 # DATA = "pb06.sub-002ParkMabCm.denoised_no_censor.nii.gz"
 # ATLAS = "GM_200parcels_17networks_func.nii.gz"
 # MASK = "sub-002ParkMabCm_T1_mask.al_epi.FUNC.nii.gz"
-# DATA_DIR = "/bcbl/home/public/PARK_VFERRER/PREPROC/sub-002ParkMabCm/func/task-restNorm_acq-MB3_run-01"
+# DATA_DIR =
+# "/bcbl/home/public/PARK_VFERRER/PREPROC/sub-002ParkMabCm/func/task-restNorm_acq-MB3_run-01"
 # TR = 0.83
 # BLOCK = False
 
@@ -44,20 +43,19 @@ def main(argv=None):
     """
     options = _get_parser().parse_args(argv)
     args_str = str(options)[9:]
-    history_str = (
-        "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
-            username=getpass.getuser(),
-            hostname=socket.gethostname(),
-            date=datetime.datetime.now().strftime("%c"),
-            arguments=args_str,
-        )
+    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
+        username=getpass.getuser(),
+        hostname=socket.gethostname(),
+        date=datetime.datetime.now().strftime("%c"),
+        arguments=args_str,
     )
     kwargs = vars(options)
 
-    # Choose one of fetch_atlas_XXXX functions https://nilearn.github.io/modules/reference.html#module-nilearn.datasets
+    # Choose one of fetch_atlas_XXXX functions
+    # https://nilearn.github.io/modules/reference.html#module-nilearn.datasets
     # You can also use the path to a local atlas file.
 
-    ###### For HRF
+    # For HRF
     AUC = kwargs["auc"][0]
     SUR_PREFIX = "surrogate_AUC_"
     DIR = "/bcbl/home/public/PARK_VFERRER/PFM_data"
@@ -72,7 +70,7 @@ def main(argv=None):
     output_str = "debaiasing " + AUC + "\n"
     sys.stdout.write(output_str)  # same as print
     sys.stdout.flush()
-    history_str = f"pySPFM debiasing."
+    history_str = "pySPFM debiasing."
     # Read original data.
     masker = NiftiLabelsMasker(
         labels_img=opj(TEMP, "atlas.nii.gz"),

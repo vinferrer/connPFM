@@ -1,23 +1,24 @@
 """Plotting script for event detection."""
 
-from cli_plotting import _get_parser
 from os.path import join as opj
 
+import ev
 import matplotlib
+import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
 import numpy as np
+from cli.cli_plotting import _get_parser
 from matplotlib import cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import matplotlib.pylab as pylab
-
-import ev
 
 fontsize = 28
-params = {'legend.fontsize': fontsize,
-          'axes.labelsize': fontsize,
-          'axes.titlesize': fontsize,
-          'xtick.labelsize': fontsize,
-          'ytick.labelsize': fontsize}
+params = {
+    "legend.fontsize": fontsize,
+    "axes.labelsize": fontsize,
+    "axes.titlesize": fontsize,
+    "xtick.labelsize": fontsize,
+    "ytick.labelsize": fontsize,
+}
 pylab.rcParams.update(params)
 # Global variables
 NRAND = 100
@@ -75,26 +76,20 @@ def plot_comparison(
 
     for i in range(rssr_orig_sur.shape[1]):
         axs[1].plot(rssr_fitt[:, i], color=colors[i], linewidth=0.5)
-    axs[1].plot(
-        idxpeak_fitt, rss_fitt[idxpeak_fitt], "r*", label="fitt-peaks", markersize=20
-    )
+    axs[1].plot(idxpeak_fitt, rss_fitt[idxpeak_fitt], "r*", label="fitt-peaks", markersize=20)
     axs[1].plot(rss_fitt, color="k", linewidth=3, label="fitt")
     axs[1].set_ylim([min_range, max_range])
     axs[1].set_title("Fitted signal")
 
     for i in range(rssr_orig_sur.shape[1]):
         axs[2].plot(rssr_beta[:, i], color=colors[i], linewidth=0.5)
-    axs[2].plot(
-        idxpeak_beta, rss_beta[idxpeak_beta], "r*", label="beta-peaks", markersize=20
-    )
+    axs[2].plot(idxpeak_beta, rss_beta[idxpeak_beta], "r*", label="beta-peaks", markersize=20)
     axs[2].plot(rss_beta, color="k", linewidth=3, label="beta")
     axs[2].set_title("Betas")
 
     for i in range(rssr_orig_sur.shape[1]):
         axs[3].plot(rssr_auc[:, i], color=colors[i], linewidth=0.5)
-    axs[3].plot(
-        idxpeak_auc, rss_auc[idxpeak_auc], "r*", label="AUC-peaks", markersize=20
-    )
+    axs[3].plot(idxpeak_auc, rss_auc[idxpeak_auc], "r*", label="AUC-peaks", markersize=20)
     axs[3].plot(rss_auc, color="k", linewidth=3, label="AUC")
     axs[3].set_title("AUCs")
 
@@ -120,9 +115,7 @@ def plot_all(
     plt.figure(figsize=FIGSIZE)
 
     # Original signal
-    rss_orig_norm = (rss_orig_sur - rss_orig_sur.min()) / (
-        rss_orig_sur.max() - rss_orig_sur.min()
-    )
+    rss_orig_norm = (rss_orig_sur - rss_orig_sur.min()) / (rss_orig_sur.max() - rss_orig_sur.min())
     plt.plot(
         idxpeak_orig_sur,
         rss_orig_norm[idxpeak_orig_sur],
@@ -181,7 +174,9 @@ def plot_all(
     plt.savefig(opj(outdir, "event_detection_all.png"), dpi=300)
 
 
-def plot_ets_matrix(ets, outdir, sufix="", dvars=None, enorm=None, peaks=None, vmin=-0.5, vmax=0.5):
+def plot_ets_matrix(
+    ets, outdir, sufix="", dvars=None, enorm=None, peaks=None, vmin=-0.5, vmax=0.5
+):
     """
     Plots edge-time matrix
     """
@@ -207,14 +202,14 @@ def plot_ets_matrix(ets, outdir, sufix="", dvars=None, enorm=None, peaks=None, v
         cax = divider.append_axes("right", size="5%", pad=0.08)
         im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="bwr", aspect="auto")
         ax0.set_ylabel("Edge-edge connections")
-        cb = plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
+        plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
         dvars[1] = np.mean(dvars)
         ax1.plot(dvars)
         ax1.set_title("DVARS")
         ax1.margins(0, 0)
         for i in peaks:
-            ax1.axvspan(i, i+1, facecolor='b', alpha=0.5)
-            ax2.axvspan(i, i+1, facecolor='b', alpha=0.5)
+            ax1.axvspan(i, i + 1, facecolor="b", alpha=0.5)
+            ax2.axvspan(i, i + 1, facecolor="b", alpha=0.5)
         ax2.plot(enorm)
         ax2.set_title("ENORM")
         ax2.set_xlabel("Time (TR)")
@@ -243,7 +238,9 @@ def main(argv=None):
     # Paths to files
     MAINDIR = kwargs["dir"][0]
     TEMPDIR = opj(MAINDIR, f"temp_{SUBJECT}_{NROIS}")
-    ORIGDIR = "/bcbl/home/public/PARK_VFERRER/PREPROC/" + SUBJECT + "/func/task-restNorm_acq-MB3_run-01"
+    ORIGDIR = (
+        "/bcbl/home/public/PARK_VFERRER/PREPROC/" + SUBJECT + "/func/task-restNorm_acq-MB3_run-01"
+    )
     ats_name = "pb06." + SUBJECT + ".denoised_no_censor_ATS_abs_95.1D"
     ATS = np.loadtxt(opj(MAINDIR, ats_name))
     ATLAS = opj(TEMPDIR, "atlas.nii.gz")
@@ -329,8 +326,7 @@ def main(argv=None):
 
     # Plot all rss time series, null, and significant peaks in one plot
     plot_all(
-        rss_orig_sur, idxpeak_orig_sur, rss_beta, idxpeak_beta, rss_fitt,
-        idxpeak_fitt, MAINDIR
+        rss_orig_sur, idxpeak_orig_sur, rss_beta, idxpeak_beta, rss_fitt, idxpeak_fitt, MAINDIR
     )
 
     print("Plotting original, AUC, and AUC-denoised ETS matrices...")
@@ -349,13 +345,11 @@ def main(argv=None):
     np.savetxt(opj(MAINDIR, f"{DATAFILE[:-7]}_rss.1D"), rss_out)
 
     # Perform debiasing based on thresholded edge-time matrix
-    beta, _ = ev.debiasing(
-        DATAFILE, ATLAS, ets_auc_denoised, idx_u, idx_v, TR, MAINDIR, HISTORY
-    )
+    beta, _ = ev.debiasing(DATAFILE, ATLAS, ets_auc_denoised, idx_u, idx_v, TR, MAINDIR, HISTORY)
 
     print("Plotting edge-time matrix of ETS-based deconvolution.")
     denoised_beta_ets, _, _ = ev.calculate_ets(beta, beta.shape[1])
-    plot_ets_matrix(denoised_beta_ets, MAINDIR, "_beta_denoised",DVARS, ENORM, idxpeak_auc)
+    plot_ets_matrix(denoised_beta_ets, MAINDIR, "_beta_denoised", DVARS, ENORM, idxpeak_auc)
 
     print("THE END")
 

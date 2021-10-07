@@ -40,20 +40,15 @@ class StabilityLars:
     def stability_lars(self, X, Y):
 
         self.nscans = X.shape[1]
-        try:
-            nvoxels = Y.shape[1]
-        except:
-            nvoxels = 1
-            Y = np.expand_dims(Y, axis=1)
+
+        nvoxels = Y.shape[1]
         nlambdas = self.nscans + 1
 
         self.auc = np.empty((self.nscans, nvoxels))
 
         for vox_idx in range(nvoxels):
             lambdas = np.zeros((self.nsurrogates, nlambdas), dtype=np.float32)
-            coef_path = np.zeros(
-                (self.nsurrogates, self.nscans, nlambdas), dtype=np.float32
-            )
+            coef_path = np.zeros((self.nsurrogates, self.nscans, nlambdas), dtype=np.float32)
             self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * self.nscans)))
             for surrogate_idx in range(self.nsurrogates):
 
@@ -77,7 +72,7 @@ class StabilityLars:
                     method="lasso",
                     Gram=np.dot(X_sub.T, X_sub),
                     Xy=np.dot(X_sub.T, np.squeeze(y_sub)),
-                    max_iter= nlambdas + 1, #int(np.ceil(self.maxiterfactor * self.nscans)),
+                    max_iter=nlambdas + 1,  # int(np.ceil(self.maxiterfactor * self.nscans)),
                     eps=1e-6,
                     alpha_min=lambda_min,
                 )
@@ -92,9 +87,7 @@ class StabilityLars:
             lambdas_merged = -np.sort(-lambdas_merged)
             nlambdas_merged = len(lambdas_merged)
 
-            temp = np.zeros(
-                (self.nscans, self.nsurrogates * nlambdas), dtype=np.float64
-            )
+            temp = np.zeros((self.nscans, self.nsurrogates * nlambdas), dtype=np.float64)
 
             for surrogate_idx in range(self.nsurrogates):
                 if surrogate_idx == 0:
@@ -104,12 +97,12 @@ class StabilityLars:
                     first = last + 1
                     last = first + nlambdas - 1
 
-                same_lambda_idxs = np.where((first <= sort_idxs) & (sort_idxs <= last))[
-                    0
-                ]
+                same_lambda_idxs = np.where((first <= sort_idxs) & (sort_idxs <= last))[0]
 
                 # Find indexes of changes in value (0 to 1 changes are expected).
-                # nonzero_change_scans, nonzero_change_idxs = np.where(np.squeeze(coef_path[surrogate_idx, :, :-1]) != np.squeeze(coef_path[surrogate_idx, :, 1:]))
+                # nonzero_change_scans, nonzero_change_idxs =
+                # np.where(np.squeeze(coef_path[surrogate_idx, :, :-1]) !=
+                # np.squeeze(coef_path[surrogate_idx, :, 1:]))
                 coef_path_temp = np.squeeze(coef_path[surrogate_idx, :, :])
                 if len(coef_path_temp.shape) == 1:
                     coef_path_temp = coef_path_temp[:, np.newaxis]

@@ -1,7 +1,8 @@
+import subprocess
+
 import numpy as np
 import scipy.io
 import scipy.stats
-import subprocess
 
 
 def hrf_linear(RT, p):
@@ -61,10 +62,11 @@ def hrf_afni(tr, lop_hrf):
     #  Increases duration until last HRF sample is zero
     while last_hrf_sample != 0:
         dur_hrf = 2 * dur_hrf
-        npoints_hrf = np.around(dur_hrf, int(tr))
+        # npoints_hrf = np.around(dur_hrf, int(tr))
         hrf_command = (
-            "3dDeconvolve -x1D_stop -nodata %d %f -polort -1 -num_stimts 1 -stim_times 1 '1D:0' '%s' -quiet -x1D stdout: | 1deval -a stdin: -expr 'a'"
-            % (dur_hrf, tr, lop_hrf)
+            f"3dDeconvolve -x1D_stop -nodata {dur_hrf} {tr} -polort -1"
+            f"-num_stimts 1 -stim_times 1 '1D:0' '{lop_hrf}' -quiet -x1D stdout: | 1deval "
+            f"-a stdin: -expr 'a'"
         )
         hrf_tr_str = subprocess.check_output(
             hrf_command, shell=True, universal_newlines=True
@@ -73,7 +75,8 @@ def hrf_afni(tr, lop_hrf):
         last_hrf_sample = hrf_tr[len(hrf_tr) - 1]
         if last_hrf_sample != 0:
             print(
-                "Duration of HRF was not sufficient for specified model. Doubling duration and computing again."
+                "Duration of HRF was not sufficient for specified model. Doubling duration and"
+                "computing again."
             )
 
     #  Removes tail of zero samples
@@ -97,7 +100,7 @@ class HRFMatrix:
         has_integrator=False,
         wfusion=False,
         lambda_fusion=3,
-        gamma_weights=0.5
+        gamma_weights=0.5,
     ):
         self.TR = TR
         self.TE = TE
@@ -147,12 +150,10 @@ class HRFMatrix:
         if self.has_integrator:
             if self.TE is not None and len(self.TE) > 1:
                 for teidx in range(len(self.TE)):
-                    temp = self.hrf[
-                        teidx * self.nscans : (teidx + 1) * self.nscans - 1, :
-                    ].copy()
-                    self.hrf[
-                        teidx * self.nscans : (teidx + 1) * self.nscans - 1, :
-                    ] = np.matmul(temp, np.tril(np.ones(self.nscans)))
+                    temp = self.hrf[teidx * self.nscans : (teidx + 1) * self.nscans - 1, :].copy()
+                    self.hrf[teidx * self.nscans : (teidx + 1) * self.nscans - 1, :] = np.matmul(
+                        temp, np.tril(np.ones(self.nscans))
+                    )
                     temp = self.hrf_norm[
                         teidx * self.nscans : (teidx + 1) * self.nscans - 1, :
                     ].copy()
@@ -161,21 +162,19 @@ class HRFMatrix:
                     ] = np.matmul(temp, np.tril(np.ones(self.nscans)))
             else:
                 self.hrf = np.matmul(self.hrf, np.tril(np.ones(self.nscans)))
-                self.hrf_norm = np.matmul(
-                    self.hrf_norm, np.tril(np.ones(self.nscans))
-                )
+                self.hrf_norm = np.matmul(self.hrf_norm, np.tril(np.ones(self.nscans)))
 
         if self.wfusion:
             hrf_cov = np.dot(self.hrf_norm.T, self.hrf_norm)
             weights = (np.abs(hrf_cov) ** self.gamma_weights) / (1 - np.abs(hrf_cov))
             diag_W = np.sum(weights, axis=1) - np.diag(weights)
             Wfusion = -np.sign(hrf_cov) ** weights
-            for i in range (self.nscans):
-                Wfusion[i,i] = diag_W[i]
+            for i in range(self.nscans):
+                Wfusion[i, i] = diag_W[i]
 
             Wfusion = Wfusion / (self.nscans)
             # cholesky decomposition of matrix W (through eigenvalue decomposition)
-            [Vfusion,Dfusion] = np.linalg.eig(Wfusion)
+            [Vfusion, Dfusion] = np.linalg.eig(Wfusion)
             Dfusion[Dfusion < 0] = 0  # force positive eigenvalues due to numerical precision.
             Qfusion = (Dfusion ** 0.5) * Vfusion.T
             X_fusion = np.sqrt(self.lambda_fusion) * Qfusion

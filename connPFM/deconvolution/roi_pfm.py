@@ -14,6 +14,7 @@ from utils.hrf_matrix import HRFMatrix
 
 LGR = logging.getLogger(__name__)
 
+
 def splitext_(path):
     if len(path.split(".")) > 2:
         return path.split(".")[0], ".".join(path.split(".")[-2:])

@@ -1,6 +1,6 @@
 """Plotting script for event detection."""
 
-from cli_plotting import _get_parser
+from cli.cli_plotting import _get_parser
 from os.path import join as opj
 
 import matplotlib
@@ -203,7 +203,7 @@ def plot_ets_matrix(
         cax = divider.append_axes("right", size="5%", pad=0.08)
         im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="bwr", aspect="auto")
         ax0.set_ylabel("Edge-edge connections")
-        cb = plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
+        plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
         dvars[1] = np.mean(dvars)
         ax1.plot(dvars)
         ax1.set_title("DVARS")

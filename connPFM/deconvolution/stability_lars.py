@@ -103,7 +103,9 @@ class StabilityLars:
                 same_lambda_idxs = np.where((first <= sort_idxs) & (sort_idxs <= last))[0]
 
                 # Find indexes of changes in value (0 to 1 changes are expected).
-                # nonzero_change_scans, nonzero_change_idxs = np.where(np.squeeze(coef_path[surrogate_idx, :, :-1]) != np.squeeze(coef_path[surrogate_idx, :, 1:]))
+                # nonzero_change_scans, nonzero_change_idxs =
+                # np.where(np.squeeze(coef_path[surrogate_idx, :, :-1]) !=
+                # np.squeeze(coef_path[surrogate_idx, :, 1:]))
                 coef_path_temp = np.squeeze(coef_path[surrogate_idx, :, :])
                 if len(coef_path_temp.shape) == 1:
                     coef_path_temp = coef_path_temp[:, np.newaxis]

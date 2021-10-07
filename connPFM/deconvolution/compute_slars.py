@@ -1,6 +1,7 @@
 #!/usr/bin/python
-import sys, argparse, os, socket, getpass, datetime
-from sys import maxsize
+import argparse
+import os
+import sys
 
 os.environ["OMP_NUM_THREADS"] = "1"
 # import getopt
@@ -11,7 +12,8 @@ from stability_lars import StabilityLars
 def main(argv):
 
     parser = argparse.ArgumentParser(description="Stability Selection with LARS")
-    # parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS, help='Shows the list of possible commands and a brief description of each.')
+    # parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
+    # help='Shows the list of possible commands and a brief description of each.')
     parser.add_argument("--data", type=str, help="Data to analyse.", nargs=1)
     parser.add_argument("--hrf", type=str, help="HRF matrix (design matrix).", nargs=1)
     parser.add_argument("--voxel", type=int, help="Voxel number to analyse.", default=1, nargs=1)
@@ -42,7 +44,9 @@ def main(argv):
     parser.add_argument(
         "--mode",
         type=int,
-        help="Subsampling mode: 1 = different time points are selected across echoes. 2 = same time points are selected across echoes. (default=1).",
+        help=("Subsampling mode: 1 = different time points are selected across echoes. 2 = same "
+              "time points are selected across echoes. (default=1)."
+              ),
         default=1,
         nargs=1,
     )
@@ -102,10 +106,10 @@ def main(argv):
         sl.mode = int(args.mode[0])
     else:
         sl.mode = int(args.mode)
-    if type(args.tempdir) is list:
-        tempdir = args.tempdir[0]
-    else:
-        tempdir = args.tempdir
+    # if type(args.tempdir) is list: seems like tempdir is reassined later
+    #     tempdir = args.tempdir[0]
+    # else:
+    #     tempdir = args.tempdir
     if type(args.first) is list:
         first = args.first[0]
     else:

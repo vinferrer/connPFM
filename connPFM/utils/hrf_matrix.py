@@ -61,10 +61,11 @@ def hrf_afni(tr, lop_hrf):
     #  Increases duration until last HRF sample is zero
     while last_hrf_sample != 0:
         dur_hrf = 2 * dur_hrf
-        npoints_hrf = np.around(dur_hrf, int(tr))
+        # npoints_hrf = np.around(dur_hrf, int(tr))
         hrf_command = (
-            "3dDeconvolve -x1D_stop -nodata %d %f -polort -1 -num_stimts 1 -stim_times 1 '1D:0' '%s' -quiet -x1D stdout: | 1deval -a stdin: -expr 'a'"
-            % (dur_hrf, tr, lop_hrf)
+            f"3dDeconvolve -x1D_stop -nodata {dur_hrf} {tr} -polort -1"
+            f"-num_stimts 1 -stim_times 1 '1D:0' '{lop_hrf}' -quiet -x1D stdout: | 1deval "
+            f"-a stdin: -expr 'a'"
         )
         hrf_tr_str = subprocess.check_output(
             hrf_command, shell=True, universal_newlines=True
@@ -73,7 +74,8 @@ def hrf_afni(tr, lop_hrf):
         last_hrf_sample = hrf_tr[len(hrf_tr) - 1]
         if last_hrf_sample != 0:
             print(
-                "Duration of HRF was not sufficient for specified model. Doubling duration and computing again."
+                "Duration of HRF was not sufficient for specified model. Doubling duration and"
+                "computing again."
             )
 
     #  Removes tail of zero samples

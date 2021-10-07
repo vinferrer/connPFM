@@ -4,14 +4,13 @@ import os
 import socket
 import subprocess
 
-import nibabel as nib
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
-import atlas_mod
+from utils import atlas_mod
 from cli import _get_parser
-from Scripts.hrf_matrix import HRFMatrix
-from Scripts.run_stability_lars_bcbl import run_stability_lars
+from utils.hrf_matrix import HRFMatrix
+from deconvolution.run_stability_lars_bcbl import run_stability_lars
 
 
 def splitext_(path):
@@ -22,7 +21,7 @@ def splitext_(path):
 
 def generate_surrogate(data, atlas, atlas_orig, output):
     """
-    Function to generate surrogate data.
+    Generate surrogate data.
 
     Parameters
     ----------
@@ -38,7 +37,6 @@ def generate_surrogate(data, atlas, atlas_orig, output):
     surrogate : Niimg-like object
         Surrogate data.
     """
-
     # Mask data
     print("Masking data...")
     surrogate_masker = NiftiLabelsMasker(
@@ -91,19 +89,20 @@ def _main(argv=None):
     kwargs = vars(options)
     kwargs["history"] = history_str
 
-    ###############################################
-    ##############    EDIT BELOW    ###############
-    ###############################################
+    ####################
+    #    EDIT BELOW    #
+    ####################
 
     # Use full path or the os.path.join() function
     data = kwargs["data"][0]
     temp_dir = kwargs["dir"]
     output_file = kwargs["output"][0]
 
-    # Choose one of fetch_atlas_XXXX functions https://nilearn.github.io/modules/reference.html#module-nilearn.datasets
+    # Choose one of fetch_atlas_XXXX functions
+    # https://nilearn.github.io/modules/reference.html#module-nilearn.datasets
     # You can also use the path to a local atlas file.
     atlas = kwargs["atlas"][0]
-    ###### For HRF
+    # For HRF
     if kwargs["te"] is not None:
         te = kwargs["te"][0]  # Use any number for single-echo. Use ms for multi-echo.
     else:
@@ -116,12 +115,12 @@ def _main(argv=None):
     # True for block model
     integrator = kwargs["block"]
 
-    ###### For stability selection with LARS
+    # For stability selection with LARS
     # Number of surrogates for stability selection
     n_stability_surrogates = 50
     maxiterfactor = 0.8
 
-    ###### For HPC cluster
+    # For HPC cluster
     # Number of parallel jobs to send (splits in groups of voxels)
     jobs = kwargs["jobs"][0]
     # HPC username to check running jobs
@@ -129,10 +128,10 @@ def _main(argv=None):
 
     n_auc_surrogates = kwargs["nsurrogates"][0]
 
-    ###############################################
-    ###########  DO NOT  EDIT BELOW    ############
-    ###############################################
-    temp = os.makedirs(temp_dir, exist_ok=True)
+    ########################
+    # DO NOT  EDIT BELOW   #
+    ########################
+    os.makedirs(temp_dir, exist_ok=True)
     print("Masking data...")
     atlas_old = atlas
     atlas = atlas_mod.transform(atlas, data, temp_dir)
@@ -181,7 +180,7 @@ def _main(argv=None):
 
     if n_auc_surrogates:
         print(f"Performing PFM on {n_auc_surrogates} surrogates...")
-        print(f"Make yourself a cup of coffee while it runs :)")
+        print("Make yourself a cup of coffee while it runs :)")
         for n_sur in range(n_auc_surrogates):
             # Generate surrogate
             surrogate_name = os.path.join(temp_dir, f"surrogate_{n_sur}.nii.gz")

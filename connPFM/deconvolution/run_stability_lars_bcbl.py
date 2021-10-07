@@ -53,22 +53,24 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
         print("Last voxel: {}".format(last))
 
         jobname = "lars" + str(job_idx)
-        input_parameters = ("--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
-                            " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
-                            " --n_job {}".format(
-                                data_filename,
-                                filename_hrf,
-                                str(nscans),
-                                str(maxiterfactor),
-                                niter,
-                                nTE,
-                                str(1),
-                                temp,
-                                int(first),
-                                int(last),
-                                nvoxels,
-                                job_idx,
-                            ))
+        input_parameters = (
+            "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
+            " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
+            " --n_job {}".format(
+                data_filename,
+                filename_hrf,
+                str(nscans),
+                str(maxiterfactor),
+                niter,
+                nTE,
+                str(1),
+                temp,
+                int(first),
+                int(last),
+                nvoxels,
+                job_idx,
+            )
+        )
         subprocess.call(
             "qsub "
             + " -N "

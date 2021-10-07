@@ -44,9 +44,10 @@ def main(argv):
     parser.add_argument(
         "--mode",
         type=int,
-        help=("Subsampling mode: 1 = different time points are selected across echoes. 2 = same "
-              "time points are selected across echoes. (default=1)."
-              ),
+        help=(
+            "Subsampling mode: 1 = different time points are selected across echoes. 2 = same "
+            "time points are selected across echoes. (default=1)."
+        ),
         default=1,
         nargs=1,
     )

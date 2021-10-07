@@ -1,8 +1,11 @@
+import logging
 import subprocess
 
 import numpy as np
 import scipy.io
 import scipy.stats
+
+LGR = logging.getLogger(__name__)
 
 
 def hrf_linear(RT, p):
@@ -74,10 +77,10 @@ def hrf_afni(tr, lop_hrf):
         hrf_tr = np.array([float(i) for i in hrf_tr_str])
         last_hrf_sample = hrf_tr[len(hrf_tr) - 1]
         if last_hrf_sample != 0:
-            print(
-                "Duration of HRF was not sufficient for specified model. Doubling duration and"
-                "computing again."
-            )
+            LGR.info("Duration of HRF was not sufficient for specified model."
+                     "Doubling duration and"
+                     "computing again."
+                     )
 
     #  Removes tail of zero samples
     while last_hrf_sample == 0:

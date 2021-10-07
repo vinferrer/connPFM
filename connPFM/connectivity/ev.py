@@ -1,4 +1,5 @@
 """Functions to perform event detection."""
+import logging
 import subprocess
 from os.path import basename, join
 
@@ -9,6 +10,8 @@ from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
 from utils import atlas_mod
 from utils.hrf_matrix import HRFMatrix
+
+LGR = logging.getLogger(__name__)
 
 
 def calculate_ets(y, n):
@@ -131,7 +134,7 @@ def event_detection(DATA_file, atlas, surrprefix="", sursufix="", segments=True)
     mu = np.nanmean(etspeaks, 0)
 
     if "AUC" in surrprefix:
-        print("Reading AUC of surrogates to perform the thresholding step...")
+        LGR.info("Reading AUC of surrogates to perform the thresholding step...")
         ets_thr = surrogates_to_array(
             surrprefix,
             sursufix,
@@ -202,7 +205,7 @@ def surrogates_to_array(
 
 def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
-    print("Performing debiasing based on denoised edge-time matrix...")
+    LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
         labels_img=mask,
         standardize=False,
@@ -219,7 +222,7 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     time_idxs = idxs[0]
     edge_idxs = idxs[1]
 
-    print("Generating mask of significant edge-time connections...")
+    LGR.info("Generating mask of significant edge-time connections...")
     for idx, time_idx in enumerate(time_idxs):
         ets_mask[time_idx, idx_u[edge_idxs[idx]]] = 1
         ets_mask[time_idx, idx_v[edge_idxs[idx]]] = 1
@@ -253,6 +256,6 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     subprocess.run(f"3dNotes {join(out_dir, fitt_file)} -h {history_str}", shell=True)
     atlas_mod.inverse_transform(fitt_file, data_file)
 
-    print("Debiasing finished and files saved.")
+    LGR.info("Debiasing finished and files saved.")
 
     return beta, fitt

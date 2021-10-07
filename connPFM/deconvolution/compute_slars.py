@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import argparse
+import logging
 import os
 import sys
 
@@ -7,6 +8,8 @@ os.environ["OMP_NUM_THREADS"] = "1"
 # import getopt
 import numpy as np
 from stability_lars import StabilityLars
+
+LGR = logging.getLogger(__name__)
 
 
 def main(argv):
@@ -64,14 +67,14 @@ def main(argv):
     parser.add_argument("--n_job", type=int, help="Job number.", nargs=1)
     args = parser.parse_args()
 
-    print("Data file is ", args.data[0])
-    print("HRF file is ", args.hrf[0])
-    print("Voxel is: ", args.voxel)
-    print("nscans is: ", args.nscans[0])
-    print("N surrogates: ", args.nsurrogates[0])
-    print("N TE: ", args.nte[0])
-    print("Mode: ", args.mode[0])
-    print("Dir: ", args.tempdir[0])
+    LGR.info("Data file is ", args.data[0])
+    LGR.info("HRF file is ", args.hrf[0])
+    LGR.info("Voxel is: ", args.voxel)
+    LGR.info("nscans is: ", args.nscans[0])
+    LGR.info("N surrogates: ", args.nsurrogates[0])
+    LGR.info("N TE: ", args.nte[0])
+    LGR.info("Mode: ", args.mode[0])
+    LGR.info("Dir: ", args.tempdir[0])
 
     sl = StabilityLars()
 
@@ -142,17 +145,18 @@ def main(argv):
     sl.key = first
     sl.maxiterfactor = maxiterfactor
 
-    print("Job number: {}".format(n_job))
-    print("First voxel: {}".format(first))
-    print("Last voxel: {}".format(last))
-    print("Number of voxels: {}".format(nvoxels))
+    LGR.info("Job number: {}".format(n_job))
+    LGR.info("First voxel: {}".format(first))
+    LGR.info("Last voxel: {}".format(last))
+    LGR.info("Number of voxels: {}".format(nvoxels))
 
     hrf = np.load(hrf_file)
 
     for vox_idx in range(nvoxels):
         sl.stability_lars(hrf, y[:, voxel + vox_idx])
         auc[:, vox_idx] = np.squeeze(sl.auc)
-        print("AUC of voxel {}/{} calculated and stored...".format(str(vox_idx + 1), str(nvoxels)))
+        LGR.info("AUC of voxel {}/{} calculated and stored...".format(str(vox_idx + 1),
+                 str(nvoxels)))
 
     filename = args.tempdir[0] + "/auc_" + str(n_job) + ".npy"
     np.save(filename, auc)

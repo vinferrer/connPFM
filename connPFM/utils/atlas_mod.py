@@ -1,8 +1,9 @@
-import nibabel as nib
-import numpy as np
 import os
 import subprocess
 from time import sleep
+
+import nibabel as nib
+import numpy as np
 
 
 def transform(atlas_orig, data_tlrc, temp_dir):
@@ -25,12 +26,11 @@ def transform(atlas_orig, data_tlrc, temp_dir):
 
 def inverse_transform(data_tlrc, atlas_orig):
     subprocess.run(
-            f"3drefit -space ORIG -view orig {data_tlrc}",
-            shell=True,
-        )
+        f"3drefit -space ORIG -view orig {data_tlrc}",
+        shell=True,
+    )
     sleep(5)
-    tmp_data = nib.Nifti1Image(nib.load(data_tlrc).get_fdata(),
-                               nib.load(atlas_orig).affine,
-                               nib.load(atlas_orig).header
-                               )
+    tmp_data = nib.Nifti1Image(
+        nib.load(data_tlrc).get_fdata(), nib.load(atlas_orig).affine, nib.load(atlas_orig).header
+    )
     nib.save(tmp_data, data_tlrc)

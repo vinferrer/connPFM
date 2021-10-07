@@ -1,14 +1,12 @@
 import os
-import shutil
-import numpy as np
 import subprocess
 import time
 
+import numpy as np
+
 
 def bget(cmd):
-    from subprocess import Popen, PIPE
-    from sys import stdout
-    from shlex import split
+    from subprocess import PIPE, Popen
 
     out = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     (stdout, stderr) = out.communicate()
@@ -55,19 +53,23 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
         print("Last voxel: {}".format(last))
 
         jobname = "lars" + str(job_idx)
-        input_parameters = "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {} --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {} --n_job {}".format(
-            data_filename,
-            filename_hrf,
-            str(nscans),
-            str(maxiterfactor),
-            niter,
-            nTE,
-            str(1),
-            temp,
-            int(first),
-            int(last),
-            nvoxels,
-            job_idx,
+        input_parameters = (
+            "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
+            " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
+            " --n_job {}".format(
+                data_filename,
+                filename_hrf,
+                str(nscans),
+                str(maxiterfactor),
+                niter,
+                nTE,
+                str(1),
+                temp,
+                int(first),
+                int(last),
+                nvoxels,
+                job_idx,
+            )
         )
         subprocess.call(
             "qsub "
@@ -80,27 +82,12 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
             shell=True,
         )
 
-        while int(
-            bget(
-                "qstat -u "
-                + username
-                + " | grep -v C | grep -c short"
-                + username
-            )[0]
-        ) > (jobs - 1):
+        while int(bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]) > (
+            jobs - 1
+        ):
             time.sleep(1)
 
-    while (
-        int(
-            bget(
-                "qstat -u "
-                + username
-                + " | grep -F 'lars' | grep -c "
-                + username
-            )[0]
-        )
-        > 0
-    ):
+    while int(bget("qstat -u " + username + " | grep -F 'lars' | grep -c " + username)[0]) > 0:
         time.sleep(0.5)
 
     for job_idx in range(jobs):

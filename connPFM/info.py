@@ -51,10 +51,12 @@ DOWNLOAD_URL = "https://github.com/SPiN-Lab/{name}/archive/{ver}.tar.gz".format(
 REQUIRES = [
     "duecredit",
     "joblib",
+    "matplotlib",
     "nibabel",
     "nilearn",
     "numpy>=1.15",
     "scipy>=1.3.3",
+    "sklearn",
 ]
 
 TESTS_REQUIRES = [

@@ -1,4 +1,3 @@
-
 import argparse
 
 
@@ -10,36 +9,23 @@ def _get_parser():
     -------
     parser.parse_args() : argparse dict
     """
-    parser = argparse.ArgumentParser(
-        description=(
-            "Plotting ets-matrix script "
-        )
-    )
+    parser = argparse.ArgumentParser(description=("Plotting ets-matrix script "))
 
     # Required options
     reqoptions = parser.add_argument_group("Required arguments")
     reqoptions.add_argument(
-        "-d", "--directory",
+        "-d",
+        "--directory",
         dest="dir",
         required=True,
         help="Input directory.",
         type=str,
-        nargs='+'
+        nargs="+",
     )
     reqoptions.add_argument(
-        "-s", "--subject",
-        dest="subject",
-        required=True,
-        help="Subject",
-        type=str,
-        nargs='+'
+        "-s", "--subject", dest="subject", required=True, help="Subject", type=str, nargs="+"
     )
     reqoptions.add_argument(
-        "-nr", "--nroi",
-        dest="nROI",
-        required=True,
-        help="numero de ROI",
-        type=str,
-        nargs='+'
+        "-nr", "--nroi", dest="nROI", required=True, help="numero de ROI", type=str, nargs="+"
     )
     return parser

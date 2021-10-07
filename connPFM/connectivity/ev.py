@@ -3,19 +3,16 @@ import subprocess
 from os.path import basename, join
 
 import numpy as np
+from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
-
-import atlas_mod
-from Debiasing.debiasing_functions import debiasing_block, debiasing_spike
-from Debiasing.hrf_matrix import HRFMatrix
+from utils import atlas_mod
+from utils.hrf_matrix import HRFMatrix
 
 
 def calculate_ets(y, n):
-    """
-    Calculate edge-time series.
-    """
+    """Calculate edge-time series."""
     # upper triangle indices (node pairs = edges)
     u, v = np.argwhere(np.triu(np.ones(n), 1)).T
 
@@ -26,9 +23,7 @@ def calculate_ets(y, n):
 
 
 def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
-    """
-    Calculate RSS on surrogate data.
-    """
+    """Calculate RSS on surrogate data."""
     [t, n] = z_ts.shape
 
     if surrprefix != "":
@@ -54,9 +49,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
 
 
 def event_detection(DATA_file, atlas, surrprefix="", sursufix="", segments=True):
-    """
-    Perform event detection on given data.
-    """
+    """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
         labels_img=atlas,
         standardize=False,
@@ -158,7 +151,6 @@ def threshold_ets_matrix(ets_matrix, selected_idxs, thr):
     Threshold the edge time-series matrix based on the selected time-points and
     the surrogate matrices.
     """
-
     # Initialize matrix with zeros
     thresholded_matrix = np.zeros(ets_matrix.shape)
 
@@ -172,9 +164,7 @@ def threshold_ets_matrix(ets_matrix, selected_idxs, thr):
 
 
 def calculate_hist(surrprefix, sursufix, irand, masker, hist_range, nbins=500):
-    """
-    Calculate histogram.
-    """
+    """Calculate histogram."""
     auc = masker.fit_transform(f"{surrprefix}{irand}{sursufix}.nii.gz")
     [t, n] = auc.shape
     ets_temp, _, _ = calculate_ets(np.nan_to_num(auc), n)
@@ -211,9 +201,7 @@ def surrogates_to_array(
 
 
 def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
-    """
-    Perform debiasing based on denoised edge-time matrix.
-    """
+    """Perform debiasing based on denoised edge-time matrix."""
     print("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
         labels_img=mask,

@@ -40,11 +40,8 @@ class StabilityLars:
     def stability_lars(self, X, Y):
 
         self.nscans = X.shape[1]
-        try:
-            nvoxels = Y.shape[1]
-        except:
-            nvoxels = 1
-            Y = np.expand_dims(Y, axis=1)
+
+        nvoxels = Y.shape[1]
         nlambdas = self.nscans + 1
 
         self.auc = np.empty((self.nscans, nvoxels))

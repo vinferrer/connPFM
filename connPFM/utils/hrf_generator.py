@@ -101,7 +101,7 @@ class HRFMatrix:
         is_afni=True,
         lop_hrf="SPMG1",
         path=None,
-        has_integrator=False,
+        block=False,
         wfusion=False,
         lambda_fusion=3,
         gamma_weights=0.5,
@@ -113,7 +113,7 @@ class HRFMatrix:
         self.lop_hrf = lop_hrf
         self.is_afni = is_afni
         self.hrf_path = path
-        self.has_integrator = has_integrator
+        self.block = block
         self.wfusion = wfusion
         self.lambda_fusion = lambda_fusion
         self.gamma_weights = gamma_weights
@@ -151,7 +151,7 @@ class HRFMatrix:
 
         self.hrf_norm = self.hrf / max_hrf
 
-        if self.has_integrator:
+        if self.block:
             if self.TE is not None and len(self.TE) > 1:
                 for teidx in range(len(self.TE)):
                     temp = self.hrf[teidx * self.nscans : (teidx + 1) * self.nscans - 1, :].copy()

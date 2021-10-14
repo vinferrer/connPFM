@@ -2,7 +2,6 @@
 import logging
 from os.path import join as opj
 
-import ev
 import matplotlib
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt

@@ -7,10 +7,10 @@ import numpy as np
 from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
-from plotting import plot_ets_matrix
+from connectivity.plotting import plot_ets_matrix
 from scipy.stats import zscore
 from utils import atlas_mod
-from utils.hrf_matrix import HRFMatrix
+from utils.hrf_generator import HRFMatrix
 
 LGR = logging.getLogger(__name__)
 
@@ -262,7 +262,7 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     return beta, fitt
 
 
-def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,afni_text=None):
+def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,afni_text=None,history_str=''):
     """
     Main function to perform event detection and plot results.
     """

@@ -7,6 +7,7 @@ import numpy as np
 from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
+from plotting import plot_ets_matrix
 from scipy.stats import zscore
 from utils import atlas_mod
 from utils.hrf_matrix import HRFMatrix
@@ -259,3 +260,51 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     LGR.info("Debiasing finished and files saved.")
 
     return beta, fitt
+
+
+def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,afni_text=None):
+    """
+    Main function to perform event detection and plot results.
+    """
+    # Paths to files
+    # Perform event detection on ORIGINAL data
+    LGR.info("Performing event-detection on original data...")
+    (
+        ets_orig_sur,
+        rss_orig_sur,
+        rssr_orig_sur,
+        idxpeak_orig_sur,
+        etspeaks_orig_sur,
+        mu_orig_sur,
+        _,
+        _,
+        _,
+    ) = event_detection(DATAFILE, ATLAS, opj(SURR_DIR, "surrogate_"))
+
+    # Perform event detection on AUC
+    LGR.info("Performing event-detection on AUC...")
+    (
+        ets_auc,
+        rss_auc,
+        rssr_auc,
+        idxpeak_auc,
+        etspeaks_AUC,
+        mu_AUC,
+        ets_auc_denoised,
+        idx_u,
+        idx_v,
+    ) = event_detection(AUCFILE, ATLAS, opj(SURR_DIR, "surrogate_AUC_"))
+
+    LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
+    plot_ets_matrix(ets_orig_sur, OUT_DIR, "_original", DVARS, ENORM, idxpeak_auc)
+
+    # Plot ETS and denoised ETS matrices of AUC
+    plot_ets_matrix(ets_auc, OUT_DIR, "_AUC_original", DVARS, ENORM, idxpeak_auc)
+    plot_ets_matrix(ets_auc_denoised, OUT_DIR, "_AUC_denoised", DVARS, ENORM, idxpeak_auc)
+
+    # Save RSS time-series as text file for easier visualization on AFNI
+    if afni_text != None:
+        rss_out = np.zeros(rss_auc.shape)
+        rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
+        np.savetxt(afni_text, rss_out)
+

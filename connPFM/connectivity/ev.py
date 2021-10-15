@@ -318,7 +318,7 @@ def ev_workflow(
     plot_ets_matrix(ets_auc_denoised, OUT_DIR, "_AUC_denoised", DVARS, ENORM, idxpeak_auc)
 
     # Save RSS time-series as text file for easier visualization on AFNI
-    if afni_text != None:
+    if afni_text is not None:
         rss_out = np.zeros(rss_auc.shape)
         rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
         np.savetxt(afni_text, rss_out)

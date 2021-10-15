@@ -153,7 +153,7 @@ def _main(argv=None):
             history_str,
         )
 
-        ev.ev_workflow(
+        ets_auc_denoised = ev.ev_workflow(
             options["data"][0],
             options["auc"][0],
             options["atlas"][0],
@@ -166,10 +166,8 @@ def _main(argv=None):
             options["data"][0],
             options["atlas"][0],
             ets_auc_denoised,
-            idx_u,
-            idx_v,
-            TR,
-            OUT_DIR,
+            options["tr"][0],
+            os.path.dirname(options["auc"][0]),
             history_str,
         )
     elif options["workflow"][0] == "pfm":
@@ -212,7 +210,8 @@ def _main(argv=None):
         )
     else:
         LGR.warning(
-            f'selected workflow {options["workflow"][0]} is not valid please reveiw possible options'
+            f'selected workflow {options["workflow"][0]} is not valid please '
+            'reveiw possible options'
         )
 
 

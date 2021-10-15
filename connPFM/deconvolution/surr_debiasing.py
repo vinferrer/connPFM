@@ -1,19 +1,15 @@
-import datetime
-import getpass
 import logging
 import os
-import socket
 import subprocess
 import sys
 from os.path import basename
 from os.path import join as opj
 
 import numpy as np
-from cli.debiasing import _get_parser
 from debiasing.debiasing_functions import debiasing_block, debiasing_spike
 from nilearn.input_data import NiftiLabelsMasker
 from utils import atlas_mod
-from utils.hrf_matrix import HRFMatrix
+from utils.hrf_generator import HRFMatrix
 
 # AUC = "sub-002ParkMabCm_AUC_200.nii.gz"
 # SUR_PREFIX = "surrogate_AUC_"
@@ -120,7 +116,3 @@ def surr_debiasing(DATA, AUC, OUT, TEMP, TR, N_SUR, BLOCK, percent_th):
     fitt_4D.to_filename(fitt_file)
     atlas_mod.inverse_transform(fitt_file, DATA)
     subprocess.run(f"3dNotes -h {history_str} {fitt_file}", shell=True)
-
-
-if __name__ == "__main__":
-    main()

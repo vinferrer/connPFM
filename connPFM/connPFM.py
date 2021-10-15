@@ -26,11 +26,15 @@ def _main(argv=None):
         arguments=args_str,
     )
     # create logfile name
+    dir = os.path.abspath(options["dir"])
+    os.makedirs(dir, exist_ok=True)
+
+    LGR = logging.getLogger("GENERAL")
     basename = "connPFM_"
     extension = "tsv"
     start_time = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
-    logname = os.path.join(options["dir"], (basename + start_time + "." + extension))
-    refname = os.path.join(options["dir"], "_references.txt")
+    logname = os.path.join(dir, (basename + start_time + "." + extension))
+    refname = os.path.join(dir, "_references.txt")
     loggers.setup_loggers(logname, refname,
                           quiet=options['quiet'],
                           debug=options['debug']
@@ -43,7 +47,7 @@ def _main(argv=None):
             options["tr"][0],
             options["username"][0],
             options["te"],
-            options["dir"],
+            dir,
             options["block"],
             options["jobs"][0],
             options["nsurrogates"][0],
@@ -80,7 +84,7 @@ def _main(argv=None):
             options["tr"][0],
             options["username"][0],
             options["te"],
-            options["dir"],
+            dir,
             options["block"],
             options["jobs"][0],
             options["nsurrogates"][0],
@@ -96,7 +100,7 @@ def _main(argv=None):
             options["data"][0],
             options["auc"][0],
             options["atlas"][0],
-            options["dir"],
+            dir,
             os.path.dirname(options["auc"][0]),
             history_str,
         )

@@ -102,7 +102,7 @@ def _main(argv=None):
     else:
         LGR.warning(
             f'selected workflow {options["workflow"][0]} is not valid please '
-            'reveiw possible options'
+            'review possible options'
         )
 
 

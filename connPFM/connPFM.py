@@ -10,6 +10,7 @@ from connectivity import ev
 from deconvolution.roiPFM import roiPFM
 from numpy import loadtxt
 from utils import loggers
+
 LGR = logging.getLogger(__name__)
 LGR.setLevel(logging.INFO)
 
@@ -114,7 +115,7 @@ def _main(argv=None):
             f'selected workflow {options["workflow"][0]} is not valid please '
             'review possible options'
         )
-
+    loggers.teardown_loggers()
 
 if __name__ == "__main__":
     _main(sys.argv[1:])

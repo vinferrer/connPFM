@@ -6,12 +6,11 @@ import socket
 import subprocess
 import sys
 
+from cli.connPFM import _get_parser
+from connectivity import ev
+from deconvolution.stability_lars_caller import run_stability_lars
 from nilearn.input_data import NiftiLabelsMasker
 from numpy import loadtxt
-
-from connectivity import ev
-from cli.connPFM import _get_parser
-from deconvolution.stability_lars_caller import run_stability_lars
 from utils import atlas_mod, hrf_generator, surrogate_generator
 
 LGR = logging.getLogger(__name__)

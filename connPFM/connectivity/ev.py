@@ -4,10 +4,10 @@ import subprocess
 from os.path import basename, join
 
 import numpy as np
+from connectivity.plotting import plot_ets_matrix
 from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
-from connectivity.plotting import plot_ets_matrix
 from scipy.stats import zscore
 from utils import atlas_mod
 from utils.hrf_generator import HRFMatrix

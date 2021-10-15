@@ -167,7 +167,7 @@ def _get_parser():
         ),
         nargs=1,
     )
-    reqoptions.add_argument(
+    optoptions.add_argument(
         "-m",
         "--matrix",
         dest="matrix",
@@ -175,5 +175,21 @@ def _get_parser():
         default=None,
         type=str,
         nargs=1,
+    )
+    optoptions.add_argument(
+        "-q",
+        "--quiet",
+        dest="quiet",
+        action="store_true",
+        help="activate quiet logger mode",
+        default=False,
+    )
+    optoptions.add_argument(
+        "-dg",
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="activate quiet logger mode",
+        default=False,
     )
     return parser

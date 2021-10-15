@@ -9,7 +9,7 @@ from cli.connPFM import _get_parser
 from connectivity import ev
 from deconvolution.roiPFM import roiPFM
 from numpy import loadtxt
-
+from utils import loggers
 LGR = logging.getLogger(__name__)
 LGR.setLevel(logging.INFO)
 
@@ -24,6 +24,16 @@ def _main(argv=None):
         date=datetime.datetime.now().strftime("%c"),
         arguments=args_str,
     )
+    # create logfile name
+    basename = "connPFM_"
+    extension = "tsv"
+    start_time = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
+    logname = os.path.join(dir, (basename + start_time + "." + extension))
+    refname = os.path.join(dir, "_references.txt")
+    loggers.setup_loggers(logname, refname,
+                          quiet=options['quiet'],
+                          debug=options['debug']
+                          )
     if options["workflow"][0] == "all":
         roiPFM(
             options["data"][0],

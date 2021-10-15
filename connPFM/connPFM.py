@@ -7,10 +7,12 @@ import subprocess
 import sys
 
 from nilearn.input_data import NiftiLabelsMasker
+from numpy import loadtxt
 
-from connPFM.cli.connPFM import _get_parser
-from connPFM.deconvolution import stability_lars_caller
-from connPFM.utils import atlas_mod, hrf_generator, surrogate_generator
+from connectivity import ev
+from cli.connPFM import _get_parser
+from deconvolution.stability_lars_caller import run_stability_lars
+from utils import atlas_mod, hrf_generator, surrogate_generator
 
 LGR = logging.getLogger(__name__)
 LGR.setLevel(logging.INFO)
@@ -32,19 +34,9 @@ def connPFM(
     maxiterfactor=0.3,
     hrf_shape="SPMG1",
     hrf_path=None,
+    history_str=''
 ):
-    # args_str = str(options)[9:]
-    # history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
-    #     username=getpass.getuser(),
-    #     hostname=socket.gethostname(),
-    #     date=datetime.datetime.now().strftime("%c"),
-    #     arguments=args_str,
-    # )
 
-    # kwargs = vars(options)
-    # kwargs["history"] = history_str
-
-    breakpoint()
     if te is None:
         te = [0]
 
@@ -77,7 +69,7 @@ def connPFM(
     LGR.info("HRF generated.")
 
     LGR.info("Running stability selection on original data...")
-    auc = stability_lars_caller(
+    auc = run_stability_lars(
         data=data_masked,
         hrf=hrf,
         temp=dir,
@@ -108,7 +100,7 @@ def connPFM(
                 data=data, atlas=atlas, atlas_orig=atlas_old, output=surrogate_name
             )
             # Calculate AUC
-            auc = stability_lars_caller(
+            auc = run_stability_lars(
                 data=surrogate_masked,
                 hrf=hrf,
                 temp=dir,
@@ -134,7 +126,81 @@ def connPFM(
 
 def _main(argv=None):
     options = _get_parser().parse_args(argv)
-    connPFM(**vars(options))
+    options = vars(options)
+    args_str = str(options)[9:]
+    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
+        username=getpass.getuser(),
+        hostname=socket.gethostname(),
+        date=datetime.datetime.now().strftime("%c"),
+        arguments=args_str,
+    )
+    if options['workflow'][0] == 'all':
+        connPFM(options['data'][0],
+                options['atlas'][0],
+                options['auc'][0],
+                options['tr'][0],
+                options['username'][0],
+                options['te'],
+                options['dir'],
+                options['block'],
+                options['jobs'][0],
+                options['nsurrogates'][0],
+                options['nstability'],
+                options['percentile'],
+                options['maxiterfactor'],
+                options['hrf_shape'],
+                options['hrf_path'],
+                history_str)
+        
+        ev.ev_workflow(options['data'][0],
+                    options['auc'][0],
+                    options['atlas'][0],
+                    options['nsurrogates'],
+                    os.path.abspath(options['auc'][0]),
+                    history_str)
+        LGR.info("Perform debiasing based on edge-time matrix.")
+        ev.debiasing(options['data'][0], 
+                     options['atlas'][0],
+                     ets_auc_denoised,
+                     idx_u,
+                     idx_v,
+                     TR,
+                     OUT_DIR,
+                     history_str)
+    elif options['workflow'][0] == 'pfm':
+        connPFM(options['data'][0],
+            options['atlas'][0],
+            options['auc'][0],
+            options['tr'][0],
+            options['username'][0],
+            options['te'],
+            options['dir'],
+            options['block'],
+            options['jobs'][0],
+            options['nsurrogates'][0],
+            options['nstability'],
+            options['percentile'],
+            options['maxiterfactor'],
+            options['hrf_shape'],
+            options['hrf_path'],
+            history_str)
+    elif options['workflow'][0] == 'ev':
+        ev.ev_workflow(options['data'][0],
+            options['auc'][0],
+            options['atlas'][0],
+            options['dir'],
+            os.path.dirname(options['auc'][0]),
+            history_str)
+    elif options['workflow'][0] == 'debias':
+        ets_auc_denoised = loadtxt(options['matrix'][0])
+        ev.debiasing(options['data'][0], 
+                     options['atlas'][0],
+                     ets_auc_denoised,
+                     options['tr'][0],
+                     os.path.dirname(options['auc'][0]),
+                     history_str)
+    else:
+        LGR.warning(f'selected workflow {options["workflow"][0]} is not valid please reveiw possible options')
 
 
 if __name__ == "__main__":

@@ -33,7 +33,7 @@ def connPFM(
     hrf_shape="SPMG1",
     hrf_path=None,
     quiet=False,
-    debug=False
+    debug=False,
 ):
     # args_str = str(options)[9:]
     # history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
@@ -139,6 +139,7 @@ def connPFM(
         LGR.info(f"PFM on {nsurrogates} surrogates finished.")
 
     LGR.info("PFM finished.")
+    loggers.teardown_loggers()
 
 
 def _main(argv=None):

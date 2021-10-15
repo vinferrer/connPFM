@@ -40,36 +40,14 @@ def threshold(y, thr):
     return y_out
 
 
-def main(argv=None):
+def surr_debiasing(DATA,AUC,OUT,TEMP,TR,N_SUR,BLOCK,percent_th):
     """
     Main function.
     """
-    options = _get_parser().parse_args(argv)
-    args_str = str(options)[9:]
-    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
-        username=getpass.getuser(),
-        hostname=socket.gethostname(),
-        date=datetime.datetime.now().strftime("%c"),
-        arguments=args_str,
-    )
-    kwargs = vars(options)
-
-    # Choose one of fetch_atlas_XXXX functions
-    # https://nilearn.github.io/modules/reference.html#module-nilearn.datasets
-    # You can also use the path to a local atlas file.
-
-    # For HRF
-    AUC = kwargs["auc"][0]
+    
     SUR_PREFIX = "surrogate_AUC_"
     DIR = "/bcbl/home/public/PARK_VFERRER/PFM_data"
-    OUT = kwargs["outdir"][0]
-    TEMP = kwargs["dir"]
-    DATA = kwargs["data"][0]
     # ATLAS = opj(TEMP, "atlas.nii.gz")
-    TR = kwargs["tr"][0]
-    N_SUR = kwargs["nsurrogates"][0]
-    BLOCK = kwargs["block"]
-    percent_th = kwargs["percent"][0]
     output_str = "debaiasing " + AUC + "\n"
     sys.stdout.write(output_str)  # same as print
     sys.stdout.flush()

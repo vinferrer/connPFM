@@ -227,4 +227,3 @@ def plot_ets_matrix(
         plt.ylabel("Edge-edge connections")
         plt.colorbar()
         plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)
-

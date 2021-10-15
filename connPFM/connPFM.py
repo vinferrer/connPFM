@@ -34,7 +34,7 @@ def connPFM(
     maxiterfactor=0.3,
     hrf_shape="SPMG1",
     hrf_path=None,
-    history_str=''
+    history_str="",
 ):
 
     if te is None:
@@ -134,73 +134,87 @@ def _main(argv=None):
         date=datetime.datetime.now().strftime("%c"),
         arguments=args_str,
     )
-    if options['workflow'][0] == 'all':
-        connPFM(options['data'][0],
-                options['atlas'][0],
-                options['auc'][0],
-                options['tr'][0],
-                options['username'][0],
-                options['te'],
-                options['dir'],
-                options['block'],
-                options['jobs'][0],
-                options['nsurrogates'][0],
-                options['nstability'],
-                options['percentile'],
-                options['maxiterfactor'],
-                options['hrf_shape'],
-                options['hrf_path'],
-                history_str)
-        
-        ev.ev_workflow(options['data'][0],
-                    options['auc'][0],
-                    options['atlas'][0],
-                    options['nsurrogates'],
-                    os.path.abspath(options['auc'][0]),
-                    history_str)
+    if options["workflow"][0] == "all":
+        connPFM(
+            options["data"][0],
+            options["atlas"][0],
+            options["auc"][0],
+            options["tr"][0],
+            options["username"][0],
+            options["te"],
+            options["dir"],
+            options["block"],
+            options["jobs"][0],
+            options["nsurrogates"][0],
+            options["nstability"],
+            options["percentile"],
+            options["maxiterfactor"],
+            options["hrf_shape"],
+            options["hrf_path"],
+            history_str,
+        )
+
+        ev.ev_workflow(
+            options["data"][0],
+            options["auc"][0],
+            options["atlas"][0],
+            options["nsurrogates"],
+            os.path.abspath(options["auc"][0]),
+            history_str,
+        )
         LGR.info("Perform debiasing based on edge-time matrix.")
-        ev.debiasing(options['data'][0], 
-                     options['atlas'][0],
-                     ets_auc_denoised,
-                     idx_u,
-                     idx_v,
-                     TR,
-                     OUT_DIR,
-                     history_str)
-    elif options['workflow'][0] == 'pfm':
-        connPFM(options['data'][0],
-            options['atlas'][0],
-            options['auc'][0],
-            options['tr'][0],
-            options['username'][0],
-            options['te'],
-            options['dir'],
-            options['block'],
-            options['jobs'][0],
-            options['nsurrogates'][0],
-            options['nstability'],
-            options['percentile'],
-            options['maxiterfactor'],
-            options['hrf_shape'],
-            options['hrf_path'],
-            history_str)
-    elif options['workflow'][0] == 'ev':
-        ev.ev_workflow(options['data'][0],
-            options['auc'][0],
-            options['atlas'][0],
-            options['dir'],
-            os.path.dirname(options['auc'][0]),
-            history_str)
-    elif options['workflow'][0] == 'debias':
-        ets_auc_denoised = loadtxt(options['matrix'][0])
-        ev.debiasing(options['data'][0], 
-                     options['atlas'][0],
-                     ets_auc_denoised,
-                     options['tr'][0],
-                     os.path.dirname(options['auc'][0]),
-                     history_str)
+        ev.debiasing(
+            options["data"][0],
+            options["atlas"][0],
+            ets_auc_denoised,
+            idx_u,
+            idx_v,
+            TR,
+            OUT_DIR,
+            history_str,
+        )
+    elif options["workflow"][0] == "pfm":
+        connPFM(
+            options["data"][0],
+            options["atlas"][0],
+            options["auc"][0],
+            options["tr"][0],
+            options["username"][0],
+            options["te"],
+            options["dir"],
+            options["block"],
+            options["jobs"][0],
+            options["nsurrogates"][0],
+            options["nstability"],
+            options["percentile"],
+            options["maxiterfactor"],
+            options["hrf_shape"],
+            options["hrf_path"],
+            history_str,
+        )
+    elif options["workflow"][0] == "ev":
+        ev.ev_workflow(
+            options["data"][0],
+            options["auc"][0],
+            options["atlas"][0],
+            options["dir"],
+            os.path.dirname(options["auc"][0]),
+            history_str,
+        )
+    elif options["workflow"][0] == "debias":
+        ets_auc_denoised = loadtxt(options["matrix"][0])
+        ev.debiasing(
+            options["data"][0],
+            options["atlas"][0],
+            ets_auc_denoised,
+            options["tr"][0],
+            os.path.dirname(options["auc"][0]),
+            history_str,
+        )
     else:
-        LGR.warning(f'selected workflow {options["workflow"][0]} is not valid please reveiw possible options')
+        LGR.warning(
+            f'selected workflow {options["workflow"][0]} is not valid please reveiw possible options'
+        )
 
 
 if __name__ == "__main__":

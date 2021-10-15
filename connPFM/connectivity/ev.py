@@ -267,7 +267,17 @@ def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
     return beta, fitt
 
 
-def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,afni_text=None,history_str=''):
+def ev_workflow(
+    DATAFILE,
+    AUCFILE,
+    ATLAS,
+    SURR_DIR,
+    OUT_DIR,
+    DVARS=None,
+    ENORM=None,
+    afni_text=None,
+    history_str="",
+):
     """
     Main function to perform event detection and plot results.
     """
@@ -312,5 +322,4 @@ def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,af
         rss_out = np.zeros(rss_auc.shape)
         rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
         np.savetxt(afni_text, rss_out)
-    np.savetxt(join(OUT_DIR, "ets_AUC_denoised.txt"),ets_auc_denoised)
-
+    np.savetxt(join(OUT_DIR, "ets_AUC_denoised.txt"), ets_auc_denoised)

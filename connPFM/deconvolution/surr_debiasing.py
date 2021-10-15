@@ -40,11 +40,11 @@ def threshold(y, thr):
     return y_out
 
 
-def surr_debiasing(DATA,AUC,OUT,TEMP,TR,N_SUR,BLOCK,percent_th):
+def surr_debiasing(DATA, AUC, OUT, TEMP, TR, N_SUR, BLOCK, percent_th):
     """
     Main function.
     """
-    
+
     SUR_PREFIX = "surrogate_AUC_"
     DIR = "/bcbl/home/public/PARK_VFERRER/PFM_data"
     # ATLAS = opj(TEMP, "atlas.nii.gz")

@@ -28,8 +28,8 @@ def _main(argv=None):
     basename = "connPFM_"
     extension = "tsv"
     start_time = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
-    logname = os.path.join(dir, (basename + start_time + "." + extension))
-    refname = os.path.join(dir, "_references.txt")
+    logname = os.path.join(options["dir"], (basename + start_time + "." + extension))
+    refname = os.path.join(options["dir"], "_references.txt")
     loggers.setup_loggers(logname, refname,
                           quiet=options['quiet'],
                           debug=options['debug']

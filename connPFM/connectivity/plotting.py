@@ -6,7 +6,6 @@ import matplotlib
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
 import numpy as np
-from cli.cli_plotting import _get_parser
 from matplotlib import cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -176,12 +175,12 @@ def plot_all(
 
 
 def plot_ets_matrix(
-    ets, outdir, sufix="", dvarfile=None, enorm_file=None, peaks=None, vmin=-0.5, vmax=0.5
+    ets, outdir, sufix="", dvars_file=None, enorm_file=None, peaks=None, vmin=-0.5, vmax=0.5
 ):
     """
     Plots edge-time matrix
     """
-    if dvarfile is not None and enorm_file is not None:
+    if dvars_file is not None and enorm_file is not None:
         # Plot ETS matrix of original signal
         dvars = np.loadtxt(dvars_file)
         enorm = np.loadtxt(opj(enorm_file))

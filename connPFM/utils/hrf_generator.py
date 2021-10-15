@@ -67,7 +67,7 @@ def hrf_afni(tr, lop_hrf):
         dur_hrf = 2 * dur_hrf
         # npoints_hrf = np.around(dur_hrf, int(tr))
         hrf_command = (
-            f"3dDeconvolve -x1D_stop -nodata {dur_hrf} {tr} -polort -1"
+            f"3dDeconvolve -x1D_stop -nodata {dur_hrf} {tr} -polort -1 "
             f"-num_stimts 1 -stim_times 1 '1D:0' '{lop_hrf}' -quiet -x1D stdout: | 1deval "
             f"-a stdin: -expr 'a'"
         )

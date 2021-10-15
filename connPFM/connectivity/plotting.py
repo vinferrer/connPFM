@@ -181,7 +181,7 @@ def plot_ets_matrix(
     """
     Plots edge-time matrix
     """
-    if dvars is not None and enorm is not None:
+    if dvarfile is not None and enorm_file is not None:
         # Plot ETS matrix of original signal
         dvars = np.loadtxt(dvars_file)
         enorm = np.loadtxt(opj(enorm_file))

@@ -116,7 +116,8 @@ def _get_parser():
         dest="nstability",
         type=int,
         help=(
-            "Number of stability-selection surrogates to calculate probability of coefficients (default = 50)."
+            "Number of stability-selection surrogates to calculate probability of coefficients "
+            "(default = 50)."
         ),
         default=50,
         nargs=1,
@@ -127,7 +128,8 @@ def _get_parser():
         dest="maxiterfactor",
         type=float,
         help=(
-            "Factor that multiplies the number of TRs to set the maximum number of iterations for LARS (default = 0.3)."
+            "Factor that multiplies the number of TRs to set the maximum number of iterations for "
+            "LARS (default = 0.3)."
         ),
         default=0.3,
         nargs=1,
@@ -159,8 +161,8 @@ def _get_parser():
         help=(
             "Possiblility of executing different parts of the workflow:"
             "pfm: calculates only the AUC dataset"
-            "ev: calculates the ets matrix (AUC dataset required as argument) "
-            "debias: Calculates fitted dataset based on ets matrix (ets matrix required as argument)"
+            "ev: calculates the ets matrix (--AUC dataset required as argument) "
+            "debias: Calculates fitted dataset based on ets matrix (--matrix required as argument)"
             "all: executes all the workflow"
         ),
         nargs=1,

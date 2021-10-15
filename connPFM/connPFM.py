@@ -46,6 +46,10 @@ def connPFM(
     # kwargs = vars(options)
     # kwargs["history"] = history_str
 
+    dir = os.path.abspath(dir)
+    os.makedirs(dir, exist_ok=True)
+
+    LGR = logging.getLogger("GENERAL")
     # create logfile name
     basename = "connPFM_"
     extension = "tsv"
@@ -57,10 +61,9 @@ def connPFM(
     if te is None:
         te = [0]
 
-    os.makedirs(dir, exist_ok=True)
-
     # TODO: make it multi-echo compatible
     LGR.info("Masking data...")
+    breakpoint()
     atlas_old = atlas
     atlas = atlas_mod.transform(atlas, data, dir)
     masker = NiftiLabelsMasker(

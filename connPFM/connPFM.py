@@ -10,7 +10,7 @@ from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.cli.connPFM import _get_parser
 from connPFM.deconvolution import stability_lars_caller
-from connPFM.utils import atlas_mod, hrf_generator, surrogate_generator
+from connPFM.utils import atlas_mod, hrf_generator, loggers, surrogate_generator
 
 LGR = logging.getLogger(__name__)
 LGR.setLevel(logging.INFO)
@@ -32,6 +32,8 @@ def connPFM(
     maxiterfactor=0.3,
     hrf_shape="SPMG1",
     hrf_path=None,
+    quiet=False,
+    debug=False
 ):
     # args_str = str(options)[9:]
     # history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
@@ -44,7 +46,14 @@ def connPFM(
     # kwargs = vars(options)
     # kwargs["history"] = history_str
 
-    breakpoint()
+    # create logfile name
+    basename = "connPFM_"
+    extension = "tsv"
+    start_time = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
+    logname = os.path.join(dir, (basename + start_time + "." + extension))
+    refname = os.path.join(dir, "_references.txt")
+    loggers.setup_loggers(logname, refname, quiet=quiet, debug=debug)
+
     if te is None:
         te = [0]
 

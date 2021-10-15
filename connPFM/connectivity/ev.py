@@ -204,7 +204,7 @@ def surrogates_to_array(
     return thr
 
 
-def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
+def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
@@ -217,6 +217,12 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     # Read data
     data = masker.fit_transform(data_file)
 
+    z_ts = np.nan_to_num(zscore(data, ddof=1))
+    # Get number of time points/nodes
+    [t, n] = z_ts.shape
+
+    # calculate ets
+    ets, idx_u, idx_v = calculate_ets(z_ts, n)
     # Generate mask of significant edge-time connections
     ets_mask = np.zeros(data.shape)
     idxs = np.where(mtx != 0)
@@ -234,7 +240,6 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
         TE=[0],
         nscans=data.shape[0],
         r2only=True,
-        has_integrator=False,
         is_afni=True,
     )
     hrf.generate_hrf()
@@ -279,7 +284,7 @@ def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,af
         _,
         _,
         _,
-    ) = event_detection(DATAFILE, ATLAS, opj(SURR_DIR, "surrogate_"))
+    ) = event_detection(DATAFILE, ATLAS, join(SURR_DIR, "surrogate_"))
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
@@ -293,7 +298,7 @@ def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,af
         ets_auc_denoised,
         idx_u,
         idx_v,
-    ) = event_detection(AUCFILE, ATLAS, opj(SURR_DIR, "surrogate_AUC_"))
+    ) = event_detection(AUCFILE, ATLAS, join(SURR_DIR, "surrogate_AUC_"))
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     plot_ets_matrix(ets_orig_sur, OUT_DIR, "_original", DVARS, ENORM, idxpeak_auc)
@@ -307,4 +312,5 @@ def ev_workflow(DATAFILE,AUCFILE,ATLAS,SURR_DIR,OUT_DIR,DVARS=None,ENORM=None,af
         rss_out = np.zeros(rss_auc.shape)
         rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
         np.savetxt(afni_text, rss_out)
+    np.savetxt(join(OUT_DIR, "ets_AUC_denoised.txt"),ets_auc_denoised)
 

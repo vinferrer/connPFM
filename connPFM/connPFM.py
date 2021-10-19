@@ -102,6 +102,7 @@ def _main(argv=None):
             options["atlas"][0],
             dir,
             os.path.dirname(options["auc"][0]),
+            options["nsurrogates"][0],
             history_str,
         )
     elif options["workflow"][0] == "debias":

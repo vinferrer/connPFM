@@ -4,12 +4,13 @@ import subprocess
 from os.path import basename, join
 
 import numpy as np
+from connectivity.plotting import plot_ets_matrix
 from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
 from utils import atlas_mod
-from utils.hrf_matrix import HRFMatrix
+from utils.hrf_generator import HRFMatrix
 
 LGR = logging.getLogger(__name__)
 
@@ -203,7 +204,7 @@ def surrogates_to_array(
     return thr
 
 
-def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
+def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
@@ -216,6 +217,12 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     # Read data
     data = masker.fit_transform(data_file)
 
+    z_ts = np.nan_to_num(zscore(data, ddof=1))
+    # Get number of time points/nodes
+    [t, n] = z_ts.shape
+
+    # calculate ets
+    ets, idx_u, idx_v = calculate_ets(z_ts, n)
     # Generate mask of significant edge-time connections
     ets_mask = np.zeros(data.shape)
     idxs = np.where(mtx != 0)
@@ -233,7 +240,6 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
         TE=[0],
         nscans=data.shape[0],
         r2only=True,
-        has_integrator=False,
         is_afni=True,
     )
     hrf.generate_hrf()
@@ -259,3 +265,62 @@ def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
     LGR.info("Debiasing finished and files saved.")
 
     return beta, fitt
+
+
+def ev_workflow(
+    DATAFILE,
+    AUCFILE,
+    ATLAS,
+    SURR_DIR,
+    OUT_DIR,
+    DVARS=None,
+    ENORM=None,
+    afni_text=None,
+    history_str="",
+):
+    """
+    Main function to perform event detection and plot results.
+    """
+    # Paths to files
+    # Perform event detection on ORIGINAL data
+    LGR.info("Performing event-detection on original data...")
+    (
+        ets_orig_sur,
+        rss_orig_sur,
+        rssr_orig_sur,
+        idxpeak_orig_sur,
+        etspeaks_orig_sur,
+        mu_orig_sur,
+        _,
+        _,
+        _,
+    ) = event_detection(DATAFILE, ATLAS, join(SURR_DIR, "surrogate_"))
+
+    # Perform event detection on AUC
+    LGR.info("Performing event-detection on AUC...")
+    (
+        ets_auc,
+        rss_auc,
+        rssr_auc,
+        idxpeak_auc,
+        etspeaks_AUC,
+        mu_AUC,
+        ets_auc_denoised,
+        idx_u,
+        idx_v,
+    ) = event_detection(AUCFILE, ATLAS, join(SURR_DIR, "surrogate_AUC_"))
+
+    LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
+    plot_ets_matrix(ets_orig_sur, OUT_DIR, "_original", DVARS, ENORM, idxpeak_auc)
+
+    # Plot ETS and denoised ETS matrices of AUC
+    plot_ets_matrix(ets_auc, OUT_DIR, "_AUC_original", DVARS, ENORM, idxpeak_auc)
+    plot_ets_matrix(ets_auc_denoised, OUT_DIR, "_AUC_denoised", DVARS, ENORM, idxpeak_auc)
+
+    # Save RSS time-series as text file for easier visualization on AFNI
+    if afni_text is not None:
+        rss_out = np.zeros(rss_auc.shape)
+        rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
+        np.savetxt(afni_text, rss_out)
+    np.savetxt(join(OUT_DIR, "ets_AUC_denoised.txt"), ets_auc_denoised)
+    return ets_auc_denoised

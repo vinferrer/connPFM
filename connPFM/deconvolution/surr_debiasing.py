@@ -1,19 +1,15 @@
-import datetime
-import getpass
 import logging
 import os
-import socket
 import subprocess
 import sys
 from os.path import basename
 from os.path import join as opj
 
 import numpy as np
-from cli.debiasing import _get_parser
 from debiasing.debiasing_functions import debiasing_block, debiasing_spike
 from nilearn.input_data import NiftiLabelsMasker
 from utils import atlas_mod
-from utils.hrf_matrix import HRFMatrix
+from utils.hrf_generator import HRFMatrix
 
 # AUC = "sub-002ParkMabCm_AUC_200.nii.gz"
 # SUR_PREFIX = "surrogate_AUC_"
@@ -40,36 +36,14 @@ def threshold(y, thr):
     return y_out
 
 
-def main(argv=None):
+def surr_debiasing(DATA, AUC, OUT, TEMP, TR, N_SUR, BLOCK, percent_th):
     """
     Main function.
     """
-    options = _get_parser().parse_args(argv)
-    args_str = str(options)[9:]
-    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
-        username=getpass.getuser(),
-        hostname=socket.gethostname(),
-        date=datetime.datetime.now().strftime("%c"),
-        arguments=args_str,
-    )
-    kwargs = vars(options)
 
-    # Choose one of fetch_atlas_XXXX functions
-    # https://nilearn.github.io/modules/reference.html#module-nilearn.datasets
-    # You can also use the path to a local atlas file.
-
-    # For HRF
-    AUC = kwargs["auc"][0]
     SUR_PREFIX = "surrogate_AUC_"
     DIR = "/bcbl/home/public/PARK_VFERRER/PFM_data"
-    OUT = kwargs["outdir"][0]
-    TEMP = kwargs["dir"]
-    DATA = kwargs["data"][0]
     # ATLAS = opj(TEMP, "atlas.nii.gz")
-    TR = kwargs["tr"][0]
-    N_SUR = kwargs["nsurrogates"][0]
-    BLOCK = kwargs["block"]
-    percent_th = kwargs["percent"][0]
     output_str = "debaiasing " + AUC + "\n"
     sys.stdout.write(output_str)  # same as print
     sys.stdout.flush()
@@ -142,7 +116,3 @@ def main(argv=None):
     fitt_4D.to_filename(fitt_file)
     atlas_mod.inverse_transform(fitt_file, DATA)
     subprocess.run(f"3dNotes -h {history_str} {fitt_file}", shell=True)
-
-
-if __name__ == "__main__":
-    main()

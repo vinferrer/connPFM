@@ -27,10 +27,10 @@ def _get_parser():
     )
     reqoptions.add_argument(
         "-o",
-        "--output",
-        dest="output",
+        "--AUC",
+        dest="auc",
         required=True,
-        help="Name of the output dataset.",
+        help="Name of the auc dataset.",
         type=str,
         nargs=1,
     )
@@ -116,7 +116,8 @@ def _get_parser():
         dest="nstability",
         type=int,
         help=(
-            "Number of stability-selection surrogates to calculate probability of coefficients (default = 50)."
+            "Number of stability-selection surrogates to calculate probability of coefficients "
+            "(default = 50)."
         ),
         default=50,
         nargs=1,
@@ -127,7 +128,8 @@ def _get_parser():
         dest="maxiterfactor",
         type=float,
         help=(
-            "Factor that multiplies the number of TRs to set the maximum number of iterations for LARS (default = 0.3)."
+            "Factor that multiplies the number of TRs to set the maximum number of iterations for "
+            "LARS (default = 0.3)."
         ),
         default=0.3,
         nargs=1,
@@ -149,5 +151,45 @@ def _get_parser():
         help=("TXT or 1D file containing an HRF (default = None)."),
         default=None,
         nargs=1,
+    )
+    optoptions.add_argument(
+        "-w",
+        "--workflow",
+        dest="workflow",
+        type=str,
+        default=["all"],
+        help=(
+            "Possiblility of executing different parts of the workflow:"
+            "pfm: calculates only the AUC dataset"
+            "ev: calculates the ets matrix (--AUC dataset required as argument) "
+            "debias: Calculates fitted dataset based on ets matrix (--matrix required as argument)"
+            "all: executes all the workflow"
+        ),
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-m",
+        "--matrix",
+        dest="matrix",
+        help="Name of the auc dataset.",
+        default=None,
+        type=str,
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-q",
+        "--quiet",
+        dest="quiet",
+        action="store_true",
+        help="activate quiet logger mode",
+        default=False,
+    )
+    optoptions.add_argument(
+        "-dg",
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="activate quiet logger mode",
+        default=False,
     )
     return parser

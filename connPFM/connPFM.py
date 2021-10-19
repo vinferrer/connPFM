@@ -63,8 +63,8 @@ def _main(argv=None):
             options["data"][0],
             options["auc"][0],
             options["atlas"][0],
-            options["nsurrogates"],
-            os.path.abspath(options["auc"][0]),
+            dir,
+            os.path.dirname(options["auc"][0]),
             history_str,
         )
         LGR.info("Perform debiasing based on edge-time matrix.")

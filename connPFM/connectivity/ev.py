@@ -1,6 +1,6 @@
 """Functions to perform event detection."""
 import logging
-from os.path import basename, join
+from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed

@@ -2,9 +2,10 @@ import logging
 import os
 import subprocess
 
-from deconvolution.stability_lars_caller import run_stability_lars
 from nilearn.input_data import NiftiLabelsMasker
-from utils import atlas_mod, hrf_generator, surrogate_generator
+
+from connPFM.deconvolution.stability_lars_caller import run_stability_lars
+from connPFM.utils import atlas_mod, hrf_generator, surrogate_generator
 
 LGR = logging.getLogger(__name__)
 

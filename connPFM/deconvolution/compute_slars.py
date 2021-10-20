@@ -5,9 +5,9 @@ import os
 import sys
 
 os.environ["OMP_NUM_THREADS"] = "1"
-# import getopt
 import numpy as np
-from stability_lars import StabilityLars
+
+from connPFM.deconvolution.stability_lars import StabilityLars
 
 LGR = logging.getLogger(__name__)
 

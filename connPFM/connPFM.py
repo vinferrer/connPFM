@@ -5,11 +5,12 @@ import os
 import socket
 import sys
 
-from cli.connPFM import _get_parser
-from connectivity import ev
-from deconvolution.roiPFM import roiPFM
 from numpy import loadtxt
-from utils import loggers
+
+from connPFM.cli.connPFM import _get_parser
+from connPFM.connectivity import ev
+from connPFM.deconvolution.roiPFM import roiPFM
+from connPFM.utils import loggers
 
 LGR = logging.getLogger(__name__)
 LGR.setLevel(logging.INFO)
@@ -19,7 +20,7 @@ def _main(argv=None):
     options = _get_parser().parse_args(argv)
     options = vars(options)
     args_str = str(options)[9:]
-    history_str = "[{username}@{hostname}: {date}] python debiasing.py with {arguments}".format(
+    history_str = "[{username}@{hostname}: {date}] connPFM with {arguments}".format(
         username=getpass.getuser(),
         hostname=socket.gethostname(),
         date=datetime.datetime.now().strftime("%c"),
@@ -35,11 +36,14 @@ def _main(argv=None):
     start_time = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
     logname = os.path.join(dir, (basename + start_time + "." + extension))
     refname = os.path.join(dir, "_references.txt")
-    loggers.setup_loggers(logname, refname,
-                          quiet=options['quiet'],
-                          debug=options['debug']
-                          )
-    if options["workflow"][0] == "all":
+    loggers.setup_loggers(logname, refname, quiet=options["quiet"], debug=options["debug"])
+
+    if type(options["workflow"]) is list:
+        selected_workflow = options["workflow"][0]
+    else:
+        selected_workflow = options["workflow"]
+
+    if selected_workflow == "all":
         roiPFM(
             options["data"][0],
             options["atlas"][0],
@@ -76,7 +80,7 @@ def _main(argv=None):
             os.path.dirname(options["auc"][0]),
             history_str,
         )
-    elif options["workflow"][0] == "pfm":
+    elif selected_workflow == "pfm":
         roiPFM(
             options["data"][0],
             options["atlas"][0],
@@ -95,7 +99,7 @@ def _main(argv=None):
             options["hrf_path"],
             history_str,
         )
-    elif options["workflow"][0] == "ev":
+    elif selected_workflow == "ev":
         ev.ev_workflow(
             options["data"][0],
             options["auc"][0],
@@ -104,7 +108,7 @@ def _main(argv=None):
             os.path.dirname(options["auc"][0]),
             history_str,
         )
-    elif options["workflow"][0] == "debias":
+    elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])
         ev.debiasing(
             options["data"][0],
@@ -116,8 +120,7 @@ def _main(argv=None):
         )
     else:
         LGR.warning(
-            f'selected workflow {options["workflow"][0]} is not valid please '
-            'review possible options'
+            f"selected workflow {selected_workflow} is not valid please " "review possible options"
         )
     loggers.teardown_loggers()
 

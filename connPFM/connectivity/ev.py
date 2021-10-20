@@ -49,7 +49,8 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
     return (rssr, np.min(etsr), np.max(etsr))
 
 
-def event_detection(DATA_file, atlas, surrprefix="", sursufix="",nsur=100, segments=True):
+def event_detection(data_file, atlas, surrprefix="", sursufix="",
+                    nsur=100, segments=True):
     """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
         labels_img=atlas,

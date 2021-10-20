@@ -1,15 +1,13 @@
 """Functions to perform event detection."""
 import logging
-import subprocess
-from os.path import basename, join
+from os.path import join
 
 import numpy as np
-from debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
-from utils import atlas_mod
-from utils.hrf_matrix import HRFMatrix
+
+from connPFM.connectivity.plotting import plot_ets_matrix
 
 LGR = logging.getLogger(__name__)
 
@@ -51,7 +49,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
     return (rssr, np.min(etsr), np.max(etsr))
 
 
-def event_detection(DATA_file, atlas, surrprefix="", sursufix="", segments=True):
+def event_detection(data_file, atlas, surrprefix="", sursufix="", segments=True):
     """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
         labels_img=atlas,
@@ -60,7 +58,7 @@ def event_detection(DATA_file, atlas, surrprefix="", sursufix="", segments=True)
         strategy="mean",
     )
 
-    data = masker.fit_transform(DATA_file)
+    data = masker.fit_transform(data_file)
     # load and zscore time series
     # AUC does not get z-scored
     if "AUC" in surrprefix:
@@ -203,59 +201,50 @@ def surrogates_to_array(
     return thr
 
 
-def debiasing(data_file, mask, mtx, idx_u, idx_v, tr, out_dir, history_str):
-    """Perform debiasing based on denoised edge-time matrix."""
-    LGR.info("Performing debiasing based on denoised edge-time matrix...")
-    masker = NiftiLabelsMasker(
-        labels_img=mask,
-        standardize=False,
-        memory="nilearn_cache",
-        strategy="mean",
-    )
+def ev_workflow(
+    data_file,
+    auc_file,
+    atlas,
+    surr_dir,
+    out_dir,
+    dvars=None,
+    enorm=None,
+    afni_text=None,
+    history_str="",
+):
+    """
+    Main function to perform event detection and plot results.
+    """
+    # Paths to files
+    # Perform event detection on ORIGINAL data
+    LGR.info("Performing event-detection on original data...")
+    ets_orig_sur = event_detection(data_file, atlas, join(surr_dir, "surrogate_"))[0]
 
-    # Read data
-    data = masker.fit_transform(data_file)
+    # Perform event detection on AUC
+    LGR.info("Performing event-detection on AUC...")
+    (
+        ets_auc,
+        rss_auc,
+        _,
+        idxpeak_auc,
+        _,
+        _,
+        ets_auc_denoised,
+        _,
+        _,
+    ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"))
 
-    # Generate mask of significant edge-time connections
-    ets_mask = np.zeros(data.shape)
-    idxs = np.where(mtx != 0)
-    time_idxs = idxs[0]
-    edge_idxs = idxs[1]
+    LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
+    plot_ets_matrix(ets_orig_sur, out_dir, "_original", dvars, enorm, idxpeak_auc)
 
-    LGR.info("Generating mask of significant edge-time connections...")
-    for idx, time_idx in enumerate(time_idxs):
-        ets_mask[time_idx, idx_u[edge_idxs[idx]]] = 1
-        ets_mask[time_idx, idx_v[edge_idxs[idx]]] = 1
+    # Plot ETS and denoised ETS matrices of AUC
+    plot_ets_matrix(ets_auc, out_dir, "_AUC_original", dvars, enorm, idxpeak_auc)
+    plot_ets_matrix(ets_auc_denoised, out_dir, "_AUC_denoised", dvars, enorm, idxpeak_auc)
 
-    # Create HRF matrix
-    hrf = HRFMatrix(
-        TR=tr,
-        TE=[0],
-        nscans=data.shape[0],
-        r2only=True,
-        has_integrator=False,
-        is_afni=True,
-    )
-    hrf.generate_hrf()
-
-    # Perform debiasing
-    deb_output = debiasing_spike(hrf, data, ets_mask)
-    beta = deb_output["beta"]
-    fitt = deb_output["betafitts"]
-
-    # Transform results back to 4D
-    beta_4D = masker.inverse_transform(beta)
-    beta_file = join(out_dir, f"{basename(data_file[:-7])}_beta_ETS.nii.gz")
-    beta_4D.to_filename(beta_file)
-    atlas_mod.inverse_transform(beta_file, data_file)
-    subprocess.run(f"3dNotes {join(out_dir, beta_file)} -h {history_str}", shell=True)
-
-    fitt_4D = masker.inverse_transform(fitt)
-    fitt_file = join(out_dir, f"{basename(data_file[:-7])}_fitt_ETS.nii.gz")
-    fitt_4D.to_filename(fitt_file)
-    subprocess.run(f"3dNotes {join(out_dir, fitt_file)} -h {history_str}", shell=True)
-    atlas_mod.inverse_transform(fitt_file, data_file)
-
-    LGR.info("Debiasing finished and files saved.")
-
-    return beta, fitt
+    # Save RSS time-series as text file for easier visualization on AFNI
+    if afni_text is not None:
+        rss_out = np.zeros(rss_auc.shape)
+        rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
+        np.savetxt(afni_text, rss_out)
+    np.savetxt(join(out_dir, "ets_AUC_denoised.txt"), ets_auc_denoised)
+    return ets_auc_denoised

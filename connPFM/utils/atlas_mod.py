@@ -7,12 +7,12 @@ import numpy as np
 
 
 def transform(atlas_orig, data_tlrc, temp_dir):
+    TMP_name = "atlas.nii.gz"
     if np.any(nib.load(atlas_orig).affine != nib.load(data_tlrc).affine):
         atlas_mat = nib.load(atlas_orig).get_fdata()
         tmp_image = nib.Nifti1Image(
             atlas_mat, nib.load(data_tlrc).affine, nib.load(data_tlrc).header
         )
-        TMP_name = "atlas.nii.gz"
 
         nib.save(tmp_image, os.path.join(temp_dir, TMP_name))
         subprocess.run(

@@ -27,10 +27,10 @@ def _get_parser():
     )
     reqoptions.add_argument(
         "-o",
-        "--output",
-        dest="output",
+        "--AUC",
+        dest="auc",
         required=True,
-        help="Name of the output dataset.",
+        help="Name of the auc dataset.",
         type=str,
         nargs=1,
     )
@@ -93,12 +93,104 @@ def _get_parser():
         nargs=1,
     )
     optoptions.add_argument(
-        "-nsurrogates",
+        "-nsur",
         "--nsurrogates",
         dest="nsurrogates",
         type=int,
-        help=("Number of surrogates to calculate AUC on (default = 0)."),
-        default=0,
+        help=("Number of surrogates to calculate AUC on (default = 50)."),
+        default=50,
         nargs=1,
+    )
+    optoptions.add_argument(
+        "-p",
+        "--percentile",
+        dest="percentile",
+        type=int,
+        help=("Percentile used to threshold edge-time matrix (default = 95)."),
+        default=95,
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-nstability",
+        "--nstability",
+        dest="nstability",
+        type=int,
+        help=(
+            "Number of stability-selection surrogates to calculate probability of coefficients "
+            "(default = 50)."
+        ),
+        default=50,
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-max",
+        "--maxiterfactor",
+        dest="maxiterfactor",
+        type=float,
+        help=(
+            "Factor that multiplies the number of TRs to set the maximum number of iterations for "
+            "LARS (default = 0.3)."
+        ),
+        default=0.3,
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-hrf",
+        "--hrf",
+        dest="hrf_shape",
+        type=str,
+        help=("HRF shape to generate with 3dDeconvolve (default = SPMG1)."),
+        default="SPMG1",
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-custom_hrf",
+        "--custom_hrf",
+        dest="hrf_path",
+        type=str,
+        help=("TXT or 1D file containing an HRF (default = None)."),
+        default=None,
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-w",
+        "--workflow",
+        dest="workflow",
+        type=str,
+        default="all",
+        choices=["pfm", "ev", "debias", "all"],
+        help=(
+            "Possiblility of executing different parts of the workflow:"
+            "pfm: calculates only the AUC dataset"
+            "ev: calculates the ets matrix (--AUC dataset required as argument) "
+            "debias: Calculates fitted dataset based on ets matrix (--matrix required as argument)"
+            "all: executes all the workflow"
+        ),
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-m",
+        "--matrix",
+        dest="matrix",
+        help="Name of the auc dataset.",
+        default=None,
+        type=str,
+        nargs=1,
+    )
+    optoptions.add_argument(
+        "-q",
+        "--quiet",
+        dest="quiet",
+        action="store_true",
+        help="activate quiet logger mode",
+        default=False,
+    )
+    optoptions.add_argument(
+        "-dg",
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="activate quiet logger mode",
+        default=False,
     )
     return parser

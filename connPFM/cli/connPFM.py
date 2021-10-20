@@ -157,7 +157,8 @@ def _get_parser():
         "--workflow",
         dest="workflow",
         type=str,
-        default=["all"],
+        default="all",
+        choices=["pfm", "ev", "debias", "all"],
         help=(
             "Possiblility of executing different parts of the workflow:"
             "pfm: calculates only the AUC dataset"

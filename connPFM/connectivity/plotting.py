@@ -6,7 +6,6 @@ import matplotlib
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 fontsize = 28

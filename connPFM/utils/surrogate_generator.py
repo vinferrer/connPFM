@@ -3,7 +3,8 @@ import os
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
-from utils import atlas_mod
+
+from connPFM.utils import atlas_mod
 
 LGR = logging.getLogger(__name__)
 

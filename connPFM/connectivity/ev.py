@@ -218,7 +218,7 @@ def ev_workflow(
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
     ets_orig_sur = event_detection(data_file, atlas, join(surr_dir, "surrogate_"),
-                                   nsur=nsurrogates)
+                                   nsur=nsurrogates)[0]
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")

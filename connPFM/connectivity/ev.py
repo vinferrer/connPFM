@@ -199,14 +199,14 @@ def surrogates_to_array(
 
 
 def ev_workflow(
-    DATAFILE,
-    AUCFILE,
-    ATLAS,
-    SURR_DIR,
-    OUT_DIR,
+    data_file,
+    auc_file,
+    atlas,
+    surr_dir,
+    out_dir,
     nsurrogates=100,
-    DVARS=None,
-    ENORM=None,
+    dvars=None,
+    enorm=None,
     afni_text=None,
     history_str="",
 ):
@@ -216,17 +216,8 @@ def ev_workflow(
     # Paths to files
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
-    (
-        ets_orig_sur,
-        rss_orig_sur,
-        rssr_orig_sur,
-        idxpeak_orig_sur,
-        etspeaks_orig_sur,
-        mu_orig_sur,
-        _,
-        _,
-        _,
-    ) = event_detection(DATAFILE, ATLAS, join(SURR_DIR, "surrogate_"),nsur=nsurrogates)
+    ets_orig_sur = event_detection(data_file, atlas, join(surr_dir, "surrogate_"),
+                                   nsur=nsurrogates)
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
@@ -240,7 +231,7 @@ def ev_workflow(
         ets_auc_denoised,
         _,
         _,
-    ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"),nsur=nsurrogates)
+    ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"), nsur=nsurrogates)
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     plot_ets_matrix(ets_orig_sur, out_dir, "_original", dvars, enorm, idxpeak_auc)

@@ -69,6 +69,7 @@ def _main(argv=None):
             options["atlas"][0],
             dir,
             os.path.dirname(options["auc"][0]),
+            options["nsurrogates"][0],
             history_str,
         )
         LGR.info("Perform debiasing based on edge-time matrix.")
@@ -106,6 +107,7 @@ def _main(argv=None):
             options["atlas"][0],
             dir,
             os.path.dirname(options["auc"][0]),
+            options["nsurrogates"][0],
             history_str,
         )
     elif selected_workflow == "debias":

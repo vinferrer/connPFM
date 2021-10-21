@@ -49,7 +49,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
     return (rssr, np.min(etsr), np.max(etsr))
 
 
-def event_detection(data_file, atlas, surrprefix="", sursufix="", segments=True):
+def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segments=True):
     """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
         labels_img=atlas,
@@ -73,25 +73,21 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", segments=True)
 
     # calculate rss
     rss = np.sqrt(np.sum(np.square(ets), axis=1))
-
-    # repeat with randomized time series
-    numrand = 100
     # initialize array for null rss
-    rssr = np.zeros([t, numrand])
+    rssr = np.zeros([t, nsur])
 
     results = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand)
-        for irand in range(numrand)
+        delayed(rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand) for irand in range(nsur)
     )
 
-    for irand in range(numrand):
+    for irand in range(nsur):
         rssr[:, irand] = results[irand][0]
 
     # TODO: find out why there is such a big peak on time-point 0 for AUC surrogates
     if "AUC" in surrprefix:
         rssr[0, :] = 0
-        hist_ranges = np.zeros((2, numrand))
-        for irand in range(numrand):
+        hist_ranges = np.zeros((2, nsur))
+        for irand in range(nsur):
             hist_ranges[0, irand] = results[irand][1]
             hist_ranges[1, irand] = results[irand][2]
 
@@ -138,7 +134,7 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", segments=True)
             sursufix,
             masker,
             hist_range=(hist_min, hist_max),
-            numrand=numrand,
+            numrand=nsur,
         )
         ets_thr = threshold_ets_matrix(ets, idxpeak, ets_thr)
     else:
@@ -207,6 +203,7 @@ def ev_workflow(
     atlas,
     surr_dir,
     out_dir,
+    nsurrogates=100,
     dvars=None,
     enorm=None,
     afni_text=None,
@@ -218,7 +215,9 @@ def ev_workflow(
     # Paths to files
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
-    ets_orig_sur = event_detection(data_file, atlas, join(surr_dir, "surrogate_"))[0]
+    ets_orig_sur = event_detection(
+        data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates
+    )[0]
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
@@ -232,7 +231,7 @@ def ev_workflow(
         ets_auc_denoised,
         _,
         _,
-    ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"))
+    ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"), nsur=nsurrogates)
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     plot_ets_matrix(ets_orig_sur, out_dir, "_original", dvars, enorm, idxpeak_auc)

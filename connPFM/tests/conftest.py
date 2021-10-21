@@ -1,5 +1,6 @@
 import os
 import ssl
+import tarfile
 from urllib.request import urlretrieve
 
 import pytest
@@ -52,3 +53,26 @@ def testpath(tmp_path_factory):
     """ Test path that will be used to download all files """
     return tmp_path_factory.getbasetemp()
 
+@pytest.fixture
+def bold_file(testpath):
+    return fetch_file('x6r8v', testpath,
+                      'sub-pixar123_task-pixar_space-MNI152-preproc_bold.nii.gz')
+
+@pytest.fixture
+def AUC_file(testpath):
+    return fetch_file('h6uv3', testpath,
+                      'sub-pixar123_task-pixar_AUC_100.nii.gz')
+
+@pytest.fixture
+def ets_matrix_file(testpath):
+    return fetch_file('jvuwn', testpath,
+                      'ets_AUC_denoised.txt')
+
+@pytest.fixture
+def surr_dir(testpath):
+    zipped_file = fetch_file('yrkqv', testpath,
+                             'temp_sub-pixar123_100.tar.gz')
+    my_tar = tarfile.open(zipped_file)
+    my_tar.extractall(testpath) # specify which folder to extract to
+    my_tar.close()
+    return os.path.join(testpath,'temp_sub-pixar123_100')

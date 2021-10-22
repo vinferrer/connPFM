@@ -41,3 +41,22 @@ def test_threshold_ets_matrix():
     dum_mat2[2, 1] = 3
     th_dum = ev.threshold_ets_matrix(dum_mat, [2], 2)
     assert np.all(th_dum == dum_mat2)
+
+
+def test_event_detection(AUC_file, atlas_file, surr_dir, ets_auc_original_file,
+                         ets_auc_denoised_file,
+                         rssr_auc_file):
+    (
+        ets_auc,
+        rss_auc,
+        _,
+        idxpeak_auc,
+        _,
+        _,
+        ets_auc_denoised,
+        _,
+        _,
+    ) = ev.event_detection(AUC_file, atlas_file, join(surr_dir, "surrogate_AUC_"), nsur=50)
+    assert np.all(ets_auc == np.loadtxt(ets_auc_original_file))
+    breakpoint()
+    assert np.all(ets_auc_denoised == np.loadtxt(ets_auc_denoised_file))

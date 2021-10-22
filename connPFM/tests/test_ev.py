@@ -1,0 +1,43 @@
+import numpy as np
+from connPFM.connectivity import ev
+from nilearn.input_data import NiftiLabelsMasker
+from os.path import join
+
+
+def test_calculate_ets(ets_auc_original_file, AUC_file, atlas_file):
+    masker = NiftiLabelsMasker(
+        labels_img=atlas_file,
+        standardize=False,
+        memory="nilearn_cache",
+        strategy="mean",
+    )
+
+    AUC_img = masker.fit_transform(AUC_file)
+    ets_auc_orig = np.loadtxt(ets_auc_original_file)
+    ets_auc_calc, u, v = ev.calculate_ets(AUC_img, AUC_img.shape[1])
+    assert np.all(np.isclose(ets_auc_orig, ets_auc_calc))
+
+
+def test_rss_surr(AUC_file, atlas_file, surr_dir, rssr_auc_file):
+    masker = NiftiLabelsMasker(
+        labels_img=atlas_file,
+        standardize=False,
+        memory="nilearn_cache",
+        strategy="mean",
+    )
+
+    AUC_img = masker.fit_transform(AUC_file)
+    _, u, v = ev.calculate_ets(AUC_img, AUC_img.shape[1])
+    rssr, _, _ = ev.rss_surr(AUC_img, u, v,
+                             join(surr_dir, "surrogate_AUC_"), '', masker, 9)
+    rssr_auc = np.loadtxt(rssr_auc_file)
+    assert np.all(np.isclose(rssr, rssr_auc))
+
+
+def test_threshold_ets_matrix():
+    dum_mat = np.ones((3, 3))
+    dum_mat[2, 1] = 3
+    dum_mat2 = np.zeros((3, 3))
+    dum_mat2[2, 1] = 3
+    th_dum = ev.threshold_ets_matrix(dum_mat, [2], 2)
+    assert np.all(th_dum == dum_mat2)

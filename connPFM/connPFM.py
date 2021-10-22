@@ -8,7 +8,8 @@ import sys
 from numpy import loadtxt
 
 from connPFM.cli.connPFM import _get_parser
-from connPFM.connectivity import ev
+from connPFM.connectivity.ev import ev_workflow
+from connPFM.debiasing.debiasing import debiasing
 from connPFM.deconvolution.roiPFM import roiPFM
 from connPFM.utils import loggers
 
@@ -63,7 +64,7 @@ def _main(argv=None):
             history_str,
         )
 
-        ets_auc_denoised = ev.ev_workflow(
+        ets_auc_denoised = ev_workflow(
             options["data"][0],
             options["auc"][0],
             options["atlas"][0],
@@ -73,7 +74,7 @@ def _main(argv=None):
             history_str,
         )
         LGR.info("Perform debiasing based on edge-time matrix.")
-        ev.debiasing(
+        debiasing(
             options["data"][0],
             options["atlas"][0],
             ets_auc_denoised,
@@ -101,7 +102,7 @@ def _main(argv=None):
             history_str,
         )
     elif selected_workflow == "ev":
-        ev.ev_workflow(
+        ev_workflow(
             options["data"][0],
             options["auc"][0],
             options["atlas"][0],
@@ -112,7 +113,7 @@ def _main(argv=None):
         )
     elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])
-        ev.debiasing(
+        debiasing(
             options["data"][0],
             options["atlas"][0],
             ets_auc_denoised,

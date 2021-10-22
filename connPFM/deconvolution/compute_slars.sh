@@ -5,6 +5,8 @@
 #$ -S /bin/bash
 #$ -q short.q
 
-module load python/python3.6
+module unload python/python3.6
+module load python/venv
+source activate /bcbl/home/public/PARK_VFERRER/py38
 
 python -u /bcbl/home/public/PARK_VFERRER/PFM/Scripts/compute_slars.py $INPUT_ARGS

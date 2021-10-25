@@ -53,7 +53,7 @@ REQUIRES = [
     "joblib",
     "matplotlib",
     "nibabel",
-    "nilearn",
+    "nilearn>=0.8",
     "numpy>=1.15",
     "scipy>=1.3.3",
     "sklearn",

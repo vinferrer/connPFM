@@ -10,11 +10,12 @@ def test_calculate_ets(ets_auc_original_file, AUC_file, atlas_file):
         standardize=False,
         memory="nilearn_cache",
         strategy="mean",
+        resampling_target=None
     )
 
     AUC_img = masker.fit_transform(AUC_file)
     ets_auc_orig = np.loadtxt(ets_auc_original_file)
-    ets_auc_calc, u, v = ev.calculate_ets(AUC_img, AUC_img.shape[1])
+    ets_auc_calc, u_vec, v_vec = ev.calculate_ets(AUC_img, AUC_img.shape[1])
     assert np.all(np.isclose(ets_auc_orig, ets_auc_calc))
 
 
@@ -29,7 +30,7 @@ def test_rss_surr(AUC_file, atlas_file, surr_dir, rssr_auc_file):
     AUC_img = masker.fit_transform(AUC_file)
     _, u, v = ev.calculate_ets(AUC_img, AUC_img.shape[1])
     rssr, _, _ = ev.rss_surr(AUC_img, u, v,
-                             join(surr_dir, "surrogate_AUC_"), '', masker, 9)
+                             join(surr_dir, "surrogate_AUC_"), '', masker, 0)
     rssr_auc = np.loadtxt(rssr_auc_file)
     assert np.all(np.isclose(rssr, rssr_auc))
 
@@ -56,7 +57,6 @@ def test_event_detection(AUC_file, atlas_file, surr_dir, ets_auc_original_file,
         ets_auc_denoised,
         _,
         _,
-    ) = ev.event_detection(AUC_file, atlas_file, join(surr_dir, "surrogate_AUC_"), nsur=50)
+    ) = ev.event_detection(AUC_file, atlas_file, join(surr_dir, "surrogate_AUC_"), nsur=10)
     assert np.all(ets_auc == np.loadtxt(ets_auc_original_file))
-    breakpoint()
-    assert np.all(ets_auc_denoised == np.loadtxt(ets_auc_denoised_file))
+    assert np.all(np.isclose(ets_auc_denoised, np.loadtxt(ets_auc_denoised_file)))

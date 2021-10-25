@@ -192,9 +192,9 @@ workflows:
       - style_check:
           requires:
             - py39_env
-      # - py39_unittest_and_coverage:
-      #     requires:
-      #       - py39_env
+      - py39_unittest_and_coverage:
+          requires:
+            - py39_env
       # - build_docs:
       #     requires:
       #       - py39_env

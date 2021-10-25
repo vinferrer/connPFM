@@ -92,8 +92,9 @@ def surr_dir(testpath):
 
 @pytest.fixture
 def atlas_file(testpath):
-    return fetch_file("bhcrp", testpath,
-                      "Schaefer2018_100Parcels_17Networks_order_FSLMNI152_4mm.nii.gz")
+    return fetch_file(
+        "bhcrp", testpath, "Schaefer2018_100Parcels_17Networks_order_FSLMNI152_4mm.nii.gz"
+    )
 
 
 @pytest.fixture

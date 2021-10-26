@@ -10,7 +10,7 @@ jobs:
   py36_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: afni/afni_cmake_build
+      - image: sento4000/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -40,7 +40,7 @@ jobs:
   py37_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: afni/afni_cmake_build
+      - image: sento4000/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -101,7 +101,7 @@ jobs:
   py39_env:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: afni/afni_cmake_build
+      - image: sento4000/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:

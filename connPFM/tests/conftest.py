@@ -100,3 +100,8 @@ def atlas_file(testpath):
 @pytest.fixture
 def rssr_auc_file(testpath):
     return fetch_file("7pnj2", testpath, "rssr_AUC.txt")
+
+
+@pytest.fixture
+def surrogate_200(testpath):
+    return fetch_file("wxfz7", testpath, "random_200_surrogate.nii.gz")

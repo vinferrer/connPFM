@@ -108,8 +108,8 @@ jobs:
           root: /tmp
           paths:
               - src/connPFM
-      - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+      # - restore_cache:  # ensure this step occurs *before* installing dependencies
+      #    key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
       - run:  # will overwrite connPFM installation each time
           name: Generate environment
           command:  |

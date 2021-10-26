@@ -115,6 +115,7 @@ jobs:
           command:  |
             if [[ -e /opt/conda/envs/py39_env ]]; then
                 echo "Restoring environment from cache"
+                conda info --envs
                 source activate py39_env
             else
                 conda create -n py39_env python=3.9 numpy -yq

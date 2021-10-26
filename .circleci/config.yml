@@ -108,8 +108,8 @@ jobs:
           root: /tmp
           paths:
               - src/connPFM
-      # - restore_cache:  # ensure this step occurs *before* installing dependencies
-      #    key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+      - restore_cache:  # ensure this step occurs *before* installing dependencies
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
       - run:  # will overwrite connPFM installation each time
           name: Generate environment
           command:  |
@@ -143,7 +143,7 @@ jobs:
             apt-get update
             apt-get install -yqq make
             apt-get install -yqq curl
-            cp /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
+            cp -r /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
             source activate py39_env
             make unittest
       - codecov/upload:

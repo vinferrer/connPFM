@@ -10,7 +10,7 @@ jobs:
   py36_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: continuumio/miniconda3
     steps:
       - checkout
       - persist_to_workspace:
@@ -40,7 +40,7 @@ jobs:
   py37_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: continuumio/miniconda3
     steps:
       - checkout
       - persist_to_workspace:
@@ -101,7 +101,7 @@ jobs:
   py39_env:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: continuumio/miniconda3
     steps:
       - checkout
       - persist_to_workspace:
@@ -115,7 +115,6 @@ jobs:
           command:  |
             if [[ -e /opt/conda/envs/py39_env ]]; then
                 echo "Restoring environment from cache"
-                conda info --envs
                 source activate py39_env
             else
                 conda create -n py39_env python=3.9 numpy -yq
@@ -128,10 +127,11 @@ jobs:
           paths:
             - "/opt/conda/envs/py39_env"
 
+
   py39_unittest_and_coverage:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: continuumio/miniconda3
+      - image: sento4000/afni_miniconda
     steps:
       - attach_workspace:  # get connPFM
           at: /tmp
@@ -143,6 +143,7 @@ jobs:
             apt-get update
             apt-get install -yqq make
             apt-get install -yqq curl
+            cp /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
             source activate py39_env
             make unittest
       - codecov/upload:

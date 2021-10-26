@@ -5,7 +5,7 @@ import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
 
-def test_surrogate_generator(bold_file, atlas_file, testpath):
+def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
@@ -20,6 +20,5 @@ def test_surrogate_generator(bold_file, atlas_file, testpath):
                                                        atlas_file,
                                                        join(testpath,
                                                             'generated_surrogate.nii.gz'))
-    keeped_surrogate = masker.fit_transform('/home/vicente/nilearn_data/random_200_surrogate.nii.gz')
-    breakpoint()
+    keeped_surrogate = masker.fit_transform(surrogate_200)
     assert np.all(np.isclose(surrogate, keeped_surrogate))

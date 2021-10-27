@@ -4,7 +4,6 @@ import subprocess
 import time
 
 import numpy as np
-from pathlib import Path
 
 LGR = logging.getLogger(__name__)
 

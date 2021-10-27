@@ -10,7 +10,7 @@ jobs:
   py36_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: continuumio/miniconda3
+      - image: sento4000/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -22,6 +22,7 @@ jobs:
           command:  |
             if [[ -e /opt/conda/envs/py36_env ]]; then
                 echo "Restoring environment from cache"
+                cp -r /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
                 source activate py36_env
             else
                 conda create -n py36_env python=3.6 numpy -yq
@@ -40,7 +41,7 @@ jobs:
   py37_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: continuumio/miniconda3
+      - image: sento4000/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -52,6 +53,7 @@ jobs:
           command:  |
             if [[ -e /opt/conda/envs/py37_env ]]; then
                 echo "Restoring environment from cache"
+                cp -r /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
                 source activate py37_env
             else
                 conda create -n py37_env python=3.7 numpy -yq
@@ -70,7 +72,7 @@ jobs:
   py38_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: afni/afni
+      - image: sento4000/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -82,6 +84,7 @@ jobs:
           command:  |
             if [[ -e /opt/conda/envs/py38_env ]]; then
                 echo "Restoring environment from cache"
+                cp -r /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
                 source activate py38_env
             else
                 conda create -n py38_env python=3.8 numpy -yq

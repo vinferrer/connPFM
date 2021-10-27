@@ -105,3 +105,8 @@ def rssr_auc_file(testpath):
 @pytest.fixture
 def surrogate_200(testpath):
     return fetch_file("wxfz7", testpath, "random_200_surrogate.nii.gz")
+
+
+@pytest.fixture
+def hrf_file(testpath):
+    return fetch_file("gefu4", testpath, "hrf.txt")

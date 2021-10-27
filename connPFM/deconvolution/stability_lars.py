@@ -54,7 +54,7 @@ class StabilityLars:
 
                 idxs = self._subsampling()
                 self.sur_idxs[surrogate_idx, :] = idxs
-                y_sub = Y[idxs, vox_idx]
+                y_sub = np.array(Y[idxs, vox_idx])
                 X_sub = X[idxs, :]
                 # max_lambda = abs(np.dot(X_sub.T, y_sub)).max()
                 from pywt import wavedec

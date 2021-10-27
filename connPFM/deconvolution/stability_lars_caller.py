@@ -113,9 +113,9 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 shell=True,
             )
 
-            while int(bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]) > (
-                jobs - 1
-            ):
+            while int(
+                bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]
+            ) > (jobs - 1):
                 time.sleep(1)
 
         while int(bget("qstat -u " + username + " | grep -F 'lars' | grep -c " + username)[0]) > 0:

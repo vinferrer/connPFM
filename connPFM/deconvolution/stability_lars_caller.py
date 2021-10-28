@@ -108,7 +108,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 + ' -v INPUT_ARGS="'
                 + input_parameters
                 + '"'
-                + f"{os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh ",
+                + f" {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh ",
                 shell=True,
             )
 

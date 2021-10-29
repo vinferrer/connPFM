@@ -13,5 +13,5 @@ module unload python/python3.6
 module load python/venv
 source activate /bcbl/home/public/PARK_VFERRER/py38
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-echo $INPUT_ARGS
+
 python -u $SCRIPT_DIR/compute_slars.py $INPUT_ARGS

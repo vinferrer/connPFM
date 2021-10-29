@@ -12,6 +12,15 @@ from connPFM.connectivity.plotting import plot_ets_matrix
 LGR = logging.getLogger(__name__)
 
 
+def circular_shift_randomization(y, n, t):
+    """Perform randomization of time series."""
+    z = np.copy(y)
+    for i in range(n):
+        z[:, i] = np.roll(z[:, i], np.random.randint(t))
+
+    return z
+
+
 def calculate_ets(y, n):
     """Calculate edge-time series."""
     # upper triangle indices (node pairs = edges)
@@ -35,10 +44,8 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
         # TODO: find out why surrogates of AUC have NaNs after reading data with masker.
         zr = np.nan_to_num(zr)
     else:
-        # perform numrand randomizations
-        zr = np.copy(z_ts)
-        for i in range(n):
-            zr[:, i] = np.roll(zr[:, i], np.random.randint(t))
+        # Perform circular shift randomization
+        zr = circular_shift_randomization(z_ts, n, t)
 
     # edge time series with circshift data
     etsr = zr[:, u] * zr[:, v]

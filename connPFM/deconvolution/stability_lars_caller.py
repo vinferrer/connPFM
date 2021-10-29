@@ -38,24 +38,8 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
 
     last = 0
     LGR.info("Numer of voxels: {}".format(nvoxels))
-
-    for job_idx in range(jobs):
-        jobs_left = jobs - job_idx
-        voxels_left = nvoxels - last
-        voxels_job = int(np.ceil(voxels_left / jobs_left))
-        if job_idx == 0:
-            first = 0
-            last = first + voxels_job - 1
-        elif job_idx != (jobs - 1):
-            first = last + 1
-            last = first + voxels_job - 1
-        elif job_idx == (jobs - 1):
-            first = last + 1
-            last = nvoxels
-        LGR.info("First voxel: {}".format(first))
-        LGR.info("Last voxel: {}".format(last))
-
-        jobname = "lars" + str(job_idx)
+    if jobs == 0:
+        LGR.info("non paraleized option for testing")
         input_parameters = (
             "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
             " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
@@ -68,36 +52,78 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 nTE,
                 str(1),
                 temp,
-                int(first),
-                int(last),
+                int(0),
+                int(data.shape[1]),
                 nvoxels,
-                job_idx,
+                0,
             )
         )
         subprocess.call(
-            "qsub "
-            + " -N "
-            + jobname
-            + ' -v INPUT_ARGS="'
-            + input_parameters
-            + '"'
-            + " /bcbl/home/public/PARK_VFERRER/PFM/Scripts/compute_slars.sh",
+            f" bash {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh "
+            + input_parameters,
             shell=True,
         )
+        auc_filename = temp + "/auc_" + str(0) + ".npy"
+        auc = np.load(auc_filename)
+    else:
+        for job_idx in range(jobs):
+            jobs_left = jobs - job_idx
+            voxels_left = nvoxels - last
+            voxels_job = int(np.ceil(voxels_left / jobs_left))
+            if job_idx == 0:
+                first = 0
+                last = first + voxels_job - 1
+            elif job_idx != (jobs - 1):
+                first = last + 1
+                last = first + voxels_job - 1
+            elif job_idx == (jobs - 1):
+                first = last + 1
+                last = nvoxels
+            LGR.info("First voxel: {}".format(first))
+            LGR.info("Last voxel: {}".format(last))
 
-        while int(bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]) > (
-            jobs - 1
-        ):
-            time.sleep(1)
+            jobname = "lars" + str(job_idx)
+            input_parameters = (
+                "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
+                " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
+                " --n_job {}".format(
+                    data_filename,
+                    filename_hrf,
+                    str(nscans),
+                    str(maxiterfactor),
+                    niter,
+                    nTE,
+                    str(1),
+                    temp,
+                    int(first),
+                    int(last),
+                    nvoxels,
+                    job_idx,
+                )
+            )
+            subprocess.call(
+                "qsub "
+                + " -N "
+                + jobname
+                + ' -v INPUT_ARGS="'
+                + input_parameters
+                + '"'
+                + f" {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh ",
+                shell=True,
+            )
 
-    while int(bget("qstat -u " + username + " | grep -F 'lars' | grep -c " + username)[0]) > 0:
-        time.sleep(0.5)
+            while int(
+                bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]
+            ) > (jobs - 1):
+                time.sleep(1)
 
-    for job_idx in range(jobs):
-        auc_filename = temp + "/auc_" + str(job_idx) + ".npy"
-        if job_idx == 0:
-            auc = np.load(auc_filename)
-        else:
-            auc = np.hstack((auc, np.load(auc_filename)))
+        while int(bget("qstat -u " + username + " | grep -F 'lars' | grep -c " + username)[0]) > 0:
+            time.sleep(0.5)
 
+        for job_idx in range(jobs):
+            auc_filename = temp + "/auc_" + str(job_idx) + ".npy"
+            if job_idx == 0:
+                auc = np.load(auc_filename)
+            else:
+                auc = np.hstack((auc, np.load(auc_filename)))
     return auc

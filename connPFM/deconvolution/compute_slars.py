@@ -151,9 +151,8 @@ def main(argv):
     LGR.info("Number of voxels: {}".format(nvoxels))
 
     hrf = np.load(hrf_file)
-
     for vox_idx in range(nvoxels):
-        sl.stability_lars(hrf, y[:, voxel + vox_idx])
+        sl.stability_lars(hrf, np.expand_dims(y[:, voxel + vox_idx], axis=-1))
         auc[:, vox_idx] = np.squeeze(sl.auc)
         LGR.info(
             "AUC of voxel {}/{} calculated and stored...".format(str(vox_idx + 1), str(nvoxels))

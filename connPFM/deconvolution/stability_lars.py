@@ -40,6 +40,7 @@ class StabilityLars:
     def stability_lars(self, X, Y):
 
         self.nscans = X.shape[1]
+
         nvoxels = Y.shape[1]
         nlambdas = self.nscans + 1
 

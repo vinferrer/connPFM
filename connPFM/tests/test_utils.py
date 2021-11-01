@@ -17,10 +17,10 @@ def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
     np.random.seed(200)
 
     from connPFM.utils import surrogate_generator
-    surrogate = surrogate_generator.generate_surrogate(bold_file,
-                                                       atlas_file,
-                                                       join(testpath,
-                                                            'generated_surrogate.nii.gz'))
+
+    surrogate = surrogate_generator.generate_surrogate(
+        bold_file, atlas_file, join(testpath, "generated_surrogate.nii.gz")
+    )
     keeped_surrogate = masker.fit_transform(surrogate_200)
     assert np.all(np.isclose(surrogate, keeped_surrogate))
 

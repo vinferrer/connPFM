@@ -25,7 +25,15 @@ def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
     assert np.all(np.isclose(surrogate, keeped_surrogate))
 
 
-def test_HRF_matrix(hrf_file):
+def test_HRF_matrix(hrf_file, hrf_linear_file):
     hrf_object = hrf_generator.HRFMatrix(TR=1, TE=[0], nscans=168)
     hrf_object.generate_hrf()
-    assert np.all(np.isclose(hrf_object.hrf, np.loadtxt(hrf_file)))
+    hrf_loaded = np.loadtxt(hrf_file)
+    assert np.all(np.isclose(hrf_object.hrf))
+    hrf_linear = hrf_generator.HRFMatrix(TR=1, TE=[0], is_afni=False, nscans=168)
+    hrf_linear.generate_hrf()
+    assert np.all(np.isclose(hrf_linear.hrf, np.loadtxt(hrf_linear_file)))
+    hrf_block = hrf_generator.HRFMatrix(TR=1, TE=[0], nscans=168, block=True)
+    hrf_block.generate_hrf()
+    assert np.all(np.isclose(hrf_block.hrf, np.matmul(hrf_loaded,
+                             np.tril(np.ones(hrf_loaded.shape[0])))))

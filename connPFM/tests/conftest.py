@@ -110,3 +110,8 @@ def surrogate_200(testpath):
 @pytest.fixture
 def hrf_file(testpath):
     return fetch_file("gefu4", testpath, "hrf.txt")
+
+
+@pytest.fixture
+def hrf_linear_file(testpath):
+    return fetch_file("mkeu2", testpath, "hrf_linear.txt")

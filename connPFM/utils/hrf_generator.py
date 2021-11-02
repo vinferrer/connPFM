@@ -102,7 +102,6 @@ class HRFMatrix:
         lop_hrf="SPMG1",
         path=None,
         block=False,
-        wfusion=False,
         lambda_fusion=3,
         gamma_weights=0.5,
     ):
@@ -114,7 +113,6 @@ class HRFMatrix:
         self.is_afni = is_afni
         self.hrf_path = path
         self.block = block
-        self.wfusion = wfusion
         self.lambda_fusion = lambda_fusion
         self.gamma_weights = gamma_weights
 
@@ -167,21 +165,5 @@ class HRFMatrix:
             else:
                 self.hrf = np.matmul(self.hrf, np.tril(np.ones(self.nscans)))
                 self.hrf_norm = np.matmul(self.hrf_norm, np.tril(np.ones(self.nscans)))
-
-        if self.wfusion:
-            hrf_cov = np.dot(self.hrf_norm.T, self.hrf_norm)
-            weights = (np.abs(hrf_cov) ** self.gamma_weights) / (1 - np.abs(hrf_cov))
-            diag_W = np.sum(weights, axis=1) - np.diag(weights)
-            Wfusion = -np.sign(hrf_cov) ** weights
-            for i in range(self.nscans):
-                Wfusion[i, i] = diag_W[i]
-
-            Wfusion = Wfusion / (self.nscans)
-            # cholesky decomposition of matrix W (through eigenvalue decomposition)
-            [Vfusion, Dfusion] = np.linalg.eig(Wfusion)
-            Dfusion[Dfusion < 0] = 0  # force positive eigenvalues due to numerical precision.
-            Qfusion = (Dfusion ** 0.5) * Vfusion.T
-            X_fusion = np.sqrt(self.lambda_fusion) * Qfusion
-            self.hrf_norm_fusion = np.vstack(self.hrf_norm, X_fusion)
 
         return self

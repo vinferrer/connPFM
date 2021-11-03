@@ -15,7 +15,7 @@ def splitext_(path):
     return os.path.splitext(path)
 
 
-def generate_surrogate(data, atlas, atlas_orig, output):
+def generate_surrogate(data, atlas, output):
     """
     Generate surrogate data.
 
@@ -44,7 +44,6 @@ def generate_surrogate(data, atlas, atlas_orig, output):
     surrogate = np.zeros(data_masked.shape)
     nscans = data_masked.shape[0]
     nvoxels = data_masked.shape[1]
-
     for iter_tc in range(nvoxels):
         # phase_signal is a time x 1 vector filled with random phase
         # information (in rad, from -pi to pi)

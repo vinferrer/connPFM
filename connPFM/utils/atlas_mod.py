@@ -7,12 +7,11 @@ import numpy as np
 
 
 def transform(atlas_orig, data_tlrc, temp_dir):
+    atlas_obj = nib.load(atlas_orig)
+    data_obj = nib.load(data_tlrc)
     TMP_name = "atlas.nii.gz"
-    if np.any(nib.load(atlas_orig).affine != nib.load(data_tlrc).affine):
-        atlas_mat = nib.load(atlas_orig).get_fdata()
-        tmp_image = nib.Nifti1Image(
-            atlas_mat, nib.load(data_tlrc).affine, nib.load(data_tlrc).header
-        )
+    if np.any(atlas_obj.affine != data_obj.affine):
+        tmp_image = nib.Nifti1Image(atlas_obj.get_fdata(), data_obj.affine, data_obj.header)
 
         nib.save(tmp_image, os.path.join(temp_dir, TMP_name))
         subprocess.run(
@@ -25,12 +24,13 @@ def transform(atlas_orig, data_tlrc, temp_dir):
 
 
 def inverse_transform(data_tlrc, atlas_orig):
-    subprocess.run(
-        f"3drefit -space ORIG -view orig {data_tlrc}",
-        shell=True,
-    )
-    sleep(5)
-    tmp_data = nib.Nifti1Image(
-        nib.load(data_tlrc).get_fdata(), nib.load(atlas_orig).affine, nib.load(atlas_orig).header
-    )
-    nib.save(tmp_data, data_tlrc)
+    atlas_obj = nib.load(atlas_orig)
+    data_obj = nib.load(data_tlrc)
+    if np.any(data_obj.affine != data_obj.affine):
+        subprocess.run(
+            f"3drefit -space ORIG -view orig {data_tlrc}",
+            shell=True,
+        )
+        sleep(5)
+        tmp_data = nib.Nifti1Image(data_obj.get_fdata(), data_obj.affine, data_obj.header)
+        nib.save(tmp_data, data_tlrc)

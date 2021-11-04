@@ -26,7 +26,7 @@ def transform(atlas_orig, data_tlrc, temp_dir):
 def inverse_transform(data_tlrc, atlas_orig):
     atlas_obj = nib.load(atlas_orig)
     data_obj = nib.load(data_tlrc)
-    if np.any(data_obj.affine != data_obj.affine):
+    if np.any(atlas_obj.affine != data_obj.affine):
         subprocess.run(
             f"3drefit -space ORIG -view orig {data_tlrc}",
             shell=True,

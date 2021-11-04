@@ -115,3 +115,15 @@ def hrf_file(testpath):
 @pytest.fixture
 def hrf_linear_file(testpath):
     return fetch_file("mkeu2", testpath, "hrf_linear.txt")
+
+@pytest.fixture
+def beta_file(testpath):
+    return fetch_file(
+        "apuv9", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold_beta_ETS.nii.gz"
+    )
+
+@pytest.fixture
+def fitt_file(testpath):
+    return fetch_file(
+        "c7g69", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold_fitt_ETS.nii.gz"
+    )

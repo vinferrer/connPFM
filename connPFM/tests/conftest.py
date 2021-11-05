@@ -127,3 +127,9 @@ def fitt_file(testpath):
     return fetch_file(
         "c7g69", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold_fitt_ETS.nii.gz"
     )
+
+@pytest.fixture
+def beta_block_file(testpath):
+    return fetch_file(
+        "jhv7a", testpath, "beta_block.txt"
+    )

@@ -46,7 +46,7 @@ def test_debiasing_spike(hrf_file,bold_file,atlas_file,ets_auc_denoised_file,bet
     assert np.all(np.isclose(deb_output['beta'], masker.fit_transform(beta_file)))
     assert np.all(np.isclose(deb_output['betafitts'],masker.fit_transform(fitt_file)))
 
-def test_debiasing_block(hrf_file,bold_file,atlas_file,ets_auc_denoised_file,beta_file,fitt_file):
+def test_debiasing_block(hrf_file, AUC_file,bold_file,atlas_file,ets_auc_denoised_file,beta_block_file):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
@@ -82,7 +82,5 @@ def test_debiasing_block(hrf_file,bold_file,atlas_file,ets_auc_denoised_file,bet
         block=True
     )
     hrf.generate_hrf()
-    deb_output=debiasing_block(hrf, data, ets_mask)
-    breakpoint()
-    assert np.all(np.isclose(deb_output['beta'], masker.fit_transform(beta_file)))
-    assert np.all(np.isclose(deb_output['betafitts'],masker.fit_transform(fitt_file)))
+    (beta,S)=debiasing_block(masker.fit_transform(AUC_file),hrf.hrf, data,True)
+    assert np.all(np.isclose(beta, np.loadtxt(beta_block_file)))

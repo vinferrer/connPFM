@@ -7,7 +7,10 @@ from scipy.stats import zscore
 from connPFM.debiasing.debiasing_functions import debiasing_block, debiasing_spike
 from connPFM.utils.hrf_generator import HRFMatrix
 
-def test_debiasing_spike(hrf_file,bold_file,atlas_file,ets_auc_denoised_file,beta_file,fitt_file):
+
+def test_debiasing_spike(
+    hrf_file, bold_file, atlas_file, ets_auc_denoised_file, beta_file, fitt_file
+):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
@@ -42,11 +45,14 @@ def test_debiasing_spike(hrf_file,bold_file,atlas_file,ets_auc_denoised_file,bet
         is_afni=True,
     )
     hrf.generate_hrf()
-    deb_output=debiasing_spike(hrf, data, ets_mask)
-    assert np.all(np.isclose(deb_output['beta'], masker.fit_transform(beta_file)))
-    assert np.all(np.isclose(deb_output['betafitts'],masker.fit_transform(fitt_file)))
+    deb_output = debiasing_spike(hrf, data, ets_mask)
+    assert np.all(np.isclose(deb_output["beta"], masker.fit_transform(beta_file)))
+    assert np.all(np.isclose(deb_output["betafitts"], masker.fit_transform(fitt_file)))
 
-def test_debiasing_block(hrf_file, AUC_file,bold_file,atlas_file,ets_auc_denoised_file,beta_block_file):
+
+def test_debiasing_block(
+    hrf_file, AUC_file, bold_file, atlas_file, ets_auc_denoised_file, beta_block_file
+):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
@@ -73,14 +79,7 @@ def test_debiasing_block(hrf_file, AUC_file,bold_file,atlas_file,ets_auc_denoise
         ets_mask[time_idx, idx_v[edge_idxs[idx]]] = 1
 
     # Create HRF matrix
-    hrf = HRFMatrix(
-        TR=1,
-        TE=[0],
-        nscans=data.shape[0],
-        r2only=True,
-        is_afni=True,
-        block=True
-    )
+    hrf = HRFMatrix(TR=1, TE=[0], nscans=data.shape[0], r2only=True, is_afni=True, block=True)
     hrf.generate_hrf()
-    (beta,S)=debiasing_block(masker.fit_transform(AUC_file),hrf.hrf, data,True)
+    (beta, S) = debiasing_block(masker.fit_transform(AUC_file), hrf.hrf, data, True)
     assert np.all(np.isclose(beta, np.loadtxt(beta_block_file)))

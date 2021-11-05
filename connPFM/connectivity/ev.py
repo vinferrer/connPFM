@@ -84,15 +84,14 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segm
         rssr[:, irand] = results[irand][0]
 
     # TODO: find out why there is such a big peak on time-point 0 for AUC surrogates
-    if "AUC" in surrprefix:
-        rssr[0, :] = 0
-        hist_ranges = np.zeros((2, nsur))
-        for irand in range(nsur):
-            hist_ranges[0, irand] = results[irand][1]
-            hist_ranges[1, irand] = results[irand][2]
+    rssr[0, :] = 0
+    hist_ranges = np.zeros((2, nsur))
+    for irand in range(nsur):
+        hist_ranges[0, irand] = results[irand][1]
+        hist_ranges[1, irand] = results[irand][2]
 
-        hist_min = np.min(hist_ranges, axis=1)[0]
-        hist_max = np.max(hist_ranges, axis=1)[1]
+    hist_min = np.min(hist_ranges, axis=1)[0]
+    hist_max = np.max(hist_ranges, axis=1)[1]
 
     p = np.zeros([t, 1])
     rssr_flat = rssr.flatten()
@@ -127,18 +126,15 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segm
     # calculate mean co-fluctuation (edge time series) across all peaks
     mu = np.nanmean(etspeaks, 0)
 
-    if "AUC" in surrprefix:
-        LGR.info("Reading AUC of surrogates to perform the thresholding step...")
-        ets_thr = surrogates_to_array(
-            surrprefix,
-            sursufix,
-            masker,
-            hist_range=(hist_min, hist_max),
-            numrand=nsur,
-        )
-        ets_thr = threshold_ets_matrix(ets, idxpeak, ets_thr)
-    else:
-        ets_thr = None
+    LGR.info("Reading AUC of surrogates to perform the thresholding step...")
+    ets_thr = surrogates_to_array(
+        surrprefix,
+        sursufix,
+        masker,
+        hist_range=(hist_min, hist_max),
+        numrand=nsur,
+    )
+    ets_thr = threshold_ets_matrix(ets, idxpeak, ets_thr)
 
     return ets, rss, rssr, idxpeak, etspeaks, mu, ets_thr, u, v
 
@@ -215,7 +211,17 @@ def ev_workflow(
     # Paths to files
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
-    ets_orig_sur = event_detection(
+    (
+        _,
+        _,
+        _,
+        idxpeak_orig,
+        _,
+        _,
+        ets_orig_denoised,
+        _,
+        _,
+    )= event_detection(
         data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates
     )[0]
 
@@ -234,7 +240,7 @@ def ev_workflow(
     ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"), nsur=nsurrogates)
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
-    plot_ets_matrix(ets_orig_sur, out_dir, "_original", dvars, enorm, idxpeak_auc)
+    plot_ets_matrix(ets_orig_denoised, out_dir, "_original", dvars, enorm, idxpeak_orig)
 
     # Plot ETS and denoised ETS matrices of AUC
     plot_ets_matrix(ets_auc, out_dir, "_AUC_original", dvars, enorm, idxpeak_auc)

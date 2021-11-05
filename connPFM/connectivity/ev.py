@@ -12,6 +12,76 @@ from connPFM.connectivity.plotting import plot_ets_matrix
 LGR = logging.getLogger(__name__)
 
 
+def calculate_p_value(original, surrogate):
+    """Calculate p-value from surrogate data.
+
+    Parameters
+    ----------
+    original : array
+        original RSS
+    surrogate : array
+        surrogate RSS matrix
+
+    Returns
+    -------
+    array
+        p-value for each frame
+    """
+
+    # Flatten array if it isn't already
+    if surrogate.shape[1] > 1:
+        surrogate = surrogate.flatten()
+
+    # Calculate p-value of original being higher than surrogate.
+    p = np.zeros(original.shape[0])
+    for i in range(original.shape[0]):
+        p[i] = np.mean(surrogate > original[i])
+
+    return p
+
+
+def find_significant_frames(p, pcrit=0.001, segments=True, rss=None):
+    """Find frames that are statistically significant.
+
+    Parameters
+    ----------
+    p : array
+        p-value at each frame
+    pcrit : float, optional
+        significance threshold, by default 0.001
+    segments : bool, optional
+        consider segments instead of sole points, by default True
+    rss : array, optional
+        array with the RSS, by default None
+
+    Returns
+    -------
+    array
+        indexes of the peak RSS values
+    """
+
+    idx = np.argwhere(p < pcrit)[:, 0]
+    if segments and (rss is not None):
+        # identify contiguous segments of frames that pass statistical test
+        dff = idx.T - range(len(idx))
+        unq = np.unique(dff)
+        nevents = len(unq)
+
+        # find the peak rss within each segment
+        idxpeak = np.zeros([nevents, 1])
+        for ievent in range(nevents):
+            idxevent = idx[dff.T == unq[ievent].T]
+            rssevent = rss[idxevent]
+            idxmax = np.argmax(rssevent)
+            idxpeak[ievent] = idxevent[idxmax]
+        idxpeak = idxpeak[:, 0].astype(int)
+    # get activity at peak
+    else:
+        idxpeak = idx
+
+    return idxpeak
+
+
 def circular_shift_randomization(y, n, t):
     """Perform randomization of time series."""
     z = np.copy(y)
@@ -101,32 +171,10 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segm
         hist_min = np.min(hist_ranges, axis=1)[0]
         hist_max = np.max(hist_ranges, axis=1)[1]
 
-    p = np.zeros([t, 1])
-    rssr_flat = rssr.flatten()
-    for i in range(t):
-        p[i] = np.mean(rssr_flat >= rss[i])
-    # apply statistical cutoff
-    pcrit = 0.001
+    # Calculate p-values and find significant frames
+    p = calculate_p_value(rss, rssr)
+    idxpeak = find_significant_frames(p, segments=segments)
 
-    # find frames that pass statistical testz_ts
-    idx = np.argwhere(p < pcrit)[:, 0]
-    if segments:
-        # identify contiguous segments of frames that pass statistical test
-        dff = idx.T - range(len(idx))
-        unq = np.unique(dff)
-        nevents = len(unq)
-
-        # find the peak rss within each segment
-        idxpeak = np.zeros([nevents, 1])
-        for ievent in range(nevents):
-            idxevent = idx[dff.T == unq[ievent].T]
-            rssevent = rss[idxevent]
-            idxmax = np.argmax(rssevent)
-            idxpeak[ievent] = idxevent[idxmax]
-        idxpeak = idxpeak[:, 0].astype(int)
-    # get activity at peak
-    else:
-        idxpeak = idx
     tspeaks = z_ts[idxpeak, :]
 
     # get co-fluctuation at peak

@@ -81,6 +81,7 @@ def _main(argv=None):
         data=options["data_path"][0],
         atlas=options["atlas"][0],
         output=options["output"][0],
+        mask=options["mask"][0],
         nsur=options["nsur"],
         njobs=options["njobs"],
     )

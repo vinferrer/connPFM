@@ -10,6 +10,7 @@ def _get_parser():
     reqoptions.add_argument("-i", "--input", dest="data_path", required=True, help="Input file")
     reqoptions.add_argument("-o", "--output", dest="output", required=True, help="Output file")
     reqoptions.add_argument("-a", "--atlas", dest="atlas", required=True, help="Atlas file")
+    reqoptions.add_argument("-m", "--mask", dest="mask", required=True, help="ROI mask")
 
     optoptions = parser.add_argument_group("Optional options")
     optoptions.add_argument(

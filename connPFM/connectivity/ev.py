@@ -223,7 +223,7 @@ def ev_workflow(
         _,
     )= event_detection(
         data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates
-    )[0]
+    )
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
@@ -243,7 +243,7 @@ def ev_workflow(
     plot_ets_matrix(ets_orig_denoised, out_dir, "_original", dvars, enorm, idxpeak_orig)
 
     # Plot ETS and denoised ETS matrices of AUC
-    plot_ets_matrix(ets_auc, out_dir, "_AUC_original", dvars, enorm, idxpeak_auc)
+    plot_ets_matrix(ets_auc, out_dir, "_AUC_original", dvars, enorm, idxpeak_auc,vmin)
     plot_ets_matrix(ets_auc_denoised, out_dir, "_AUC_denoised", dvars, enorm, idxpeak_auc)
 
     # Save RSS time-series as text file for easier visualization on AFNI

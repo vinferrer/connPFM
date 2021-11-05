@@ -159,7 +159,7 @@ def threshold_ets_matrix(ets_matrix, selected_idxs, thr):
 def calculate_hist(surrprefix, sursufix, irand, masker, hist_range, nbins=500):
     """Calculate histogram."""
     auc = masker.fit_transform(f"{surrprefix}{irand}{sursufix}.nii.gz")
-    [t, n] = auc.shape
+    [_, n] = auc.shape
     ets_temp, _, _ = calculate_ets(np.nan_to_num(auc), n)
 
     ets_hist, bin_edges = np.histogram(ets_temp.flatten(), bins=nbins, range=hist_range)
@@ -241,10 +241,9 @@ def ev_workflow(
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     plot_ets_matrix(ets_orig_denoised, out_dir, "_original", dvars, enorm, idxpeak_orig)
-
     # Plot ETS and denoised ETS matrices of AUC
-    plot_ets_matrix(ets_auc, out_dir, "_AUC_original", dvars, enorm, idxpeak_auc,vmin)
-    plot_ets_matrix(ets_auc_denoised, out_dir, "_AUC_denoised", dvars, enorm, idxpeak_auc)
+    plot_ets_matrix(ets_auc, out_dir, "_AUC_original", dvars, enorm, idxpeak_auc)
+    plot_ets_matrix(ets_auc_denoised, out_dir, "_AUC_denoised", dvars, enorm, idxpeak_auc,vmax=0.02)
 
     # Save RSS time-series as text file for easier visualization on AFNI
     if afni_text is not None:

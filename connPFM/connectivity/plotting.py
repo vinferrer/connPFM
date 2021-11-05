@@ -36,9 +36,9 @@ def plot_ets_matrix(
     Plots edge-time matrix
     """
     if vmin == None:
-            vmin = np.min(ets)
+        vmin = np.min(ets)
     if vmax == None:
-            vmax = np.max(ets)/2
+        vmax = np.max(ets) / 2
     if dvars_file is not None and enorm_file is not None:
         # Plot ETS matrix of original signal
         dvars = np.loadtxt(dvars_file)

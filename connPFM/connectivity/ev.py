@@ -12,7 +12,7 @@ from connPFM.connectivity.plotting import plot_ets_matrix
 LGR = logging.getLogger(__name__)
 
 
-def calculate_p_value(original, surrogate):
+def calculate_pvalue(original, surrogate):
     """Calculate p-value from surrogate data.
 
     Parameters

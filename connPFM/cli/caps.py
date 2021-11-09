@@ -16,13 +16,13 @@ def _get_parser():
     optoptions.add_argument(
         "-n",
         "--nsurrogates",
-        dest="nsurrogates",
+        dest="nsur",
         type=int,
         default=1000,
         help="Number of surrogates",
     )
     optoptions.add_argument(
-        "-j", "--jobs", dest="jobs", type=int, default=1, help="Number of jobs"
+        "-j", "--jobs", dest="njobs", type=int, default=-1, help="Number of jobs"
     )
 
     return parser

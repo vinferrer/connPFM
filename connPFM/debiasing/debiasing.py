@@ -27,9 +27,8 @@ def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
     # Read data
     data = masker.fit_transform(data_file)
 
-    z_ts = np.nan_to_num(zscore(data, ddof=1))
     # Get number of time points/nodes
-    [t, n] = z_ts.shape
+    [t, n] = data.shape
 
     # Get ETS indexes
     idx_u, idx_v = np.argwhere(np.triu(np.ones(n), 1)).T

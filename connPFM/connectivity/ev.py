@@ -33,11 +33,11 @@ def calculate_pvalue(original, surrogate):
         surrogate = surrogate.flatten()
 
     # Calculate p-value of original being higher than surrogate.
-    p = np.zeros(original.shape[0])
+    p_value = np.zeros(original.shape[0])
     for i in range(original.shape[0]):
-        p[i] = np.mean(surrogate > original[i])
+        p_value[i] = np.mean(surrogate >= original[i])
 
-    return p
+    return p_value
 
 
 def find_significant_frames(p, pcrit=0.001, segments=True, rss=None):

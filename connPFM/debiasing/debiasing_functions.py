@@ -92,7 +92,6 @@ def debiasing_spike(x, y, beta, nlambdas=20, groups=False, group_dist=3):
     beta_out = np.zeros(beta.shape)
     fitts_out = np.zeros(y.shape)
 
-
     x = x.hrf_norm.copy()
 
     index_voxels = np.unique(np.where(abs(beta) > 10 * np.finfo(float).eps)[1])

@@ -37,7 +37,7 @@ def read_data(path, mask, atlas=True,standard="psc"):
         return data
 
 
-def caps(data_path, atlas, mask, output,surrprefix =None,surrsufix = "", nsur=100, njobs=-1):
+def caps(data_path, atlas, mask, output,surrprefix =None,surrsufix = "", idx_out=None, nsur=100, njobs=-1):
     # Read original data and data inside ROI
     print("Reading data...")
     data, masker = read_data(data_path, atlas)
@@ -88,6 +88,10 @@ def caps(data_path, atlas, mask, output,surrprefix =None,surrsufix = "", nsur=10
         caps_mean_4d = masker.inverse_transform(caps_mean)
         caps_mean_4d.to_filename(output)
         atlas_mod.inverse_transform(output, data_path)
+    
+    if idx_out is not None:
+        np.savetxt(idx_out, idxpeak)
+
 
 
 def _main(argv=None):
@@ -104,6 +108,7 @@ def _main(argv=None):
         mask=options["mask"],
         surrprefix=options["surrprefix"],
         nsur=options["nsur"],
+        idx_out=options["idx_out"],
         njobs=options["njobs"],
     )
 

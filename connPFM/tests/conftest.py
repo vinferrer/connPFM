@@ -134,3 +134,10 @@ def fitt_file(testpath):
 @pytest.fixture
 def beta_block_file(testpath):
     return fetch_file("jhv7a", testpath, "beta_block.txt")
+
+
+@pytest.fixture
+def fitt_group_file(testpath):
+    return fetch_file(
+        "nuceq", testpath, "betafitt_spike_group.txt"
+    )

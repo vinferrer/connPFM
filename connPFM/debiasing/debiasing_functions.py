@@ -95,16 +95,13 @@ def debiasing_block(auc, hrf, y, is_ls):
     return (beta, S)
 
 
-def debiasing_spike(x, y, beta, fusion=False, nlambdas=20, groups=False, group_dist=3):
+def debiasing_spike(x, y, beta, nlambdas=20, groups=False, group_dist=3):
 
     beta_out = np.zeros(beta.shape)
     fitts_out = np.zeros(y.shape)
 
-    if fusion:
-        x_fit = x.hrf_norm.copy()
-        x = x.hrf_norm_fusion.copy()
-    else:
-        x = x.hrf_norm.copy()
+
+    x = x.hrf_norm.copy()
 
     index_voxels = np.unique(np.where(abs(beta) > 10 * np.finfo(float).eps)[1])
 
@@ -114,18 +111,7 @@ def debiasing_spike(x, y, beta, fusion=False, nlambdas=20, groups=False, group_d
         ]
         beta2save = np.zeros((beta.shape[0], 1))
 
-        if fusion:
-            x_masked = fusion_mask(x, index_events_opt)
-            y_vox = y[:, index_voxels[voxidx]]
-            n_zeros = x_masked.shape[0] - y_vox.shape[0]
-            y_vox = np.hstack((y_vox, np.zeros(n_zeros)))
-            max_lambda = abs(np.dot(x_masked.T, y_vox)).max()
-            lambda_range = np.linspace(0.05 * max_lambda, max_lambda, nlambdas)
-            clf = RidgeCV(alphas=lambda_range).fit(x_masked, y_vox)
-            beta2save[index_events_opt, 0] = clf.coef_
-            fitts_out[:, index_voxels[voxidx]] = np.squeeze(np.dot(x_fit, beta2save))
-            beta_out[:, index_voxels[voxidx]] = beta2save.reshape(len(beta2save))
-        elif groups:
+        if groups:
             X_events, index_events_opt_group = group_hrf(x, index_events_opt, group_dist)
             X_fit_events = X_events.copy()
 

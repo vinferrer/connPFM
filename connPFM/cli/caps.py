@@ -14,6 +14,14 @@ def _get_parser():
 
     optoptions = parser.add_argument_group("Optional options")
     optoptions.add_argument(
+        "-sp",
+        "--surrprefix",
+        dest="surrprefix",
+        type=str,
+        default=None,
+        help="surrogate prefix surrogates",
+    )
+    optoptions.add_argument(
         "-n",
         "--nsurrogates",
         dest="nsur",

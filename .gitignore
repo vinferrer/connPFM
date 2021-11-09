@@ -106,3 +106,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Nilearn cache
+*nilearn_cache*

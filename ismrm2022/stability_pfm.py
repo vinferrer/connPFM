@@ -5,7 +5,7 @@ from os.path import join as opj
 
 from connPFM.debiasing.debiasing import debiasing
 
-prj_dir = "/export/home/eurunuela/public/PARK_VFERRER/PFM_data/sub-002ParkMabCm_100"
+prj_dir = "/export/home/eurunuela/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100"
 auc_file = opj(prj_dir, "sub-002ParkMabCm_AUC_100.nii.gz")
 temp_dir = opj(prj_dir, "temp_sub-002ParkMabCm_100")
 data = opj(prj_dir, "pb06.sub-002ParkMabCm.denoised_no_censor.nii.gz")

@@ -7,14 +7,6 @@ from sklearn.linear_model import RidgeCV
 LGR = logging.getLogger(__name__)
 
 
-def fusion_mask(hrf, non_zero_idxs):
-    mask = np.zeros((hrf.shape[1], hrf.shape[1]))
-    mask[non_zero_idxs, non_zero_idxs] = 1
-    temp = hrf[hrf.shape[1] :, :] * mask
-    hrf_masked = np.vstack((hrf[: hrf.shape[1]], temp[non_zero_idxs, :]))
-    return hrf_masked[:, non_zero_idxs]
-
-
 def group_hrf(hrf, non_zero_idxs, group_dist=3):
 
     temp = np.zeros(hrf.shape[1])

@@ -30,6 +30,14 @@ def _get_parser():
         help="Number of surrogates",
     )
     optoptions.add_argument(
+        "-idx",
+        "--idx_peak",
+        dest="idx_out",
+        type=str,
+        default=None,
+        help="selected peak timepoins file",
+    )
+    optoptions.add_argument(
         "-j", "--jobs", dest="njobs", type=int, default=-1, help="Number of jobs"
     )
 

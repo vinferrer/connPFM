@@ -5,7 +5,6 @@ from os.path import basename, join
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
-from scipy.stats import zscore
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from connPFM.utils import atlas_mod

@@ -1,4 +1,3 @@
-from joblib.parallel import delayed
 import numpy as np
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker

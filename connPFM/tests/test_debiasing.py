@@ -7,8 +7,8 @@ from connPFM.utils.hrf_generator import HRFMatrix
 
 
 def test_debiasing_spike(
-    hrf_file, bold_file, atlas_file, ets_auc_denoised_file, beta_file, fitt_file
-    , fitt_group_file):
+    hrf_file, bold_file, atlas_file, ets_auc_denoised_file, beta_file, fitt_file, fitt_group_file
+):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
@@ -46,7 +46,7 @@ def test_debiasing_spike(
     deb_output = debiasing_spike(hrf, data, ets_mask)
     assert np.all(np.isclose(deb_output["beta"], masker.fit_transform(beta_file)))
     assert np.all(np.isclose(deb_output["betafitts"], masker.fit_transform(fitt_file)))
-    deb_group = debiasing_spike(hrf, data, ets_mask,groups=True)
+    deb_group = debiasing_spike(hrf, data, ets_mask, groups=True)
     assert np.all(np.isclose(deb_group["betafitts"], np.loadtxt(fitt_group_file)))
 
 

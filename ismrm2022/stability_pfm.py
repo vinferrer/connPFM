@@ -35,7 +35,7 @@ def main():
     masker = NiftiLabelsMasker(
         labels_img=atlas,
         standardize=False,
-        memory="nilearn_cache",
+        memory="",
         strategy="mean",
     )
 

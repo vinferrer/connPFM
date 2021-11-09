@@ -172,7 +172,7 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segm
         hist_max = np.max(hist_ranges, axis=1)[1]
 
     # Calculate p-values and find significant frames
-    p = calculate_p_value(rss, rssr)
+    p = calculate_pvalue(rss, rssr)
     idxpeak = find_significant_frames(p, segments=segments)
 
     tspeaks = z_ts[idxpeak, :]

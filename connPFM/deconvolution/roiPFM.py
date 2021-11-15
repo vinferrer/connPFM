@@ -38,9 +38,7 @@ def roiPFM(
     LGR.info("Masking data...")
     atlas_old = atlas
     atlas = atlas_mod.transform(atlas, data, dir)
-    masker = NiftiLabelsMasker(
-        labels_img=atlas, standardize="psc", memory="nilearn_cache", strategy="mean"
-    )
+    masker = NiftiLabelsMasker(labels_img=atlas, standardize="psc", strategy="mean")
     data_masked = masker.fit_transform(data)
     LGR.info("Data masked.")
 

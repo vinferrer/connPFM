@@ -19,7 +19,6 @@ def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
     masker = NiftiLabelsMasker(
         labels_img=mask,
         standardize=False,
-        memory="",
         strategy="mean",
     )
 

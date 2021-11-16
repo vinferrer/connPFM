@@ -213,7 +213,6 @@ jobs:
             - ./image.tar
   publish-trial:
     executor: docker-slim_trial
-    context: docker_login
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -234,6 +233,7 @@ workflows:
   version: 2.1
   run_tests:
     jobs:
+      context: docker_login
       - py39_env
       - build_slim
       - publish-trial:

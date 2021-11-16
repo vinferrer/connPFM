@@ -196,7 +196,7 @@ jobs:
           path: /tmp/data/lint
 
   build_slim:
-    executor: docker-slim
+    executor: docker-slim_trial
     steps:
       - checkout
       - setup_remote_docker
@@ -212,7 +212,7 @@ jobs:
           paths:
             - "/tmp/workspace/image.tar"
   publish-trial:
-    executor: docker-slim
+    executor: docker-slim_trial
     steps:
       - attach_workspace:
           at: /tmp/workspace

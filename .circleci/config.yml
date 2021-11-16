@@ -207,17 +207,16 @@ jobs:
       - run:
           name: Archive Docker image
           command: docker save -o image.tar $IMAGE_NAME
-      - save_cache:  # docker cache tied to dockerfile
-          key: deps1-{{ checksum "connPFM/docker_slim/Dockerfile" }}
+      - persist_to_workspace:
+          root: .
           paths:
-            - "/tmp/workspace/image.tar"
+            - ./image.tar
   publish-trial:
     executor: docker-slim_trial
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - restore_cache:  # load environment
-          key: deps1-{{ checksum "connPFM/docker_slim/Dockerfile" }}
+      - setup_remote_docker
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar

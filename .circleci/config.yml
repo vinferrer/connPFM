@@ -218,6 +218,9 @@ jobs:
           at: /tmp/workspace
       - setup_remote_docker
       - run:
+          name: check docker username
+          command: echo $DOCKERHUB_USERNAME
+      - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
       - run:
@@ -233,8 +236,7 @@ workflows:
       - py39_env
       - build_slim
       - publish-trial:
-          context:
-            - docker_login
+          context: docker_login
           requires:
             - build_slim
       - style_check:

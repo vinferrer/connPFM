@@ -5,6 +5,12 @@
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.5
+executors:
+  docker-slim_trial:
+    environment:
+      IMAGE_NAME: sento4000/connpfm_slim_trial
+    docker:
+      - image: circleci/buildpack-deps:stretch
 jobs:
 
   py36_unittest:
@@ -189,17 +195,64 @@ jobs:
       - store_artifacts:
           path: /tmp/data/lint
 
+  build_slim:
+    executor: docker-slim
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t $IMAGE_NAME:latest docker_slim
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - save_cache:  # docker cache tied to dockerfile
+          key: deps1-{{ checksum "connPFM/docker_slim/Dockerfile" }}
+          paths:
+            - "/tmp/workspace/image.tar"
+  publish-trial:
+    executor: docker-slim
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - restore_cache:  # load environment
+          key: deps1-{{ checksum "connPFM/docker_slim/Dockerfile" }}
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $IMAGE_NAME:latest
+
 workflows:
   version: 2.1
   run_tests:
     jobs:
       - py39_env
+      - build_slim
+      - publish-trial:
+          context:
+            - docker_login
+          requires:
+            - build_slim
       - style_check:
           requires:
             - py39_env
       - py39_unittest_and_coverage:
           requires:
             - py39_env
-      # - build_docs:
+      # - publish-latest:
+      #     context:
+      #      - docker_login
+      #     requires:
+      #       - build_slim
+      #       - py39_unittest_and_coverage
+      #     filters:
+      #       branches:
+      #         only: main
+      # # - build_docs:
       #     requires:
       #       - py39_env

@@ -236,7 +236,6 @@ workflows:
       - py39_env
       - build_slim
       - publish-trial:
-          context: docker-login
           requires:
             - build_slim
       - style_check:

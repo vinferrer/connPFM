@@ -233,7 +233,7 @@ workflows:
   version: 2.1
   run_tests:
     jobs:
-      context: docker_login
+      - context: docker_login
       - py39_env
       - build_slim
       - publish-trial:

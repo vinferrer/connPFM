@@ -201,9 +201,12 @@ jobs:
       - checkout
       - setup_remote_docker
       - attach_workspace:
-          at: /tmp/workspace
+          at: /tmp
+          paths:
+              - src/connPFM
+              - workspace/
       - restore_cache:  # load environment
-          key: deps1-{{ checksum "/tmp/workspace/connPFM/docker_slim/Dockerfile" }}
+          key: deps1-{{ checksum "/tmp/src/connPFM/docker_slim/Dockerfile" }}
       - run:
           name: Build Docker image
           command: |
@@ -212,7 +215,7 @@ jobs:
           name: Archive Docker image
           command: docker save -o image.tar $IMAGE_NAME
       - save_cache:  # environment cache tied to requirements
-          key: deps1-{{ checksum "/tmp/workspace/connPFM/docker_slim/Dockerfile" }}
+          key: deps1-{{ checksum "/tmp/src/connPFM/docker_slim/Dockerfile" }}
           paths:
             - /tmp/workspace/image.tar
   publish-trial:

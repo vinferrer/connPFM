@@ -9,9 +9,18 @@ if [[ -z "${INPUT_ARGS}" ]]; then
         INPUT_ARGS="$*"
     fi
 fi
-module unload python/python3.6
-module load python/venv
-source activate /bcbl/home/public/PARK_VFERRER/py38
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+module load singularity
+if ! command -v singularity &> /dev/null;
+then
+    echo " singularity could not be found tryng to execute with conda env"
+    module unload python/python3.6
+    module load python/venv
+    source activate /bcbl/home/public/PARK_VFERRER/py38
+    SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-python -u $SCRIPT_DIR/compute_slars.py $INPUT_ARGS
+    python -u $SCRIPT_DIR/compute_slars.py $INPUT_ARGS
+else
+    echo ${INPUT_ARGS[0]}
+    cd /bcbl/home/public/PARK_VFERRER
+    singularity exec --bind $HOME docker://sento4000/connpfm_slim_trial python -u /connPFM/connPFM/deconvolution/compute_slars.py $INPUT_ARGS
+fi

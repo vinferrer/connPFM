@@ -4,6 +4,7 @@ import subprocess
 import time
 
 import numpy as np
+from shutil import which
 
 LGR = logging.getLogger(__name__)
 
@@ -35,6 +36,9 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
 
     # Calculates number of TE
     nTE = int(hrf.shape[0] / nscans)
+    if which("singularity") is not None:
+        cmd = "singularity build $HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial"
+        subprocess.call(cmd, shell=True)
 
     last = 0
     LGR.info("Numer of voxels: {}".format(nvoxels))

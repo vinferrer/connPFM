@@ -36,7 +36,6 @@ def roiPFM(
 
     # TODO: make it multi-echo compatible
     LGR.info("Masking data...")
-    atlas_old = atlas
     atlas = atlas_mod.transform(atlas, data, dir)
     masker = NiftiLabelsMasker(labels_img=atlas, standardize="psc", strategy="mean")
     data_masked = masker.fit_transform(data)
@@ -87,7 +86,7 @@ def roiPFM(
             # Generate surrogate
             surrogate_name = os.path.join(dir, f"surrogate_{n_sur}.nii.gz")
             surrogate_masked = surrogate_generator.generate_surrogate(
-                data=data, atlas=atlas, atlas_orig=atlas_old, output=surrogate_name
+                data=data, atlas=atlas, output=surrogate_name
             )
             # Calculate AUC
             auc = run_stability_lars(

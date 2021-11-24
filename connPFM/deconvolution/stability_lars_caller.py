@@ -37,7 +37,8 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
     # Calculates number of TE
     nTE = int(hrf.shape[0] / nscans)
     if which("singularity") is not None:
-        cmd = "singularity build --force $HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial"
+        cmd = ("singularity build --force "
+               "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial")
         subprocess.call(cmd, shell=True)
 
     last = 0

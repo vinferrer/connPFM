@@ -60,8 +60,10 @@ def roiPFM(
 
     LGR.info("Running stability selection on original data...")
     if which("singularity") is not None:
-        cmd = ("singularity build --force "
-               "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial")
+        cmd = (
+            "singularity build --force "
+            "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial"
+        )
         subprocess.call(cmd, shell=True)
     auc = run_stability_lars(
         data=data_masked,

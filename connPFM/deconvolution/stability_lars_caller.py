@@ -2,7 +2,6 @@ import logging
 import os
 import subprocess
 import time
-from shutil import which
 
 import numpy as np
 

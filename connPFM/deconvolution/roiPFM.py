@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+from shutil import which
 
 from nilearn.input_data import NiftiLabelsMasker
 
@@ -58,6 +59,10 @@ def roiPFM(
     LGR.info("HRF generated.")
 
     LGR.info("Running stability selection on original data...")
+    if which("singularity") is not None:
+        cmd = ("singularity build --force "
+               "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial")
+        subprocess.call(cmd, shell=True)
     auc = run_stability_lars(
         data=data_masked,
         hrf=hrf,

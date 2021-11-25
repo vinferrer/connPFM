@@ -278,9 +278,8 @@ workflows:
     jobs:
       - py39_env
       - build_slim_trial:
-          filters:
-            branches:
-              only: /.*//dock\/.*/
+          hold:
+            type: approval
       - build_slim_latest:
           filters:
             branches:

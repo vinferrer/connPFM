@@ -202,7 +202,7 @@ jobs:
       - store_artifacts:
           path: /tmp/data/lint
 
-  build_slim_trial:
+  build_slim_trial: # this job creates a docker container for trial use only
     executor: docker-slim_trial
     steps:
       - checkout
@@ -219,7 +219,7 @@ jobs:
           paths:
             - ./image.tar
   
-  build_slim_latest:
+  build_slim_latest:  # this job creates a docker container that will be created in each push to main
     executor: docker-slim_latest
     steps:
       - checkout
@@ -236,7 +236,7 @@ jobs:
           paths:
             - ./image.tar
   
-  publish-trial:
+  publish-trial: #  # this job publishes the trial container in docker
     executor: docker-slim_trial
     steps:
       - attach_workspace:
@@ -254,7 +254,7 @@ jobs:
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
   
-  publish-latest:
+  publish-latest: # this job publishes the latest container in docker
     executor: docker-slim_latest
     steps:
       - attach_workspace:
@@ -295,8 +295,11 @@ workflows:
           filters:
             branches:
               only: main
-      - hold:
+      - hold: # this job allows us tu run certain jobs with manual approval
           type: approval
+          filter:
+            branches:
+              only: /pull\/.*/
       - build_slim_trial:
           requires:
             - hold

@@ -11,6 +11,13 @@ executors:
       IMAGE_NAME: sento4000/connpfm_slim_trial
     docker:
       - image: circleci/buildpack-deps:stretch
+
+  docker-slim_latest:
+    environment:
+      IMAGE_NAME: sento4000/connpfm_slim_latest
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
 jobs:
 
   py36_unittest:
@@ -195,7 +202,7 @@ jobs:
       - store_artifacts:
           path: /tmp/data/lint
 
-  build_slim:
+  build_slim_trial:
     executor: docker-slim_trial
     steps:
       - checkout
@@ -211,8 +218,44 @@ jobs:
           root: .
           paths:
             - ./image.tar
+  
+  build_slim_latest:
+    executor: docker-slim_latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t $IMAGE_NAME:latest docker_slim
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+  
   publish-trial:
     executor: docker-slim_trial
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: check docker username
+          command: echo $DOCKERHUB_USERNAME
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $IMAGE_NAME:latest
+  
+  publish-latest:
+    executor: docker-slim_latest
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -234,25 +277,26 @@ workflows:
   run_tests:
     jobs:
       - py39_env
-      - build_slim
+      - build_slim_trial:
+          filters:
+            branches:
+              only: /dock\/.*/
       - publish-trial:
           requires:
-            - build_slim
+            - build_slim_trial
       - style_check:
           requires:
             - py39_env
       - py39_unittest_and_coverage:
           requires:
             - py39_env
-      # - publish-latest:
-      #     context:
-      #      - docker_login
-      #     requires:
-      #       - build_slim
-      #       - py39_unittest_and_coverage
-      #     filters:
-      #       branches:
-      #         only: main
+      - publish-latest:
+          requires:
+            - build_slim
+            - py39_unittest_and_coverage
+          filters:
+            branches:
+              only: main
       # # - build_docs:
       #     requires:
       #       - py39_env

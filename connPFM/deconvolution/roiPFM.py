@@ -62,7 +62,7 @@ def roiPFM(
     if which("singularity") is not None:
         cmd = (
             "singularity build --force "
-            "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_trial"
+            "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_latest"
         )
         subprocess.call(cmd, shell=True)
     auc = run_stability_lars(

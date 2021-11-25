@@ -277,29 +277,32 @@ workflows:
   run_tests:
     jobs:
       - py39_env
-      - build_slim_trial:
-          requires:
-            - hold
-      - build_slim_latest:
-          filters:
-            branches:
-              only: main
-      - publish-trial:
-          requires:
-            - build_slim_trial
       - style_check:
           requires:
             - py39_env
       - py39_unittest_and_coverage:
           requires:
             - py39_env
-      - publish-latest:
+      - build_slim_latest:
           requires:
-            - build_slim_latest
-            - py39_unittest_and_coverage
+           - py39_unittest_and_coverage
           filters:
             branches:
               only: main
+      - publish-latest:
+          requires:
+            - build_slim_latest
+          filters:
+            branches:
+              only: main
+      - hold:
+          type: approval
+      - build_slim_trial:
+          requires:
+            - hold
+      - publish-trial:
+          requires:
+            - build_slim_trial
       # # - build_docs:
       #     requires:
       #       - py39_env

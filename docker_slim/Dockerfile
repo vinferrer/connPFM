@@ -9,8 +9,7 @@ ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update \
     && apt-get -qq install git \
-    && pr=$(echo https://api.github.com/repos/${CIRCLE_PULL_REQUEST:19} | sed "s/\/pull\//\/pulls\//") \
-    && base=$(curl -s $pr | jq '.base.ref')  \
+    && git clone https://github.com/SPiN-Lab/connPFM.git \
     && cd connPFM \
     && pip install --no-cache-dir -e . \
     && pip install PyWavelets

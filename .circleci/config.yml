@@ -280,7 +280,7 @@ workflows:
       - build_slim_trial:
           filters:
             branches:
-              only: /dock\/.*/
+              only: /.*//dock\/.*/
       - build_slim_latest:
           filters:
             branches:

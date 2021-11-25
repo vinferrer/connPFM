@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+from shutil import which
 
 from nilearn.input_data import NiftiLabelsMasker
 
@@ -36,7 +37,6 @@ def roiPFM(
 
     # TODO: make it multi-echo compatible
     LGR.info("Masking data...")
-    atlas_old = atlas
     atlas = atlas_mod.transform(atlas, data, dir)
     masker = NiftiLabelsMasker(labels_img=atlas, standardize="psc", strategy="mean")
     data_masked = masker.fit_transform(data)
@@ -59,6 +59,12 @@ def roiPFM(
     LGR.info("HRF generated.")
 
     LGR.info("Running stability selection on original data...")
+    if which("singularity") is not None:
+        cmd = (
+            "singularity build --force "
+            "$HOME/connpfm_slim.simg docker://sento4000/connpfm_slim_latest"
+        )
+        subprocess.call(cmd, shell=True)
     auc = run_stability_lars(
         data=data_masked,
         hrf=hrf,
@@ -87,7 +93,7 @@ def roiPFM(
             # Generate surrogate
             surrogate_name = os.path.join(dir, f"surrogate_{n_sur}.nii.gz")
             surrogate_masked = surrogate_generator.generate_surrogate(
-                data=data, atlas=atlas, atlas_orig=atlas_old, output=surrogate_name
+                data=data, atlas=atlas, output=surrogate_name
             )
             # Calculate AUC
             auc = run_stability_lars(

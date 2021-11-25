@@ -281,6 +281,10 @@ workflows:
           filters:
             branches:
               only: /dock\/.*/
+      - build_slim_latest:
+          filters:
+            branches:
+              only: main
       - publish-trial:
           requires:
             - build_slim_trial
@@ -292,7 +296,7 @@ workflows:
             - py39_env
       - publish-latest:
           requires:
-            - build_slim
+            - build_slim_latest
             - py39_unittest_and_coverage
           filters:
             branches:

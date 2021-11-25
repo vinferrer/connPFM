@@ -278,8 +278,8 @@ workflows:
     jobs:
       - py39_env
       - build_slim_trial:
-          hold:
-            type: approval
+          requires:
+            - hold
       - build_slim_latest:
           filters:
             branches:

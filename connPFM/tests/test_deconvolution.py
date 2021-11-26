@@ -4,7 +4,7 @@ import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
 
-def test_compute_slars(surr_dir):
+def test_stability_lars(surr_dir):
     """
     Test the SLARS computation
     """

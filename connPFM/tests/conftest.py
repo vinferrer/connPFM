@@ -68,17 +68,17 @@ def bold_file(testpath):
 
 @pytest.fixture
 def AUC_file(testpath):
-    return fetch_file("h6uv3", testpath, "sub-pixar123_task-pixar_AUC_100.nii.gz")
+    return fetch_file("nh6y9", testpath, "sub-pixar123_task-pixar_AUC_100_200_seed.nii.gz")
 
 
 @pytest.fixture
 def ets_auc_original_file(testpath):
-    return fetch_file("bnp4z", testpath, "ets_AUC_original.txt")
+    return fetch_file("56apy", testpath, "ets_AUC_original_200_seed.txt")
 
 
 @pytest.fixture
 def ets_auc_denoised_file(testpath):
-    return fetch_file("jvuwn", testpath, "ets_AUC_denoised.txt")
+    return fetch_file("57fcw", testpath, "ets_AUC_denoised_200_seed.txt")
 
 
 @pytest.fixture
@@ -120,14 +120,14 @@ def hrf_linear_file(testpath):
 @pytest.fixture
 def beta_file(testpath):
     return fetch_file(
-        "apuv9", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold_beta_ETS.nii.gz"
+        "2pmju", testpath, "sub-pixar123_task-pixar_beta_ETS.nii.gz"
     )
 
 
 @pytest.fixture
 def fitt_file(testpath):
     return fetch_file(
-        "c7g69", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold_fitt_ETS.nii.gz"
+        "ud369", testpath, "sub-pixar123_task-pixar_fitt_ETS.nii.gz"
     )
 
 

@@ -8,13 +8,13 @@ orbs:
 executors:
   docker-slim_trial:
     environment:
-      IMAGE_NAME: sento4000/connpfm_slim_trial
+      IMAGE_NAME: connpfm/connpfm_slim_trial
     docker:
       - image: circleci/buildpack-deps:stretch
 
   docker-slim_latest:
     environment:
-      IMAGE_NAME: sento4000/connpfm_slim_latest
+      IMAGE_NAME: connpfm/connpfm_slim_latest
     docker:
       - image: circleci/buildpack-deps:stretch
 
@@ -23,7 +23,7 @@ jobs:
   py36_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: connpfm/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -54,7 +54,7 @@ jobs:
   py37_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: connpfm/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -85,7 +85,7 @@ jobs:
   py38_unittest:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: connpfm/afni_miniconda
     steps:
       - checkout
       - persist_to_workspace:
@@ -147,7 +147,7 @@ jobs:
   py39_unittest_and_coverage:
     working_directory: /tmp/src/connPFM
     docker:
-      - image: sento4000/afni_miniconda
+      - image: connpfm/afni_miniconda
     steps:
       - attach_workspace:  # get connPFM
           at: /tmp

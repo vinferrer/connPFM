@@ -54,7 +54,6 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segm
     masker = NiftiLabelsMasker(
         labels_img=atlas,
         standardize=False,
-        memory="nilearn_cache",
         strategy="mean",
     )
 

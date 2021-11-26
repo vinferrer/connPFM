@@ -10,7 +10,6 @@ def test_calculate_ets(ets_auc_original_file, AUC_file, atlas_file):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
-        memory="nilearn_cache",
         strategy="mean",
         resampling_target=None,
     )
@@ -25,7 +24,6 @@ def test_rss_surr(AUC_file, atlas_file, surr_dir, rssr_auc_file):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
         standardize=False,
-        memory="nilearn_cache",
         strategy="mean",
     )
 

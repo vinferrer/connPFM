@@ -5,7 +5,6 @@ from os.path import basename, join
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
-from scipy.stats import zscore
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from connPFM.utils import atlas_mod
@@ -20,16 +19,14 @@ def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
     masker = NiftiLabelsMasker(
         labels_img=mask,
         standardize=False,
-        memory="nilearn_cache",
         strategy="mean",
     )
 
     # Read data
     data = masker.fit_transform(data_file)
 
-    z_ts = np.nan_to_num(zscore(data, ddof=1))
     # Get number of time points/nodes
-    [t, n] = z_ts.shape
+    [t, n] = data.shape
 
     # Get ETS indexes
     idx_u, idx_v = np.argwhere(np.triu(np.ones(n), 1)).T

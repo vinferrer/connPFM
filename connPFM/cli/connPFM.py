@@ -172,7 +172,7 @@ def _get_parser():
         "-m",
         "--matrix",
         dest="matrix",
-        help="Name of the auc dataset.",
+        help="Path to the connectivity matrix.",
         default=None,
         type=str,
         nargs=1,

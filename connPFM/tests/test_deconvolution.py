@@ -21,9 +21,7 @@ def test_stability_lars(surr_dir):
     # Load HRF
     filename_hrf = join(surr_dir, "hrf.npy")
     hrf = np.load(filename_hrf)
-
-    # Calculates number of TE
-    nTE = int(hrf.shape[0] / data.shape[0])
+    
     nvoxels = last - first + 1
     nscans = data.shape[0]
     auc = np.zeros((nscans, nvoxels))

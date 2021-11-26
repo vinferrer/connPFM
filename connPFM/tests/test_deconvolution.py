@@ -21,7 +21,7 @@ def test_stability_lars(surr_dir):
     # Load HRF
     filename_hrf = join(surr_dir, "hrf.npy")
     hrf = np.load(filename_hrf)
-    
+
     nvoxels = last - first + 1
     nscans = data.shape[0]
     auc = np.zeros((nscans, nvoxels))

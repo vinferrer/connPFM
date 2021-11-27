@@ -6,24 +6,25 @@ import pytest
 from nilearn.input_data import NiftiLabelsMasker
 
 
-def test_integration_pfm(testpath, bold_file, atlas_file, AUC_file, skip_integration):
+def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integration):
     if skip_integration:
         pytest.skip("Skipping integration test")
     auc_output = join(testpath, "auc_local.nii.gz")
     subprocess.call(
         "export mode=integration_pfm && "
         "connPFM -i {} -a {} --AUC {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
-            bold_file, atlas_file, auc_output
+            bold_file, atlas_1roi, auc_output
         ),
         shell=True,
     )
     masker = NiftiLabelsMasker(
-        labels_img=atlas_file,
+        labels_img=atlas_1roi,
         standardize=False,
         strategy="mean",
         resampling_target=None,
     )
     # compare the AUC values
+    breakpoint()
     auc_osf = masker.fit_transform(AUC_file)
     auc_local = masker.fit_transform(auc_output)
     np.all(auc_osf == auc_local)

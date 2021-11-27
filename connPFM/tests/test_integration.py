@@ -1,9 +1,7 @@
-import random
 import subprocess
 from os.path import basename, join
 
 import numpy as np
-import pandas as pd
 import pytest
 from nilearn.input_data import NiftiLabelsMasker
 

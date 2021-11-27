@@ -165,7 +165,7 @@ jobs:
       - codecov/upload:
           file: /tmp/src/connPFM/coverage.xml
 
-    py39_integration_and_coverage:
+  py39_integration_and_coverage:
     working_directory: /tmp/src/connPFM
     docker:
       - image: connpfm/afni_miniconda

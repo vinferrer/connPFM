@@ -12,7 +12,7 @@ lint:
 	@flake8 connPFM
 
 unittest:
-	@py.test -m "not integration" --cov-append --cov-report xml --cov-report term-missing --cov=connPFM connPFM
+	@py.test --skipintegration --cov-append --cov-report xml --cov-report term-missing --cov=connPFM connPFM
 
-performancetest:
-	@py.test -m "integration" --cov-append --cov-report xml --cov-report term-missing --cov=connPFM connPFM
+integration:
+	@py.test --cov-append --cov-report xml --cov-report term-missing --cov=connPFM connPFM/tests/test_integration.py

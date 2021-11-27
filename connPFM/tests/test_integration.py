@@ -11,7 +11,8 @@ def test_integration_pfm(testpath, bold_file, atlas_file, AUC_file, skip_integra
         pytest.skip("Skipping integration test")
     auc_output = join(testpath, "auc_local.nii.gz")
     subprocess.call(
-        "export mode=integration_pfm && connPFM -i {} -a {} --AUC {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
+        "export mode=integration_pfm && "
+        "connPFM -i {} -a {} --AUC {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
             bold_file, atlas_file, auc_output
         ),
         shell=True,

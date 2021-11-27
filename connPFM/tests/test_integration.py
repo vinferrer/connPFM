@@ -22,4 +22,11 @@ def test_integration_pfm(testpath,bold_file,atlas_file,AUC_file):
     auc_local=masker.fit_transform(auc_output)
     np.all(auc_osf==auc_local)
 
-    
+
+@pytest.mark.integration_ev
+def test_integration_ev(testpath,bold_file,atlas_file,AUC_file,ets_auc_denoised_file,surr_dir):
+    subprocess.call("connPFM -i {} -a {} --AUC {} -d {} -m {} -tr 1 -u vferrer -nsur 50 -w ev".format(bold_file,atlas_file,AUC_file,surr_dir,join(testpath,'ets_AUC_denoised.txt')),shell=True)
+    ets_auc_denoised_local=np.loadtxt(join(testpath,'ets_AUC_denoised.txt'))
+    ets_auc_osf=np.loadtxt(join(ets_auc_denoised_file))
+    np.all(ets_auc_denoised_local==ets_auc_osf)
+

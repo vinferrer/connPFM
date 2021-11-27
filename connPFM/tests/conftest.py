@@ -96,11 +96,10 @@ def atlas_file(testpath):
         "bhcrp", testpath, "Schaefer2018_100Parcels_17Networks_order_FSLMNI152_4mm.nii.gz"
     )
 
+
 @pytest.fixture
 def atlas_1roi(testpath):
-    return fetch_file(
-        "ankvr", testpath, "Schaefer_1Parcel_4mm.nii.gz"
-    )
+    return fetch_file("ankvr", testpath, "Schaefer_1Parcel_4mm.nii.gz")
 
 
 @pytest.fixture

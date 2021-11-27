@@ -119,16 +119,12 @@ def hrf_linear_file(testpath):
 
 @pytest.fixture
 def beta_file(testpath):
-    return fetch_file(
-        "2pmju", testpath, "sub-pixar123_task-pixar_beta_ETS.nii.gz"
-    )
+    return fetch_file("2pmju", testpath, "sub-pixar123_task-pixar_beta_ETS.nii.gz")
 
 
 @pytest.fixture
 def fitt_file(testpath):
-    return fetch_file(
-        "ud369", testpath, "sub-pixar123_task-pixar_fitt_ETS.nii.gz"
-    )
+    return fetch_file("ud369", testpath, "sub-pixar123_task-pixar_fitt_ETS.nii.gz")
 
 
 @pytest.fixture

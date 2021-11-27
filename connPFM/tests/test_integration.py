@@ -24,7 +24,6 @@ def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integra
         resampling_target=None,
     )
     # compare the AUC values
-    breakpoint()
     auc_osf = masker.fit_transform(AUC_file)
     auc_local = masker.fit_transform(auc_output)
     np.all(auc_osf == auc_local)

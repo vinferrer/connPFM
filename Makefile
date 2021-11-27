@@ -15,4 +15,5 @@ unittest:
 	@py.test --skipintegration --cov-append --cov-report xml --cov-report term-missing --cov=connPFM connPFM
 
 integration:
+	@pip install -e ".[test]"
 	@py.test --cov-append --cov-report xml --cov-report term-missing --cov=connPFM connPFM/tests/test_integration.py

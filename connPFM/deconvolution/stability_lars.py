@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from sklearn.linear_model import lars_path
 
@@ -11,6 +13,8 @@ class StabilityLars:
         self.maxiterfactor = maxiterfactor
 
     def _subsampling(self):
+        if "mode" in os.environ.keys():  # only for testing
+            np.random.seed(200)
         # Subsampling for Stability Selection
         if self.mode == 1:  # different time points are selected across echoes
             subsample_idx = np.sort(

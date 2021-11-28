@@ -26,7 +26,7 @@ def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integra
     # compare the AUC values
     auc_osf = masker.fit_transform(AUC_file)
     auc_local = masker.fit_transform(auc_output)
-    np.all(auc_osf == auc_local)
+    np.allclose(auc_osf, auc_local)
 
 
 def test_integration_ev(
@@ -42,7 +42,7 @@ def test_integration_ev(
     )
     ets_auc_denoised_local = np.loadtxt(join(testpath, "ets_AUC_denoised.txt"))
     ets_auc_osf = np.loadtxt(join(ets_auc_denoised_file))
-    np.all(ets_auc_denoised_local == ets_auc_osf)
+    np.allclose(ets_auc_denoised_local, ets_auc_osf)
 
 
 def test_integration_debias(
@@ -77,5 +77,5 @@ def test_integration_debias(
     fitt_local = masker.fit_transform(
         join(testpath, f"{basename(bold_file[:-7])}_fitt_ETS.nii.gz")
     )
-    np.all(beta_osf == beta_local)
-    np.all(fitt_osf == fitt_local)
+    np.allclose(beta_osf, beta_local)
+    np.allclose(fitt_osf, fitt_local)

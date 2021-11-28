@@ -321,12 +321,12 @@ workflows:
               only: main
       - hold: # this job allows us tu run certain jobs with manual approval
           type: approval
-          filter:
-            branches:
-              only: /pull\/.*/
       - build_slim_trial:
           requires:
             - hold
+          filter:
+            branches:
+              only: /pull\/.*/
       - publish-trial:
           requires:
             - build_slim_trial

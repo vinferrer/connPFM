@@ -1,5 +1,5 @@
 import subprocess
-from os.path import basename, join
+from os.path import basename, dirname, join
 
 import numpy as np
 import pytest
@@ -35,12 +35,13 @@ def test_integration_ev(
     if skip_integration:
         pytest.skip("Skipping integration test")
     subprocess.call(
-        "connPFM -i {} -a {} --AUC {} -d {} -m {} -tr 1 -u vferrer -nsur 50 -w ev".format(
-            bold_file, atlas_file, AUC_file, surr_dir, join(testpath, "ets_AUC_denoised.txt")
+        "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -nsur 50 -w ev".format(
+            bold_file, atlas_file, AUC_file, surr_dir
         ),
         shell=True,
     )
-    ets_auc_denoised_local = np.loadtxt(join(testpath, "ets_AUC_denoised.txt"))
+    breakpoint()
+    ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))
     ets_auc_osf = np.loadtxt(join(ets_auc_denoised_file))
     np.allclose(ets_auc_denoised_local, ets_auc_osf)
 
@@ -77,5 +78,6 @@ def test_integration_debias(
     fitt_local = masker.fit_transform(
         join(testpath, f"{basename(bold_file[:-7])}_fitt_ETS.nii.gz")
     )
+
     np.allclose(beta_osf, beta_local)
     np.allclose(fitt_osf, fitt_local)

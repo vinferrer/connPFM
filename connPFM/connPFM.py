@@ -79,7 +79,7 @@ def _main(argv=None):
             options["atlas"][0],
             ets_auc_denoised,
             options["tr"][0],
-            os.path.dirname(options["auc"][0]),
+            options["prefix"],
             history_str,
         )
     elif selected_workflow == "pfm":
@@ -107,7 +107,7 @@ def _main(argv=None):
             options["auc"][0],
             options["atlas"][0],
             dir,
-            options["prefix"],
+            os.path.dirname(options["auc"][0]),
             options["nsurrogates"][0],
             history_str,
         )

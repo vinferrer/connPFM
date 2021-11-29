@@ -42,7 +42,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
     # calcuate rss
     rssr = np.sqrt(np.sum(np.square(etsr), axis=1))
 
-    return (rssr, etsr, np.min(etsr), np.max(etsr))
+    return (rssr, np.min(etsr), np.max(etsr))
 
 
 def remove_neighboring_peaks(rss, idx):

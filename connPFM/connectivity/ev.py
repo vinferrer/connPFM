@@ -14,7 +14,13 @@ LGR = logging.getLogger(__name__)
 
 
 def event_detection(
-    data_file, atlas, peak_detection="rss", surrprefix="", sursufix="", nsur=100, segments=True
+    data_file,
+    atlas,
+    surrprefix="",
+    sursufix="",
+    nsur=100,
+    segments=True,
+    peak_detection="rss",
 ):
     """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
@@ -42,9 +48,11 @@ def event_detection(
     # Initialize array of indices of detected peaks
     idxpeak = np.zeros(t)
 
-    # Initialize RSS and RSSR with zeros
+    # Initialize RSS with zeros
     rss = np.zeros(t)
-    rssr = np.zeros(t)
+
+    # Initialize array for null RSS
+    rssr = np.zeros([t, nsur])
 
     # calculate ets and rss of surrogate data
     surrogate_events = Parallel(n_jobs=-1, backend="multiprocessing")(
@@ -54,8 +62,8 @@ def event_detection(
 
     hist_ranges = np.zeros((2, nsur))
     for irand in range(nsur):
-        hist_ranges[0, irand] = surrogate_events[irand][2]
-        hist_ranges[1, irand] = surrogate_events[irand][3]
+        hist_ranges[0, irand] = surrogate_events[irand][1]
+        hist_ranges[1, irand] = surrogate_events[irand][2]
 
     hist_min = np.min(hist_ranges, axis=1)[0]
     hist_max = np.max(hist_ranges, axis=1)[1]
@@ -65,8 +73,6 @@ def event_detection(
         LGR.info("Selecting points with RSS...")
         # calculate rss
         rss = np.sqrt(np.sum(np.square(ets), axis=1))
-        # initialize array for null rss
-        rssr = np.zeros([t, nsur])
 
         for irand in range(nsur):
             rssr[:, irand] = surrogate_events[irand][0]
@@ -100,11 +106,8 @@ def event_detection(
         else:
             idxpeak = idx
 
-        # Get peaks on original time-series
-        tspeaks = z_ts[idxpeak, :]
-
         # get co-fluctuation at peaks
-        etspeaks = tspeaks[:, u] * tspeaks[:, v]
+        etspeaks = utils.threshold_ets_matrix(ets, thr=0, selected_idxs=idxpeak)
 
     # Make selection of points with edge time-series matrix
     elif "ets" in peak_detection:

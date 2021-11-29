@@ -78,7 +78,7 @@ def ets_auc_original_file(testpath):
 
 @pytest.fixture
 def ets_auc_denoised_file(testpath):
-    return fetch_file("57fcw", testpath, "ets_AUC_denoised_200_seed.txt")
+    return fetch_file("j96my", testpath, "ets_AUC_denoised_200_seed.txt")
 
 
 @pytest.fixture

@@ -1,7 +1,6 @@
 """Main workflow to perform event detection."""
 import logging
 from os.path import join
-from time import time
 
 import numpy as np
 from joblib import Parallel, delayed
@@ -37,6 +36,16 @@ def event_detection(
     # calculate ets
     ets, u, v = utils.calculate_ets(z_ts, n)
 
+    # Initialize thresholded edge time-series matrix with zeros
+    etspeaks = np.zeros(ets.shape)
+
+    # Initialize array of indices of detected peaks
+    idxpeak = np.zeros(t)
+
+    # Initialize RSS and RSSR with zeros
+    rss = np.zeros(t)
+    rssr = np.zeros(t)
+
     # calculate ets and rss of surrogate data
     surrogate_events = Parallel(n_jobs=-1, backend="multiprocessing")(
         delayed(utils.rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand)
@@ -53,6 +62,7 @@ def event_detection(
 
     # Make selection of points with RSS
     if "rss" in peak_detection:
+        LGR.info("Selecting points with RSS...")
         # calculate rss
         rss = np.sqrt(np.sum(np.square(ets), axis=1))
         # initialize array for null rss
@@ -98,6 +108,7 @@ def event_detection(
 
     # Make selection of points with edge time-series matrix
     elif "ets" in peak_detection:
+        LGR.info("Selecting points with edge time-series matrix...")
         if peak_detection == "ets":
             LGR.info("Reading AUC of surrogates to perform the thresholding step...")
             thr = utils.surrogates_histogram(

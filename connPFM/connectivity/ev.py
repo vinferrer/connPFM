@@ -153,6 +153,7 @@ def ev_workflow(
     enorm=None,
     afni_text=None,
     history_str="",
+    peak_detection="rss",
 ):
     """
     Main function to perform event detection and plot results.

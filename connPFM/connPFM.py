@@ -72,6 +72,7 @@ def _main(argv=None):
             os.path.dirname(options["auc"][0]),
             options["nsurrogates"][0],
             history_str,
+            options["peak_detection"][0],
         )
         LGR.info("Perform debiasing based on edge-time matrix.")
         debiasing(
@@ -110,6 +111,7 @@ def _main(argv=None):
             os.path.dirname(options["auc"][0]),
             options["nsurrogates"][0],
             history_str,
+            options["peak_detection"][0],
         )
     elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])

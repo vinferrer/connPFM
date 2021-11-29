@@ -60,7 +60,12 @@ def test_integration_debias(
         pytest.skip("Skipping integration test")
     subprocess.call(
         "connPFM -i {} -a {} --AUC {} -d {} -m {} -tr 1 -u vferrer -nsur 50 -w debias --prefix {}".format(
-            bold_file, atlas_file, AUC_file, surr_dir, ets_auc_denoised_file, join(testpath, f"{basename(bold_file[:-7])}")
+            bold_file,
+            atlas_file,
+            AUC_file,
+            surr_dir,
+            ets_auc_denoised_file,
+            join(testpath, f"{basename(bold_file[:-7])}"),
         ),
         shell=True,
     )

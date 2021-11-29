@@ -7,8 +7,8 @@ from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
 
-from connPFM.connectivity.plotting import plot_ets_matrix
 from connPFM.connectivity import utils
+from connPFM.connectivity.plotting import plot_ets_matrix
 
 LGR = logging.getLogger(__name__)
 

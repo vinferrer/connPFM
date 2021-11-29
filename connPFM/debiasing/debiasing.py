@@ -1,7 +1,6 @@
 """Main debiasing workflow."""
 import logging
 import subprocess
-from os.path import basename, join
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker

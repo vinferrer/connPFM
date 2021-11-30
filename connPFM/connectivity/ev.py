@@ -7,7 +7,7 @@ from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
 
-from connPFM.connectivity import utils
+from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
 
 LGR = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ def event_detection(
     [t, n] = z_ts.shape
 
     # calculate ets
-    ets, u, v = utils.calculate_ets(z_ts, n)
+    ets, u, v = connectivity_utils.calculate_ets(z_ts, n)
 
     # Initialize thresholded edge time-series matrix with zeros
     etspeaks = np.zeros(ets.shape)
@@ -56,7 +56,7 @@ def event_detection(
 
     # calculate ets and rss of surrogate data
     surrogate_events = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(utils.rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand)
+        delayed(connectivity_utils.rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand)
         for irand in range(nsur)
     )
 
@@ -101,20 +101,20 @@ def event_detection(
         # find frames that pass statistical testz_ts
         idx = np.argwhere(p < pcrit)[:, 0]
         if segments:
-            idxpeak = utils.remove_neighboring_peaks(rss, idx)
+            idxpeak = connectivity_utils.remove_neighboring_peaks(rss, idx)
         # get activity at peak
         else:
             idxpeak = idx
 
         # get co-fluctuation at peaks
-        etspeaks = utils.threshold_ets_matrix(ets, thr=0, selected_idxs=idxpeak)
+        etspeaks = connectivity_utils.threshold_ets_matrix(ets, thr=0, selected_idxs=idxpeak)
 
     # Make selection of points with edge time-series matrix
     elif "ets" in peak_detection:
         LGR.info("Selecting points with edge time-series matrix...")
         if peak_detection == "ets":
             LGR.info("Reading AUC of surrogates to perform the thresholding step...")
-            thr = utils.surrogates_histogram(
+            thr = connectivity_utils.surrogates_histogram(
                 surrprefix,
                 sursufix,
                 masker,
@@ -125,7 +125,7 @@ def event_detection(
             # Initialize array for threshold
             thr = np.zeros(t)
             for time_idx in range(t):
-                thr[time_idx] = utils.surrogates_histogram(
+                thr[time_idx] = connectivity_utils.surrogates_histogram(
                     surrprefix,
                     sursufix,
                     masker,
@@ -134,7 +134,7 @@ def event_detection(
                     time_point=time_idx,
                 )
         # Apply threshold on edge time-series matrix
-        etspeaks = utils.threshold_ets_matrix(ets, thr)
+        etspeaks = connectivity_utils.threshold_ets_matrix(ets, thr)
 
     # calculate mean co-fluctuation (edge time series) across all peaks
     mu = np.nanmean(etspeaks, 0)

@@ -189,4 +189,5 @@ def ev_workflow(
         np.savetxt(afni_text, rss_out)
 
     np.savetxt(join(out_dir, "ets_AUC_denoised.txt"), ets_auc_denoised)
+
     return ets_auc_denoised

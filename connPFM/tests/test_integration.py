@@ -34,13 +34,13 @@ def test_integration_ev(
 ):
     if skip_integration:
         pytest.skip("Skipping integration test")
+
     subprocess.call(
         "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -nsur 50 -w ev".format(
             bold_file, atlas_file, AUC_file, surr_dir
         ),
         shell=True,
     )
-    breakpoint()
     ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))
     ets_auc_osf = np.loadtxt(join(ets_auc_denoised_file))
     np.allclose(ets_auc_denoised_local, ets_auc_osf)

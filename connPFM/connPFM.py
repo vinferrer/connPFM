@@ -104,14 +104,14 @@ def _main(argv=None):
         )
     elif selected_workflow == "ev":
         ev_workflow(
-            options["data"][0],
-            options["auc"][0],
-            options["atlas"][0],
-            dir,
-            os.path.dirname(options["auc"][0]),
-            options["nsurrogates"][0],
-            history_str,
-            options["peak_detection"][0],
+            data_file=options["data"][0],
+            auc_file=options["auc"][0],
+            atlas=options["atlas"][0],
+            surr_dir=dir,
+            out_dir=os.path.dirname(options["auc"][0]),
+            nsurrogates=options["nsurrogates"][0],
+            history_str=history_str,
+            peak_detection=options["peak_detection"][0],
         )
     elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])

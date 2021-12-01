@@ -92,8 +92,9 @@ def threshold_ets_matrix(ets_matrix, thr, selected_idxs=None):
         thresholded_matrix = ets_matrix
 
     # Threshold ETS matrix based on surrogate percentile
-    if type(thr) is float:
-        thresholded_matrix -= thr
+    # if thr is not an array, subtract it from the matrix
+    if type(thr) is not np.ndarray:
+        thresholded_matrix = thresholded_matrix - thr
     else:
         thresholded_matrix -= thr[:, None]
 
@@ -102,18 +103,31 @@ def threshold_ets_matrix(ets_matrix, thr, selected_idxs=None):
     return thresholded_matrix
 
 
-def calculate_hist(surrprefix, sursufix, irand, masker, hist_range, nbins=500, time_point=None):
-    """Calculate histogram."""
+def calculate_surrogate_ets(surrprefix, sursufix, irand, masker):
+    """Read surrogate data."""
     auc = masker.fit_transform(f"{surrprefix}{irand}{sursufix}.nii.gz")
     [t, n] = auc.shape
-    ets_temp, _, _ = calculate_ets(np.nan_to_num(auc), n)
+    ets, _, _ = calculate_ets(np.nan_to_num(auc), n)
 
-    if time_point is not None and type(time_point) is int:
-        ets_temp = ets_temp[time_point, :]
+    return ets
+
+
+def calculate_hist(surrprefix, sursufix, irand, masker, hist_range, nbins=500,):
+    """Calculate histogram."""
+    ets_temp = calculate_surrogate_ets(surrprefix, sursufix, irand, masker)
 
     ets_hist, bin_edges = np.histogram(ets_temp.flatten(), bins=nbins, range=hist_range)
 
     return (ets_hist, bin_edges)
+
+
+def calculate_hist_threshold(hist, bins, percentile=95):
+    """Calculate histogram threshold."""
+    ets_hist_sum = np.sum(hist, axis=0)
+    cumsum_percentile = np.cumsum(ets_hist_sum) / np.sum(ets_hist_sum) * 100
+    thr = bins[len(cumsum_percentile[cumsum_percentile <= percentile])]
+
+    return thr
 
 
 def surrogates_histogram(
@@ -124,7 +138,6 @@ def surrogates_histogram(
     numrand=100,
     nbins=500,
     percentile=95,
-    time_point=None,
 ):
     """
     Read AUCs of surrogates, calculate histogram and sum of all histograms to
@@ -132,8 +145,9 @@ def surrogates_histogram(
     """
     ets_hist = np.zeros((numrand, nbins))
 
+    # calculate histogram for each surrogate
     hist = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(calculate_hist)(surrprefix, sursufix, irand, masker, hist_range, nbins, time_point)
+        delayed(calculate_hist)(surrprefix, sursufix, irand, masker, hist_range, nbins)
         for irand in range(numrand)
     )
 
@@ -142,8 +156,7 @@ def surrogates_histogram(
 
     bin_edges = hist[0][1]
 
-    ets_hist_sum = np.sum(ets_hist, axis=0)
-    cumsum_percentile = np.cumsum(ets_hist_sum) / np.sum(ets_hist_sum) * 100
-    thr = bin_edges[len(cumsum_percentile[cumsum_percentile <= percentile])]
+    # calculate histogram threshold
+    thr = calculate_hist_threshold(ets_hist, bin_edges, percentile)
 
     return thr

@@ -125,15 +125,36 @@ def event_detection(
         elif peak_detection == "ets_time":
             # Initialize array for threshold
             thr = np.zeros(t)
-            for time_idx in range(t):
-                thr[time_idx] = connectivity_utils.surrogates_histogram(
+
+            # Calculate ETS matrix of each surrogate
+            sur_ets = Parallel(n_jobs=-1, backend="multiprocessing")(
+                delayed(connectivity_utils.calculate_surrogate_ets)(
                     surrprefix,
                     sursufix,
+                    irand,
                     masker,
-                    hist_range=(hist_min, hist_max),
-                    numrand=nsur,
-                    time_point=time_idx,
                 )
+                for irand in range(nsur)
+            )
+
+            # initialize array for surrogate ets at each time point
+            sur_ets_at_time = np.zeros((nsur, sur_ets[0].shape[1]))
+
+            for time_idx in range(t):
+                # get first column of all sur_ets into a matrix
+                for sur_idx in range(nsur):
+                    sur_ets_at_time[sur_idx, :] = sur_ets[sur_idx][time_idx, :]
+
+                # calculate histogram of all surrogate ets at time point
+                hist, bins = np.histogram(
+                    sur_ets_at_time.flatten(), bins=500, range=(hist_min, hist_max)
+                )
+
+                # calculate threshold for time point
+                thr[time_idx] = connectivity_utils.calculate_hist_threshold(
+                    hist, bins, percentile=95
+                )
+
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets, thr)
 

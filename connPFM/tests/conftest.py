@@ -140,3 +140,13 @@ def beta_block_file(testpath):
 @pytest.fixture
 def fitt_group_file(testpath):
     return fetch_file("nuceq", testpath, "betafitt_spike_group.txt")
+
+
+@pytest.fixture
+def ets_auc_all(testpath):
+    return fetch_file("dqyxs", testpath, "ets_AUC_all.npy")
+
+
+@pytest.fixture
+def ets_auc_denoised_all(testpath):
+    return fetch_file("c6xq4", testpath, "ets_AUC_denoised_all.npy")

@@ -3,7 +3,7 @@ from os.path import join
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
-from connPFM.connectivity import ev, connectivity_utils
+from connPFM.connectivity import connectivity_utils, ev
 
 
 def test_calculate_ets(ets_auc_original_file, AUC_file, atlas_file):
@@ -46,7 +46,7 @@ def test_threshold_ets_matrix():
 
 
 def test_event_detection_rss(
-    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
+    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file
 ):
     # Test event detection with RSS option
     (ets_rss, _, _, _, ets_denoised_rss, _, _, _,) = ev.event_detection(
@@ -61,7 +61,7 @@ def test_event_detection_rss(
 
 
 def test_event_detection_rss_time(
-    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
+    AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all
 ):
     # Test event detection with RSS_time option
     (ets_rss_time, _, _, _, ets_denoised_rss_time, _, _, _,) = ev.event_detection(
@@ -72,13 +72,11 @@ def test_event_detection_rss_time(
         peak_detection="rss_time",
     )
 
-    # assert np.allclose(ets_rss_time, np.loadtxt(ets_auc_original_file))
-    # assert np.allclose(ets_denoised_rss_time, np.loadtxt(ets_auc_denoised_file))
+    assert np.allclose(ets_rss_time, np.load(ets_auc_all)[:, :, 1])
+    assert np.allclose(ets_denoised_rss_time, np.load(ets_auc_denoised_all)[:, :, 1])
 
 
-def test_event_detection_ets(
-    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
-):
+def test_event_detection_ets(AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all):
     # Test event detection with ETS option
     (ets, _, _, _, ets_denoised, _, _, _,) = ev.event_detection(
         data_file=AUC_file,
@@ -88,12 +86,12 @@ def test_event_detection_ets(
         peak_detection="ets",
     )
 
-    # assert np.allclose(ets, np.loadtxt(ets_auc_original_file))
-    # assert np.allclose(ets_denoised, np.loadtxt(ets_auc_denoised_file))
+    assert np.allclose(ets, np.load(ets_auc_all)[:, :, 2])
+    assert np.allclose(ets_denoised, np.load(ets_auc_denoised_all)[:, :, 2])
 
 
 def test_event_detection_ets_time(
-    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
+    AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all
 ):
     # Test event detection with ETS_time option
     (ets_time, _, _, _, ets_denoised_time, _, _, _,) = ev.event_detection(
@@ -104,6 +102,5 @@ def test_event_detection_ets_time(
         peak_detection="ets_time",
     )
 
-    # assert np.allclose(ets_time, np.loadtxt(ets_auc_original_file))
-    # assert np.allclose(ets_denoised_time, np.loadtxt(ets_auc_denoised_file))
-    breakpoint()
+    assert np.allclose(ets_time, np.load(ets_auc_all)[:, :, 3])
+    assert np.allclose(ets_denoised_time, np.load(ets_auc_denoised_all)[:, :, 3])

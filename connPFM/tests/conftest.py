@@ -150,3 +150,13 @@ def ets_auc_all(testpath):
 @pytest.fixture
 def ets_auc_denoised_all(testpath):
     return fetch_file("c6xq4", testpath, "ets_AUC_denoised_all.npy")
+
+
+@pytest.fixture
+def surrogate_ets_file(testpath):
+    return fetch_file("sqrce", testpath, "surrogate_ets.npy")
+
+
+@pytest.fixture
+def surrogate_hist_file(testpath):
+    return fetch_file("3b6ge", testpath, "surrogate_hist.npy")

@@ -46,6 +46,36 @@ def test_threshold_ets_matrix():
     assert np.allclose(th_dum, dum_mat2)
 
 
+def test_calculate_surrogate_ets(atlas_file, surr_dir, surrogate_ets_file):
+    masker = NiftiLabelsMasker(
+        labels_img=atlas_file,
+        standardize=False,
+        strategy="mean",
+    )
+    # Test surrogate ets calculation
+    ets_surr = connectivity_utils.calculate_surrogate_ets(
+        surrprefix=join(surr_dir, "surrogate_AUC_"), sursufix="", irand=0, masker=masker
+    )
+    assert np.allclose(ets_surr, np.load(surrogate_ets_file))
+
+
+def test_calculate_hist(atlas_file, surr_dir, surrogate_hist_file):
+    masker = NiftiLabelsMasker(
+        labels_img=atlas_file,
+        standardize=False,
+        strategy="mean",
+    )
+    # Test calculate_hist
+    hist, _ = connectivity_utils.calculate_hist(
+        surrprefix=join(surr_dir, "surrogate_AUC_"),
+        sursufix="",
+        irand=0,
+        masker=masker,
+        hist_range=(0, 1),
+    )
+    assert np.allclose(hist, np.load(surrogate_hist_file))
+
+
 def test_event_detection_rss(
     AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file
 ):

@@ -45,11 +45,65 @@ def test_threshold_ets_matrix():
     assert np.all(th_dum == dum_mat2)
 
 
-def test_event_detection(
+def test_event_detection_rss(
     AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
 ):
-    (ets_auc, _, _, _, ets_auc_denoised, _, _, _,) = ev.event_detection(
-        data_file=AUC_file, atlas=atlas_file, surrprefix=join(surr_dir, "surrogate_AUC_"), nsur=10
+    # Test event detection with RSS option
+    (ets_rss, _, _, _, ets_denoised_rss, _, _, _,) = ev.event_detection(
+        data_file=AUC_file,
+        atlas=atlas_file,
+        surrprefix=join(surr_dir, "surrogate_AUC_"),
+        nsur=10,
+        peak_detection="rss",
     )
-    assert np.allclose(ets_auc, np.loadtxt(ets_auc_original_file))
-    assert np.allclose(ets_auc_denoised, np.loadtxt(ets_auc_denoised_file))
+    assert np.allclose(ets_rss, np.loadtxt(ets_auc_original_file))
+    assert np.allclose(ets_denoised_rss, np.loadtxt(ets_auc_denoised_file))
+
+
+def test_event_detection_rss_time(
+    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
+):
+    # Test event detection with RSS_time option
+    (ets_rss_time, _, _, _, ets_denoised_rss_time, _, _, _,) = ev.event_detection(
+        data_file=AUC_file,
+        atlas=atlas_file,
+        surrprefix=join(surr_dir, "surrogate_AUC_"),
+        nsur=10,
+        peak_detection="rss_time",
+    )
+
+    # assert np.allclose(ets_rss_time, np.loadtxt(ets_auc_original_file))
+    # assert np.allclose(ets_denoised_rss_time, np.loadtxt(ets_auc_denoised_file))
+
+
+def test_event_detection_ets(
+    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
+):
+    # Test event detection with ETS option
+    (ets, _, _, _, ets_denoised, _, _, _,) = ev.event_detection(
+        data_file=AUC_file,
+        atlas=atlas_file,
+        surrprefix=join(surr_dir, "surrogate_AUC_"),
+        nsur=10,
+        peak_detection="ets",
+    )
+
+    # assert np.allclose(ets, np.loadtxt(ets_auc_original_file))
+    # assert np.allclose(ets_denoised, np.loadtxt(ets_auc_denoised_file))
+
+
+def test_event_detection_ets_time(
+    AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file, rssr_auc_file
+):
+    # Test event detection with ETS_time option
+    (ets_time, _, _, _, ets_denoised_time, _, _, _,) = ev.event_detection(
+        data_file=AUC_file,
+        atlas=atlas_file,
+        surrprefix=join(surr_dir, "surrogate_AUC_"),
+        nsur=10,
+        peak_detection="ets_time",
+    )
+
+    # assert np.allclose(ets_time, np.loadtxt(ets_auc_original_file))
+    # assert np.allclose(ets_denoised_time, np.loadtxt(ets_auc_denoised_file))
+    breakpoint()

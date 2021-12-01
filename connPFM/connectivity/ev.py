@@ -81,8 +81,9 @@ def event_detection(
         if "AUC" in surrprefix:
             rssr[0, :] = 0
 
-        # Initialize p-values array
-        p = np.zeros([t, 1])
+        # Initialize p-values array with ones to avoid default values being lower
+        # than the threshold p-value
+        p_value = np.ones(t)
 
         # Statistical cutoff
         pcrit = 0.001
@@ -91,15 +92,15 @@ def event_detection(
         if peak_detection == "rss":
             rssr_flat = rssr.flatten()
             for i in range(t):
-                p[i] = np.mean(rssr_flat >= rss[i])
+                p_value[i] = np.mean(rssr_flat >= rss[i])
 
         # Find peaks with a different threshold for each time-point in RSS
         elif peak_detection == "rss_time":
             for i in range(t):
-                p[i] = np.mean(np.squeeze(rssr[i, :]) >= rss[i])
+                p_value[i] = np.mean(np.squeeze(rssr[i, :]) >= rss[i])
 
         # find frames that pass statistical testz_ts
-        idx = np.argwhere(p < pcrit)[:, 0]
+        idx = np.argwhere(p_value < pcrit)[:, 0]
         if segments:
             idxpeak = connectivity_utils.remove_neighboring_peaks(rss, idx)
         # get activity at peak

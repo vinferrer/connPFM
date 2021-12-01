@@ -92,7 +92,12 @@ def threshold_ets_matrix(ets_matrix, thr, selected_idxs=None):
         thresholded_matrix = ets_matrix
 
     # Threshold ETS matrix based on surrogate percentile
-    thresholded_matrix[abs(thresholded_matrix) < thr] = 0
+    if type(thr) is float:
+        thresholded_matrix -= thr
+    else:
+        thresholded_matrix -= thr[:, None]
+
+    thresholded_matrix[thresholded_matrix < 0] = 0
 
     return thresholded_matrix
 

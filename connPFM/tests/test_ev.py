@@ -37,12 +37,11 @@ def test_rss_surr(AUC_file, atlas_file, surr_dir, rssr_auc_file):
 
 
 def test_threshold_ets_matrix():
-    thr = 2
     dum_mat = np.ones((3, 3))
     dum_mat[2, 1] = 3
     dum_mat2 = np.zeros((3, 3))
-    dum_mat2[2, 1] = 3 - thr
-    th_dum = connectivity_utils.threshold_ets_matrix(dum_mat, thr=thr, selected_idxs=2)
+    dum_mat2[2, 1] = 1
+    th_dum = connectivity_utils.threshold_ets_matrix(dum_mat, thr=2, selected_idxs=2)
     assert np.allclose(th_dum, dum_mat2)
 
 

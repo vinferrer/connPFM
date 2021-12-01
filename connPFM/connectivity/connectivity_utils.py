@@ -112,7 +112,14 @@ def calculate_surrogate_ets(surrprefix, sursufix, irand, masker):
     return ets
 
 
-def calculate_hist(surrprefix, sursufix, irand, masker, hist_range, nbins=500,):
+def calculate_hist(
+    surrprefix,
+    sursufix,
+    irand,
+    masker,
+    hist_range,
+    nbins=500,
+):
     """Calculate histogram."""
     ets_temp = calculate_surrogate_ets(surrprefix, sursufix, irand, masker)
 

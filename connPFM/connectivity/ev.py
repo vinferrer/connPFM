@@ -62,8 +62,8 @@ def event_detection(
 
     hist_ranges = np.zeros((2, nsur))
     for irand in range(nsur):
-        hist_ranges[0, irand] = surrogate_events[irand][1]
-        hist_ranges[1, irand] = surrogate_events[irand][2]
+        hist_ranges[0, irand] = surrogate_events[irand][2]
+        hist_ranges[1, irand] = surrogate_events[irand][3]
 
     hist_min = np.min(hist_ranges, axis=1)[0]
     hist_max = np.max(hist_ranges, axis=1)[1]
@@ -126,24 +126,13 @@ def event_detection(
             # Initialize array for threshold
             thr = np.zeros(t)
 
-            # Calculate ETS matrix of each surrogate
-            sur_ets = Parallel(n_jobs=-1, backend="multiprocessing")(
-                delayed(connectivity_utils.calculate_surrogate_ets)(
-                    surrprefix,
-                    sursufix,
-                    irand,
-                    masker,
-                )
-                for irand in range(nsur)
-            )
-
             # initialize array for surrogate ets at each time point
-            sur_ets_at_time = np.zeros((nsur, sur_ets[0].shape[1]))
+            sur_ets_at_time = np.zeros((nsur, surrogate_events[0][1].shape[1]))
 
             for time_idx in range(t):
                 # get first column of all sur_ets into a matrix
                 for sur_idx in range(nsur):
-                    sur_ets_at_time[sur_idx, :] = sur_ets[sur_idx][time_idx, :]
+                    sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
 
                 # calculate histogram of all surrogate ets at time point
                 hist, bins = np.histogram(

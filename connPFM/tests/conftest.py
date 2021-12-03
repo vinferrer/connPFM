@@ -68,17 +68,17 @@ def bold_file(testpath):
 
 @pytest.fixture
 def AUC_file(testpath):
-    return fetch_file("h6uv3", testpath, "sub-pixar123_task-pixar_AUC_100.nii.gz")
+    return fetch_file("nh6y9", testpath, "sub-pixar123_task-pixar_AUC_100_200_seed.nii.gz")
 
 
 @pytest.fixture
 def ets_auc_original_file(testpath):
-    return fetch_file("bnp4z", testpath, "ets_AUC_original.txt")
+    return fetch_file("56apy", testpath, "ets_AUC_original_200_seed.txt")
 
 
 @pytest.fixture
 def ets_auc_denoised_file(testpath):
-    return fetch_file("jvuwn", testpath, "ets_AUC_denoised.txt")
+    return fetch_file("j96my", testpath, "ets_AUC_denoised_200_seed.txt")
 
 
 @pytest.fixture
@@ -95,6 +95,11 @@ def atlas_file(testpath):
     return fetch_file(
         "bhcrp", testpath, "Schaefer2018_100Parcels_17Networks_order_FSLMNI152_4mm.nii.gz"
     )
+
+
+@pytest.fixture
+def atlas_1roi(testpath):
+    return fetch_file("ankvr", testpath, "Schaefer_1Parcel_4mm.nii.gz")
 
 
 @pytest.fixture
@@ -115,3 +120,43 @@ def hrf_file(testpath):
 @pytest.fixture
 def hrf_linear_file(testpath):
     return fetch_file("mkeu2", testpath, "hrf_linear.txt")
+
+
+@pytest.fixture
+def beta_file(testpath):
+    return fetch_file("2pmju", testpath, "sub-pixar123_task-pixar_beta_ETS.nii.gz")
+
+
+@pytest.fixture
+def fitt_file(testpath):
+    return fetch_file("ud369", testpath, "sub-pixar123_task-pixar_fitt_ETS.nii.gz")
+
+
+@pytest.fixture
+def beta_block_file(testpath):
+    return fetch_file("jhv7a", testpath, "beta_block.txt")
+
+
+@pytest.fixture
+def fitt_group_file(testpath):
+    return fetch_file("nuceq", testpath, "betafitt_spike_group.txt")
+
+
+@pytest.fixture
+def ets_auc_all(testpath):
+    return fetch_file("dqyxs", testpath, "ets_AUC_all.npy")
+
+
+@pytest.fixture
+def ets_auc_denoised_all(testpath):
+    return fetch_file("c6xq4", testpath, "ets_AUC_denoised_all.npy")
+
+
+@pytest.fixture
+def surrogate_ets_file(testpath):
+    return fetch_file("sqrce", testpath, "surrogate_ets.npy")
+
+
+@pytest.fixture
+def surrogate_hist_file(testpath):
+    return fetch_file("3b6ge", testpath, "surrogate_hist.npy")

@@ -165,6 +165,27 @@ jobs:
       - codecov/upload:
           file: /tmp/src/connPFM/coverage.xml
 
+  py39_integration_and_coverage:
+    working_directory: /tmp/src/connPFM
+    docker:
+      - image: connpfm/afni_miniconda
+    steps:
+      - attach_workspace:  # get connPFM
+          at: /tmp
+      - restore_cache:  # load environment
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+      - run:
+          name: Run tests and compile coverage
+          command:  |
+            apt-get update
+            apt-get install -yqq make
+            apt-get install -yqq curl
+            cp -r /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
+            source activate py39_env
+            make integration
+      - codecov/upload:
+          file: /tmp/src/connPFM/coverage.xml
+
   build_docs:
     working_directory: /tmp/src/connPFM
     docker:
@@ -281,6 +302,9 @@ workflows:
           requires:
             - py39_env
       - py39_unittest_and_coverage:
+          requires:
+            - py39_env
+      - py39_integration_and_coverage:
           requires:
             - py39_env
       - build_slim_latest:

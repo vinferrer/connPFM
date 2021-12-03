@@ -178,6 +178,24 @@ def _get_parser():
         nargs=1,
     )
     optoptions.add_argument(
+        "-peaks",
+        "--peaks",
+        dest="peak_detection",
+        type=str,
+        default="rss",
+        choices=["rss", "rss_time", "ets", "ets_time"],
+        help=(
+            "Method to detect peaks of co-fluctuations:"
+            "- rss: significant peaks in root sum of squares."
+            "- rss_time: significant peaks in root sum of squares, but p-values are"
+            "based on each time-point."
+            "- ets: significant peaks in edge-time matrix."
+            "- ets_time: significant peaks in edge-time matrix, but thresholds are"
+            "based on each time-point."
+        ),
+        nargs=1,
+    )
+    optoptions.add_argument(
         "-q",
         "--quiet",
         dest="quiet",

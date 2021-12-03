@@ -44,10 +44,10 @@ def test_debiasing_spike(
     )
     hrf.generate_hrf()
     deb_output = debiasing_spike(hrf, data, ets_mask)
-    assert np.all(np.isclose(deb_output["beta"], masker.fit_transform(beta_file)))
-    assert np.all(np.isclose(deb_output["betafitts"], masker.fit_transform(fitt_file)))
+    assert np.allclose(deb_output["beta"], masker.fit_transform(beta_file))
+    assert np.allclose(deb_output["betafitts"], masker.fit_transform(fitt_file))
     deb_group = debiasing_spike(hrf, data, ets_mask, groups=True)
-    assert np.all(np.isclose(deb_group["betafitts"], np.loadtxt(fitt_group_file)))
+    assert np.allclose(deb_group["betafitts"], np.loadtxt(fitt_group_file))
 
 
 def test_debiasing_block(
@@ -82,4 +82,4 @@ def test_debiasing_block(
     hrf = HRFMatrix(TR=1, TE=[0], nscans=data.shape[0], r2only=True, is_afni=True, block=True)
     hrf.generate_hrf()
     (beta, S) = debiasing_block(masker.fit_transform(AUC_file), hrf.hrf, data, True)
-    assert np.all(np.isclose(beta, np.loadtxt(beta_block_file)))
+    assert np.allclose(beta, np.loadtxt(beta_block_file))

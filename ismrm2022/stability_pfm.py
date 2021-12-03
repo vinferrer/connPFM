@@ -1,7 +1,8 @@
+from os.path import join as opj
+
 import numpy as np
 from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
-from os.path import join as opj
 
 from connPFM.debiasing.debiasing import debiasing
 

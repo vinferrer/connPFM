@@ -1,4 +1,4 @@
-"""Functions to perform event detection."""
+"""Main workflow to perform event detection."""
 import logging
 from os.path import join
 
@@ -7,49 +7,21 @@ from joblib import Parallel, delayed
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
 
+from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
 
 LGR = logging.getLogger(__name__)
 
 
-def calculate_ets(y, n):
-    """Calculate edge-time series."""
-    # upper triangle indices (node pairs = edges)
-    u, v = np.argwhere(np.triu(np.ones(n), 1)).T
-
-    # edge time series
-    ets = y[:, u] * y[:, v]
-
-    return ets, u, v
-
-
-def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
-    """Calculate RSS on surrogate data."""
-    [t, n] = z_ts.shape
-
-    if surrprefix != "":
-        zr = masker.fit_transform(f"{surrprefix}{irand}{sursufix}.nii.gz")
-        if "AUC" not in surrprefix:
-            zr = np.nan_to_num(zscore(zr, ddof=1))
-
-        # TODO: find out why surrogates of AUC have NaNs after reading data with masker.
-        zr = np.nan_to_num(zr)
-    else:
-        # perform numrand randomizations
-        zr = np.copy(z_ts)
-        for i in range(n):
-            zr[:, i] = np.roll(zr[:, i], np.random.randint(t))
-
-    # edge time series with circshift data
-    etsr = zr[:, u] * zr[:, v]
-
-    # calcuate rss
-    rssr = np.sqrt(np.sum(np.square(etsr), axis=1))
-
-    return (rssr, np.min(etsr), np.max(etsr))
-
-
-def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segments=True):
+def event_detection(
+    data_file,
+    atlas,
+    surrprefix="",
+    sursufix="",
+    nsur=100,
+    segments=True,
+    peak_detection="rss",
+):
     """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
         labels_img=atlas,
@@ -68,132 +40,117 @@ def event_detection(data_file, atlas, surrprefix="", sursufix="", nsur=100, segm
     [t, n] = z_ts.shape
 
     # calculate ets
-    ets, u, v = calculate_ets(z_ts, n)
+    ets, u, v = connectivity_utils.calculate_ets(z_ts, n)
 
-    # calculate rss
-    rss = np.sqrt(np.sum(np.square(ets), axis=1))
-    # initialize array for null rss
+    # Initialize thresholded edge time-series matrix with zeros
+    etspeaks = np.zeros(ets.shape)
+
+    # Initialize array of indices of detected peaks
+    idxpeak = np.zeros(t)
+
+    # Initialize RSS with zeros
+    rss = np.zeros(t)
+
+    # Initialize array for null RSS
     rssr = np.zeros([t, nsur])
 
-    results = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand) for irand in range(nsur)
+    # calculate ets and rss of surrogate data
+    surrogate_events = Parallel(n_jobs=-1, backend="multiprocessing")(
+        delayed(connectivity_utils.rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand)
+        for irand in range(nsur)
     )
 
+    hist_ranges = np.zeros((2, nsur))
     for irand in range(nsur):
-        rssr[:, irand] = results[irand][0]
+        hist_ranges[0, irand] = surrogate_events[irand][2]
+        hist_ranges[1, irand] = surrogate_events[irand][3]
 
-    # TODO: find out why there is such a big peak on time-point 0 for AUC surrogates
-    if "AUC" in surrprefix:
-        rssr[0, :] = 0
-        hist_ranges = np.zeros((2, nsur))
+    hist_min = np.min(hist_ranges, axis=1)[0]
+    hist_max = np.max(hist_ranges, axis=1)[1]
+
+    # Make selection of points with RSS
+    if "rss" in peak_detection:
+        LGR.info("Selecting points with RSS...")
+        # calculate rss
+        rss = np.sqrt(np.sum(np.square(ets), axis=1))
+
         for irand in range(nsur):
-            hist_ranges[0, irand] = results[irand][1]
-            hist_ranges[1, irand] = results[irand][2]
+            rssr[:, irand] = surrogate_events[irand][0]
 
-        hist_min = np.min(hist_ranges, axis=1)[0]
-        hist_max = np.max(hist_ranges, axis=1)[1]
+        # TODO: find out why there is such a big peak on time-point 0 for AUC surrogates
+        if "AUC" in surrprefix:
+            rssr[0, :] = 0
 
-    p = np.zeros([t, 1])
-    rssr_flat = rssr.flatten()
-    for i in range(t):
-        p[i] = np.mean(rssr_flat >= rss[i])
-    # apply statistical cutoff
-    pcrit = 0.001
+        # Initialize p-values array with ones to avoid default values being lower
+        # than the threshold p-value
+        p_value = np.ones(t)
 
-    # find frames that pass statistical testz_ts
-    idx = np.argwhere(p < pcrit)[:, 0]
-    if segments:
-        # identify contiguous segments of frames that pass statistical test
-        dff = idx.T - range(len(idx))
-        unq = np.unique(dff)
-        nevents = len(unq)
+        # Statistical cutoff
+        pcrit = 0.001
 
-        # find the peak rss within each segment
-        idxpeak = np.zeros([nevents, 1])
-        for ievent in range(nevents):
-            idxevent = idx[dff.T == unq[ievent].T]
-            rssevent = rss[idxevent]
-            idxmax = np.argmax(rssevent)
-            idxpeak[ievent] = idxevent[idxmax]
-        idxpeak = idxpeak[:, 0].astype(int)
-    # get activity at peak
-    else:
-        idxpeak = idx
-    tspeaks = z_ts[idxpeak, :]
+        # Find peaks with a general threshold for RSS
+        if peak_detection == "rss":
+            rssr_flat = rssr.flatten()
+            for i in range(t):
+                p_value[i] = np.mean(rssr_flat >= rss[i])
 
-    # get co-fluctuation at peak
-    etspeaks = tspeaks[:, u] * tspeaks[:, v]
+        # Find peaks with a different threshold for each time-point in RSS
+        elif peak_detection == "rss_time":
+            for i in range(t):
+                p_value[i] = np.mean(np.squeeze(rssr[i, :]) >= rss[i])
+
+        # find frames that pass statistical testz_ts
+        idx = np.argwhere(p_value < pcrit)[:, 0]
+        if segments:
+            idxpeak = connectivity_utils.remove_neighboring_peaks(rss, idx)
+        # get activity at peak
+        else:
+            idxpeak = idx
+
+        # get co-fluctuation at peaks
+        etspeaks = connectivity_utils.threshold_ets_matrix(ets, thr=0, selected_idxs=idxpeak)
+
+    # Make selection of points with edge time-series matrix
+    elif "ets" in peak_detection:
+        LGR.info("Selecting points with edge time-series matrix...")
+        if peak_detection == "ets":
+            LGR.info("Reading AUC of surrogates to perform the thresholding step...")
+            thr = connectivity_utils.surrogates_histogram(
+                surrprefix,
+                sursufix,
+                masker,
+                hist_range=(hist_min, hist_max),
+                numrand=nsur,
+            )
+        elif peak_detection == "ets_time":
+            # Initialize array for threshold
+            thr = np.zeros(t)
+
+            # initialize array for surrogate ets at each time point
+            sur_ets_at_time = np.zeros((nsur, surrogate_events[0][1].shape[1]))
+
+            for time_idx in range(t):
+                # get first column of all sur_ets into a matrix
+                for sur_idx in range(nsur):
+                    sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
+
+                # calculate histogram of all surrogate ets at time point
+                hist, bins = np.histogram(
+                    sur_ets_at_time.flatten(), bins=500, range=(hist_min, hist_max)
+                )
+
+                # calculate threshold for time point
+                thr[time_idx] = connectivity_utils.calculate_hist_threshold(
+                    hist, bins, percentile=95
+                )
+
+        # Apply threshold on edge time-series matrix
+        etspeaks = connectivity_utils.threshold_ets_matrix(ets, thr)
+
     # calculate mean co-fluctuation (edge time series) across all peaks
     mu = np.nanmean(etspeaks, 0)
 
-    if "AUC" in surrprefix:
-        LGR.info("Reading AUC of surrogates to perform the thresholding step...")
-        ets_thr = surrogates_to_array(
-            surrprefix,
-            sursufix,
-            masker,
-            hist_range=(hist_min, hist_max),
-            numrand=nsur,
-        )
-        ets_thr = threshold_ets_matrix(ets, idxpeak, ets_thr)
-    else:
-        ets_thr = None
-
-    return ets, rss, rssr, idxpeak, etspeaks, mu, ets_thr, u, v
-
-
-def threshold_ets_matrix(ets_matrix, selected_idxs, thr):
-    """
-    Threshold the edge time-series matrix based on the selected time-points and
-    the surrogate matrices.
-    """
-    # Initialize matrix with zeros
-    thresholded_matrix = np.zeros(ets_matrix.shape)
-
-    # Get selected columns from ETS matrix
-    thresholded_matrix[selected_idxs, :] = ets_matrix[selected_idxs, :]
-
-    # Threshold ETS matrix based on surrogate percentile
-    thresholded_matrix[thresholded_matrix < thr] = 0
-
-    return thresholded_matrix
-
-
-def calculate_hist(surrprefix, sursufix, irand, masker, hist_range, nbins=500):
-    """Calculate histogram."""
-    auc = masker.fit_transform(f"{surrprefix}{irand}{sursufix}.nii.gz")
-    [t, n] = auc.shape
-    ets_temp, _, _ = calculate_ets(np.nan_to_num(auc), n)
-
-    ets_hist, bin_edges = np.histogram(ets_temp.flatten(), bins=nbins, range=hist_range)
-
-    return (ets_hist, bin_edges)
-
-
-def surrogates_to_array(
-    surrprefix, sursufix, masker, hist_range, numrand=100, nbins=500, percentile=95
-):
-    """
-    Read AUCs of surrogates, calculate histogram and sum of all histograms to
-    obtain a single histogram that summarizes the data.
-    """
-    ets_hist = np.zeros((numrand, nbins))
-
-    hist = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(calculate_hist)(surrprefix, sursufix, irand, masker, hist_range, nbins)
-        for irand in range(numrand)
-    )
-
-    for irand in range(numrand):
-        ets_hist[irand, :] = hist[irand][0]
-
-    bin_edges = hist[0][1]
-
-    ets_hist_sum = np.sum(ets_hist, axis=0)
-    cumsum_percentile = np.cumsum(ets_hist_sum) / np.sum(ets_hist_sum) * 100
-    thr = bin_edges[len(cumsum_percentile[cumsum_percentile <= percentile])]
-
-    return thr
+    return ets, rss, rssr, idxpeak, etspeaks, mu, u, v
 
 
 def ev_workflow(
@@ -207,6 +164,7 @@ def ev_workflow(
     enorm=None,
     afni_text=None,
     history_str="",
+    peak_detection="rss",
 ):
     """
     Main function to perform event detection and plot results.
@@ -220,17 +178,13 @@ def ev_workflow(
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
-    (
-        ets_auc,
-        rss_auc,
-        _,
-        idxpeak_auc,
-        _,
-        _,
-        ets_auc_denoised,
-        _,
-        _,
-    ) = event_detection(auc_file, atlas, join(surr_dir, "surrogate_AUC_"), nsur=nsurrogates)
+    (ets_auc, rss_auc, _, idxpeak_auc, ets_auc_denoised, _, _, _,) = event_detection(
+        auc_file,
+        atlas,
+        join(surr_dir, "surrogate_AUC_"),
+        nsur=nsurrogates,
+        peak_detection=peak_detection,
+    )
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     plot_ets_matrix(ets_orig_sur, out_dir, "_original", dvars, enorm, idxpeak_auc)
@@ -244,5 +198,7 @@ def ev_workflow(
         rss_out = np.zeros(rss_auc.shape)
         rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
         np.savetxt(afni_text, rss_out)
+
     np.savetxt(join(out_dir, "ets_AUC_denoised.txt"), ets_auc_denoised)
+
     return ets_auc_denoised

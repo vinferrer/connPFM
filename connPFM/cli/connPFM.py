@@ -211,4 +211,11 @@ def _get_parser():
         help="activate quiet logger mode",
         default=False,
     )
+    optoptions.add_argument(
+        "-pd",
+        "--prefix_debias",
+        dest="prefix",
+        help="Prefix for path and name for the beta and fitted files of the debiasing",
+        default=None,
+    )
     return parser

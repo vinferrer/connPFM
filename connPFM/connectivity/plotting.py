@@ -30,7 +30,7 @@ LGR = logging.getLogger(__name__)
 
 
 def plot_ets_matrix(
-    ets, outdir, rss, sufix="", dvars_file=None, enorm_file=None, peaks=None, vmin=None, vmax=None
+    ets, outdir, rss, sufix="", dvars_file=None, enorm_file=None, peaks=[], vmin=None, vmax=None
 ):
     """
     Plots edge-time matrix
@@ -65,7 +65,7 @@ def plot_ets_matrix(
         im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
         ax0.set_ylabel("Edge-edge connections")
         plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
-        dvars[1] = np.mean(dvars)
+        # dvars[1] = np.mean(dvars)
         ax1.plot(dvars)
         ax1.set_title("DVARS")
         ax1.margins(0, 0)

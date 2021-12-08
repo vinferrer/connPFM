@@ -324,7 +324,7 @@ workflows:
       - build_slim_trial:
           requires:
             - hold
-          filter:
+          filters:
             branches:
               only: /pull\/.*/
       - publish-trial:

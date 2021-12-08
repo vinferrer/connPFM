@@ -12,8 +12,8 @@ def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integra
     auc_output = join(testpath, "auc_local.nii.gz")
     subprocess.call(
         "export mode=integration_pfm && "
-        "connPFM -i {} -a {} --AUC {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
-            bold_file, atlas_1roi, auc_output
+        "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
+            bold_file, atlas_1roi, auc_output, join(testpath, "temp")
         ),
         shell=True,
     )
@@ -60,9 +60,15 @@ def test_integration_debias(
     if skip_integration:
         pytest.skip("Skipping integration test")
     subprocess.call(
-        "connPFM -i {} -a {} --AUC {} -d {} -m {} -tr 1 -u vferrer -nsur 50 -w debias".format(
-            bold_file, atlas_file, AUC_file, surr_dir, ets_auc_denoised_file
-        ),
+        "connPFM -i {} -a {} --AUC {} -d {} -m {} --prefix {} ".format(
+            bold_file,
+            atlas_file,
+            AUC_file,
+            surr_dir,
+            ets_auc_denoised_file,
+            f"{basename(bold_file[:-7])}",
+        )
+        + "-tr 1 -u vferrer -nsur 50 -w debias",
         shell=True,
     )
     masker = NiftiLabelsMasker(

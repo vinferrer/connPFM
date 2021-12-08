@@ -1,7 +1,7 @@
 """Main debiasing workflow."""
 import logging
 import subprocess
-from os.path import basename, join
+from os.path import join
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
@@ -13,7 +13,7 @@ from connPFM.utils.hrf_generator import HRFMatrix
 LGR = logging.getLogger(__name__)
 
 
-def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
+def debiasing(data_file, mask, mtx, tr, out_dir, prefix, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
@@ -59,15 +59,15 @@ def debiasing(data_file, mask, mtx, tr, out_dir, history_str):
 
     # Transform results back to 4D
     beta_4D = masker.inverse_transform(beta)
-    beta_file = join(out_dir, f"{basename(data_file[:-7])}_beta_ETS.nii.gz")
+    beta_file = join(out_dir, f"{prefix}_beta_ETS.nii.gz")
     beta_4D.to_filename(beta_file)
     atlas_mod.inverse_transform(beta_file, data_file)
-    subprocess.run(f"3dNotes {join(out_dir, beta_file)} -h {history_str}", shell=True)
+    subprocess.run(f"3dNotes {beta_file} -h {history_str}", shell=True)
 
     fitt_4D = masker.inverse_transform(fitt)
-    fitt_file = join(out_dir, f"{basename(data_file[:-7])}_fitt_ETS.nii.gz")
+    fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
     fitt_4D.to_filename(fitt_file)
-    subprocess.run(f"3dNotes {join(out_dir, fitt_file)} -h {history_str}", shell=True)
+    subprocess.run(f"3dNotes {fitt_file} -h {history_str}", shell=True)
     atlas_mod.inverse_transform(fitt_file, data_file)
 
     LGR.info("Debiasing finished and files saved.")

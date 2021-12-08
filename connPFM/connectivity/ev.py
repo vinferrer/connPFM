@@ -159,6 +159,7 @@ def ev_workflow(
     atlas,
     surr_dir,
     out_dir,
+    matrix,
     nsurrogates=100,
     dvars=None,
     enorm=None,
@@ -199,6 +200,6 @@ def ev_workflow(
         rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
         np.savetxt(afni_text, rss_out)
 
-    np.savetxt(join(out_dir, "ets_AUC_denoised.txt"), ets_auc_denoised)
+    np.savetxt(matrix, ets_auc_denoised)
 
     return ets_auc_denoised

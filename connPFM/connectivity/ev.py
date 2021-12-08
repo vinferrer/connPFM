@@ -177,9 +177,8 @@ def ev_workflow(
         _,
         _,
         idxpeak_orig,
-        _,
-        _,
         ets_orig_denoised,
+        _,
         _,
         _,
     ) = event_detection(data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates)

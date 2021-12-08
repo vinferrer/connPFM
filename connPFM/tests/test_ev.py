@@ -135,11 +135,14 @@ def test_event_detection_ets_time(
     assert np.allclose(ets_time, np.load(ets_auc_all)[:, :, 3])
     assert np.allclose(ets_denoised_time, np.load(ets_auc_denoised_all)[:, :, 3])
 
+
 def test_plotting(testpath, ets_auc_denoised_all):
     # Test plotting only to improve coverage
     ets = np.load(ets_auc_denoised_all)[:, :, 3]
-    rss = np.zeros((0,ets.shape[1]))
-    dummy_enorm_file=join(testpath, "dummy_enorm.txt")
+    rss = np.zeros((0, ets.shape[1]))
+    dummy_enorm_file = join(testpath, "dummy_enorm.txt")
     np.savetxt(dummy_enorm_file, rss)
     plotting.plot_ets_matrix(ets, testpath, rss, sufix="")
-    plotting.plot_ets_matrix(ets, testpath, rss, sufix="", dvars_file=dummy_enorm_file, enorm_file=dummy_enorm_file)
+    plotting.plot_ets_matrix(
+        ets, testpath, rss, sufix="", dvars_file=dummy_enorm_file, enorm_file=dummy_enorm_file
+    )

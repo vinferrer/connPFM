@@ -65,7 +65,7 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, history_str):
     subprocess.run(f"3dNotes {beta_file} -h {history_str}", shell=True)
 
     fitt_4D = masker.inverse_transform(fitt)
-    fitt_file = join(out_dir,f"{prefix}_fitt_ETS.nii.gz")
+    fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
     fitt_4D.to_filename(fitt_file)
     subprocess.run(f"3dNotes {fitt_file} -h {history_str}", shell=True)
     atlas_mod.inverse_transform(fitt_file, data_file)

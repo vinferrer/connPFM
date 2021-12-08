@@ -30,7 +30,7 @@ LGR = logging.getLogger(__name__)
 
 
 def plot_ets_matrix(
-    ets, outdir, rss, sufix="",dvars_file=None, enorm_file=None, peaks=None, vmin=None, vmax=None
+    ets, outdir, rss, sufix="", dvars_file=None, enorm_file=None, peaks=None, vmin=None, vmax=None
 ):
     """
     Plots edge-time matrix
@@ -81,10 +81,10 @@ def plot_ets_matrix(
         fig = plt.subplots(figsize=FIGSIZE)
         ax0 = plt.subplot(111)
         divider = make_axes_locatable(ax0)
-        ax1=divider.append_axes("bottom", size="25%", pad=1)
-        cax = divider.append_axes('right', size='5%', pad=0.05)
-        im=ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
-        plt.colorbar(im,orientation="vertical", ax=ax0, cax=cax)
+        ax1 = divider.append_axes("bottom", size="25%", pad=1)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
+        plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)
         ax1.plot(rss)
         ax1.set_xlim(0, len(rss))
         ax0.set_title("Edge-time series")

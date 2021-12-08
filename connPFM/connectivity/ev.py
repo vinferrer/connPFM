@@ -194,11 +194,28 @@ def ev_workflow(
     )
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
-    plot_ets_matrix(ets_orig_denoised, out_dir, rss_orig, "_original_" + peak_detection, dvars, enorm, idxpeak_orig)
-    # Plot ETS and denoised ETS matrices of AUC
-    plot_ets_matrix(ets_auc, out_dir, rss_auc, "_AUC_original_" + peak_detection, dvars, enorm, idxpeak_auc)
     plot_ets_matrix(
-        ets_auc_denoised, out_dir, rss_auc,"_AUC_denoised_" + peak_detection, dvars, enorm, idxpeak_auc, vmax=0.02
+        ets_orig_denoised,
+        out_dir,
+        rss_orig,
+        "_original_" + peak_detection,
+        dvars,
+        enorm,
+        idxpeak_orig,
+    )
+    # Plot ETS and denoised ETS matrices of AUC
+    plot_ets_matrix(
+        ets_auc, out_dir, rss_auc, "_AUC_original_" + peak_detection, dvars, enorm, idxpeak_auc
+    )
+    plot_ets_matrix(
+        ets_auc_denoised,
+        out_dir,
+        rss_auc,
+        "_AUC_denoised_" + peak_detection,
+        dvars,
+        enorm,
+        idxpeak_auc,
+        vmax=0.02,
     )
 
     # Save RSS time-series as text file for easier visualization on AFNI

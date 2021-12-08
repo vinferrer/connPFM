@@ -56,7 +56,7 @@ def plot_ets_matrix(
         # axs[2].plot(enorm)
         # axs[2].set_title("ENORM")
         # axs[2].set_xlabel("Time (TR)")
-        fig = plt.subplots(figsize=FIGSIZE)
+        _ = plt.subplots(figsize=FIGSIZE)
         ax0 = plt.subplot(111)
         divider = make_axes_locatable(ax0)
         ax1 = divider.append_axes("bottom", size="25%", pad=1)
@@ -78,7 +78,7 @@ def plot_ets_matrix(
         ax2.margins(0, 0)
         plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)
     else:
-        fig = plt.subplots(figsize=FIGSIZE)
+        _ = plt.subplots(figsize=FIGSIZE)
         ax0 = plt.subplot(111)
         divider = make_axes_locatable(ax0)
         ax1 = divider.append_axes("bottom", size="25%", pad=1)

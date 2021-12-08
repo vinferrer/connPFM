@@ -5,7 +5,7 @@ USER root
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-ADD . .
+COPY . .
 
 
 RUN apt-get update \

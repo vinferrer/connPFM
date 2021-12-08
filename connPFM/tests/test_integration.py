@@ -12,8 +12,8 @@ def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integra
     auc_output = join(testpath, "auc_local.nii.gz")
     subprocess.call(
         "export mode=integration_pfm && "
-        "connPFM -i {} -a {} --AUC {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
-            bold_file, atlas_1roi, auc_output
+        "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
+            bold_file, atlas_1roi, auc_output, join(testpath, "temp")
         ),
         shell=True,
     )

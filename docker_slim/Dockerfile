@@ -10,7 +10,7 @@ ADD . .
 
 RUN apt-get update \
     && apt-get -qq install git \
-    && pip install --no-cache-dir -e . \
+    && pip install --no-cache-dir . \
     && pip install PyWavelets
 
 ENV PYTHONPATH "${PYTHONPATH}:/connPFM"

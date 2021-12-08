@@ -66,7 +66,7 @@ def test_integration_debias(
             AUC_file,
             surr_dir,
             ets_auc_denoised_file,
-            join(testpath, f"{basename(bold_file[:-7])}"),
+            f"{basename(bold_file[:-7])}",
         )
         + "-tr 1 -u vferrer -nsur 50 -w debias",
         shell=True,

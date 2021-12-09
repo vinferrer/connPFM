@@ -36,8 +36,12 @@ def test_integration_ev(
         pytest.skip("Skipping integration test")
 
     subprocess.call(
-        "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -nsur 50 -w ev".format(
-            bold_file, atlas_file, AUC_file, surr_dir
+        "connPFM -i {} -a {} --AUC {} -d {} -m {} -tr 1 -u vferrer -nsur 50 -w ev".format(
+            bold_file,
+            atlas_file,
+            AUC_file,
+            surr_dir,
+            join(dirname(AUC_file), "ets_AUC_denoised.txt"),
         ),
         shell=True,
     )

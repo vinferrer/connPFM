@@ -76,7 +76,6 @@ def plot_ets_matrix(
         ax2.set_title("ENORM")
         ax2.set_xlabel("Time (TR)")
         ax2.margins(0, 0)
-        plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)
     else:
         _ = plt.subplots(figsize=FIGSIZE)
         ax0 = plt.subplot(111)
@@ -91,4 +90,4 @@ def plot_ets_matrix(
         ax0.set_xlabel("Time (TR)")
         ax0.set_ylabel("Edge-edge connections")
         ax1.set_ylabel("RSS")
-        plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)
+    plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)

@@ -1,4 +1,4 @@
-from os.path import join, isfile
+from os.path import isfile, join
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker

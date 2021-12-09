@@ -30,11 +30,15 @@ LGR = logging.getLogger(__name__)
 
 
 def plot_ets_matrix(
-    ets, outdir, sufix="", dvars_file=None, enorm_file=None, peaks=None, vmin=-0.5, vmax=0.5
+    ets, outdir, rss, sufix="", dvars_file=None, enorm_file=None, peaks=[], vmin=None, vmax=None
 ):
     """
     Plots edge-time matrix
     """
+    if vmin is None:
+        vmin = np.min(ets)
+    if vmax is None:
+        vmax = np.max(ets) / 2
     if dvars_file is not None and enorm_file is not None:
         # Plot ETS matrix of original signal
         dvars = np.loadtxt(dvars_file)
@@ -52,32 +56,38 @@ def plot_ets_matrix(
         # axs[2].plot(enorm)
         # axs[2].set_title("ENORM")
         # axs[2].set_xlabel("Time (TR)")
-        fig = plt.subplots(figsize=FIGSIZE)
+        _ = plt.subplots(figsize=FIGSIZE)
         ax0 = plt.subplot(111)
         divider = make_axes_locatable(ax0)
         ax1 = divider.append_axes("bottom", size="25%", pad=1)
         ax2 = divider.append_axes("bottom", size="25%", pad=1)
         cax = divider.append_axes("right", size="5%", pad=0.08)
-        im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="bwr", aspect="auto")
+        im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
         ax0.set_ylabel("Edge-edge connections")
         plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
-        dvars[1] = np.mean(dvars)
+        # dvars[1] = np.mean(dvars)
         ax1.plot(dvars)
         ax1.set_title("DVARS")
         ax1.margins(0, 0)
         for i in peaks:
-            ax1.axvspan(i, i + 1, facecolor="b", alpha=0.5)
-            ax2.axvspan(i, i + 1, facecolor="b", alpha=0.5)
+            ax1.axvspan(i, i + 1, facecolor="g", alpha=0.5)
+            ax2.axvspan(i, i + 1, facecolor="g", alpha=0.5)
         ax2.plot(enorm)
         ax2.set_title("ENORM")
         ax2.set_xlabel("Time (TR)")
         ax2.margins(0, 0)
-        plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)
     else:
-        fig, axs = plt.subplots(1, 1, figsize=FIGSIZE)
-        plt.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="bwr", aspect="auto")
-        plt.title("Edge-time series")
-        plt.xlabel("Time (TR)")
-        plt.ylabel("Edge-edge connections")
-        plt.colorbar()
-        plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)
+        _ = plt.subplots(figsize=FIGSIZE)
+        ax0 = plt.subplot(111)
+        divider = make_axes_locatable(ax0)
+        ax1 = divider.append_axes("bottom", size="25%", pad=1)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
+        plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)
+        ax1.plot(rss)
+        ax1.set_xlim(0, len(rss))
+        ax0.set_title("Edge-time series")
+        ax0.set_xlabel("Time (TR)")
+        ax0.set_ylabel("Edge-edge connections")
+        ax1.set_ylabel("RSS")
+    plt.savefig(opj(outdir, f"ets{sufix}.png"), dpi=300)

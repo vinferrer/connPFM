@@ -6,16 +6,18 @@ from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.debiasing.debiasing import debiasing
 
-prj_dir = "/export/home/eurunuela/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100"
+prj_dir = "/bcbl/home/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100"
 auc_file = opj(prj_dir, "sub-002ParkMabCm_AUC_100.nii.gz")
 temp_dir = opj(prj_dir, "temp_sub-002ParkMabCm_100")
 data = opj(prj_dir, "pb06.sub-002ParkMabCm.denoised_no_censor.nii.gz")
 atlas = opj(temp_dir, "atlas.nii.gz")
 surrprefix = opj(temp_dir, "surrogate_AUC_")
 surrsufix = ""
+prefix = "sub-002ParkMabCm_100"
 nsur = 100
 tr = 1
 
+###############################################################################
 # Code starts here
 
 
@@ -54,7 +56,7 @@ def main():
     auc[auc < thr] = 0
 
     # Debiasing with non-zero thresholded AUC
-    debiasing(data, atlas, auc, tr, temp_dir, "")
+    debiasing(data, atlas, auc, tr, temp_dir, prefix, "")
 
 
 if __name__ == "__main__":

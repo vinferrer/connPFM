@@ -143,7 +143,7 @@ def test_plotting(testpath, ets_auc_denoised_all):
     dummy_enorm_file = join(testpath, "dummy_enorm.txt")
     np.savetxt(dummy_enorm_file, rss)
     plotting.plot_ets_matrix(ets, testpath, rss, sufix="_rss")
-    assert isfile(join(testpath, f"ets_rss.png"))
+    assert isfile(join(testpath, "ets_rss.png"))
     plotting.plot_ets_matrix(
         ets,
         testpath,
@@ -152,4 +152,4 @@ def test_plotting(testpath, ets_auc_denoised_all):
         dvars_file=dummy_enorm_file,
         enorm_file=dummy_enorm_file,
     )
-    assert isfile(join(testpath, f"ets_enorm.png"))
+    assert isfile(join(testpath, "ets_enorm.png"))

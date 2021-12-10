@@ -221,9 +221,12 @@ def ev_workflow(
 
     # Save RSS time-series as text file for easier visualization on AFNI
     if afni_text is not None:
-        rss_out = np.zeros(rss_auc.shape)
-        rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
-        np.savetxt(afni_text, rss_out)
+        np.savetxt(join(out_dir, afni_text) + "_peaks.txt", idxpeak_auc)
+        if peak_detection == "rss":
+            rss_out = np.zeros(rss_auc.shape)
+            rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
+            np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
+            np.savetxt(join(out_dir, afni_text) + "_rss_th.txt", rss_out)
 
     np.savetxt(matrix, ets_auc_denoised)
 

@@ -74,6 +74,7 @@ def _main(argv=None):
             options["nsurrogates"][0],
             history_str,
             options["peak_detection"][0],
+            afni_text=options["peaks_path"],
         )
         LGR.info("Perform debiasing based on edge-time matrix.")
         debiasing(
@@ -115,6 +116,7 @@ def _main(argv=None):
             nsurrogates=options["nsurrogates"][0],
             history_str=history_str,
             peak_detection=options["peak_detection"][0],
+            afni_text=options["peaks_path"],
         )
     elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])

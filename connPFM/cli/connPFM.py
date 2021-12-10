@@ -218,4 +218,11 @@ def _get_parser():
         help="Prefix for path and name for the beta and fitted files of the debiasing",
         default=None,
     )
+    optoptions.add_argument(
+        "-pp",
+        "--peaks_points",
+        dest="peaks_path",
+        help="Prefix for name for txt file of rss and txt file of selected timepoints",
+        default=None,
+    )
     return parser

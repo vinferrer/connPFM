@@ -49,7 +49,8 @@ def test_integration_ev(
             AUC_file,
             surr_dir,
             join(dirname(AUC_file), "ets_AUC_denoised.txt"),
-        ) + "--peaks_points ets_AUC_denoised -tr 1 -u vferrer -nsur 50 -w ev",
+        )
+        + "--peaks_points ets_AUC_denoised -tr 1 -u vferrer -nsur 50 -w ev",
         shell=True,
     )
     ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))

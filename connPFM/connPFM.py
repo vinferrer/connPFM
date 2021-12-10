@@ -113,6 +113,12 @@ def _main(argv=None):
             nsurrogates=options["nsurrogates"][0],
             history_str=history_str,
             peak_detection=options["peak_detection"][0],
+            afni_text=os.path.join(os.path.dirname(options["auc"][0]), 
+                                   options["peaks_path"] + "_rss"
+                                   ),
+            peak_out=os.path.join(os.path.dirname(options["auc"][0]), 
+                                   options["peaks_path"] + "_peaks"
+                                   ),           
         )
     elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])

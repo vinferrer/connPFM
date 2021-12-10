@@ -116,13 +116,11 @@ jobs:
 
   py_env:
     parameters:
-      py-version:
+      PYTHON:
         type: string
     working_directory: /tmp/src/connPFM
     docker:
       - image: continuumio/miniconda3
-    environment:
-      PYTHON: << parameters.py-version >>
     steps:
       - checkout
       - persist_to_workspace:
@@ -130,23 +128,23 @@ jobs:
           paths:
               - src/connPFM
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}-{{ checksum $PYTHON }} 
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}-{{ checksum << parameters.PYTHON >> }} 
       - run:  # will overwrite connPFM installation each time
           name: Generate environment
           command:  |
-            if [[ -e /opt/conda/envs/py$PYTHON_env ]]; then
+            if [[ -e /opt/conda/envs/py<< parameters.PYTHON >>_env ]]; then
                 echo "Restoring environment from cache"
-                source activate py$PYTHON_env
+                source activate py<< parameters.PYTHON >>_env
             else
-                conda create -n py$PYTHON_env python=3.9 numpy -yq
-                source activate py$PYTHON_env
+                conda create -n py<< parameters.PYTHON >>_env python=3.9 numpy -yq
+                source activate py<< parameters.PYTHON >>_env
                 pip install -e .[tests,doc]
             fi
             python setup.py install --user
       - save_cache:  # environment cache tied to requirements
           key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
           paths:
-            - "/opt/conda/envs/py$PYTHON_env"
+            - "/opt/conda/envs/py<< parameters.PYTHON >>_env"
 
 
   py39_unittest_and_coverage:
@@ -305,7 +303,7 @@ workflows:
       - py_env:
           matrix:
             parameters:
-              py-version: ["3.9", "3.8"]
+              PYTHON: ["3.9", "3.8"]
       - style_check:
           requires:
             - py_env

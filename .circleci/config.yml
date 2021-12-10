@@ -302,7 +302,10 @@ workflows:
   version: 2.1
   run_tests:
     jobs:
-      - py_env
+      - py_env:
+          matrix:
+            parameters:
+              py-version: ["3.9", "3.8"]
       - style_check:
           requires:
             - py_env

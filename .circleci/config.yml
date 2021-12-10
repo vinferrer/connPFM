@@ -148,6 +148,9 @@ jobs:
 
 
   py_unittest:
+    parameters:
+      PYTHON:
+        type: string
     working_directory: /tmp/src/connPFM
     docker:
       - image: connpfm/afni_miniconda

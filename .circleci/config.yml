@@ -114,10 +114,15 @@ jobs:
             source activate py38_env
             make unittest
 
-  py39_env:
+  py_env:
+    parameters:
+      py-version:
+        type: string
     working_directory: /tmp/src/connPFM
     docker:
       - image: continuumio/miniconda3
+    environment:
+      PYTHON: << parameters.py-version >>
     steps:
       - checkout
       - persist_to_workspace:
@@ -125,23 +130,23 @@ jobs:
           paths:
               - src/connPFM
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}-{{ checksum $PYTHON }} 
       - run:  # will overwrite connPFM installation each time
           name: Generate environment
           command:  |
-            if [[ -e /opt/conda/envs/py39_env ]]; then
+            if [[ -e /opt/conda/envs/py$PYTHON_env ]]; then
                 echo "Restoring environment from cache"
-                source activate py39_env
+                source activate py$PYTHON_env
             else
-                conda create -n py39_env python=3.9 numpy -yq
-                source activate py39_env
+                conda create -n py$PYTHON_env python=3.9 numpy -yq
+                source activate py$PYTHON_env
                 pip install -e .[tests,doc]
             fi
             python setup.py install --user
       - save_cache:  # environment cache tied to requirements
           key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
           paths:
-            - "/opt/conda/envs/py39_env"
+            - "/opt/conda/envs/py$PYTHON_env"
 
 
   py39_unittest_and_coverage:
@@ -297,16 +302,16 @@ workflows:
   version: 2.1
   run_tests:
     jobs:
-      - py39_env
+      - py_env
       - style_check:
           requires:
-            - py39_env
+            - py_env
       - py39_unittest_and_coverage:
           requires:
-            - py39_env
+            - py_env
       - py39_integration_and_coverage:
           requires:
-            - py39_env
+            - py_env
       - build_slim_latest:
           requires:
            - py39_unittest_and_coverage

@@ -165,6 +165,7 @@ def ev_workflow(
     afni_text=None,
     history_str="",
     peak_detection="rss",
+    peak_out=None,
 ):
     """
     Main function to perform event detection and plot results.
@@ -194,11 +195,14 @@ def ev_workflow(
     plot_ets_matrix(ets_auc_denoised, out_dir, "_AUC_denoised", dvars, enorm, idxpeak_auc)
 
     # Save RSS time-series as text file for easier visualization on AFNI
-    if afni_text is not None:
+    if afni_text is not None and peak_detection == "rss":
         rss_out = np.zeros(rss_auc.shape)
         rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
-        np.savetxt(afni_text, rss_out)
+        np.savetxt(afni_text +".txt", rss_auc)
+        np.savetxt(afni_text +"_th.txt", rss_out)
 
+    if peak_out is not None:
+        np.savetxt(peak_out, idxpeak_auc)
     np.savetxt(join(out_dir, "ets_AUC_denoised.txt"), ets_auc_denoised)
 
     return ets_auc_denoised

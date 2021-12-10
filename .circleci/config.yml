@@ -171,7 +171,10 @@ jobs:
       - codecov/upload:
           file: /tmp/src/connPFM/coverage.xml
 
-  py39_integration_and_coverage:
+  py_integration:
+    parameters:
+      PYTHON:
+        type: string
     working_directory: /tmp/src/connPFM
     docker:
       - image: connpfm/afni_miniconda
@@ -179,15 +182,15 @@ jobs:
       - attach_workspace:  # get connPFM
           at: /tmp
       - restore_cache:  # load environment
-          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}-{{ "<< parameters.PYTHON >>" }}
       - run:
           name: Run tests and compile coverage
           command:  |
             apt-get update
             apt-get install -yqq make
             apt-get install -yqq curl
-            cp -r /opt/conda/envs/py39_env /opt/miniconda-latest/envs/py39_env
-            source activate py39_env
+            cp -r /opt/conda/envs/<< parameters.PYTHON >> /opt/miniconda-latest/envs/<< parameters.PYTHON >>
+            source activate << parameters.PYTHON >>
             make integration
       - codecov/upload:
           file: /tmp/src/connPFM/coverage.xml
@@ -318,9 +321,13 @@ workflows:
               PYTHON: ["3.9", "3.8"]
           requires:
             - py_env-<< matrix.PYTHON >>
-      - py39_integration_and_coverage:
+      - py_integration:
+          name: py_integration-<< matrix.PYTHON >>
+          matrix:
+            parameters:
+              PYTHON: ["3.9", "3.8"]
           requires:
-            - py_env
+            - py_env-<< matrix.PYTHON >>
       - build_slim_latest:
           requires:
            - py_unittest-3.9

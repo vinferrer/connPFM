@@ -221,7 +221,7 @@ jobs:
       - run:
           name: Linting
           command:  |
-            source activate py39_env
+            source activate py3.9_env
             flake8 /tmp/src/connPFM/connPFM
       - store_artifacts:
           path: /tmp/data/lint

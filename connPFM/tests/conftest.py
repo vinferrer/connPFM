@@ -160,3 +160,8 @@ def surrogate_ets_file(testpath):
 @pytest.fixture
 def surrogate_hist_file(testpath):
     return fetch_file("3b6ge", testpath, "surrogate_hist.npy")
+
+
+@pytest.fixture
+def ets_rss_thr_file(testpath):
+    return fetch_file("gn8x5", testpath, "ets_AUC_denoised_rss_th.txt")

@@ -1,3 +1,4 @@
+from genericpath import isfile
 import subprocess
 from os.path import basename, dirname, join
 
@@ -30,13 +31,20 @@ def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integra
 
 
 def test_integration_ev(
-    testpath, bold_file, atlas_file, AUC_file, ets_auc_denoised_file, surr_dir, skip_integration
+    testpath,
+    bold_file,
+    atlas_file,
+    AUC_file,
+    ets_auc_denoised_file,
+    surr_dir,
+    skip_integration,
+    ets_rss_thr_file,
 ):
     if skip_integration:
         pytest.skip("Skipping integration test")
 
     subprocess.call(
-        "connPFM -i {} -a {} --AUC {} -d {} -m {} -tr 1 -u vferrer -nsur 50 -w ev".format(
+        "connPFM -i {} -a {} --AUC {} -d {} -m {} --peaks_points ets_AUC_denoised -tr 1 -u vferrer -nsur 50 -w ev".format(
             bold_file,
             atlas_file,
             AUC_file,
@@ -47,7 +55,10 @@ def test_integration_ev(
     )
     ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))
     ets_auc_osf = np.loadtxt(join(ets_auc_denoised_file))
+    rss_out_local = np.loadtxt(join(testpath, "ets_AUC_denoised_rss_th.txt"))
+    rss_out_osf = np.loadtxt(ets_rss_thr_file)
     np.allclose(ets_auc_denoised_local, ets_auc_osf)
+    np.allclose(rss_out_local, rss_out_osf)
 
 
 def test_integration_debias(

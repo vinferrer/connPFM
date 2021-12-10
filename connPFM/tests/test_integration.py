@@ -1,4 +1,3 @@
-from genericpath import isfile
 import subprocess
 from os.path import basename, dirname, join
 
@@ -44,13 +43,13 @@ def test_integration_ev(
         pytest.skip("Skipping integration test")
 
     subprocess.call(
-        "connPFM -i {} -a {} --AUC {} -d {} -m {} --peaks_points ets_AUC_denoised -tr 1 -u vferrer -nsur 50 -w ev".format(
+        "connPFM -i {} -a {} --AUC {} -d {} -m {} ".format(
             bold_file,
             atlas_file,
             AUC_file,
             surr_dir,
             join(dirname(AUC_file), "ets_AUC_denoised.txt"),
-        ),
+        ) + "--peaks_points ets_AUC_denoised -tr 1 -u vferrer -nsur 50 -w ev",
         shell=True,
     )
     ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))

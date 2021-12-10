@@ -217,7 +217,7 @@ jobs:
       - attach_workspace:  # get connPFM
           at: /tmp
       - restore_cache:  # load environment
-          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}-{{ "3.9" }}
       - run:
           name: Linting
           command:  |
@@ -306,7 +306,7 @@ workflows:
               PYTHON: ["3.9", "3.8"]
       - style_check:
           requires:
-            - py_env
+            - py_env-3.9
       - py39_unittest_and_coverage:
           requires:
             - py_env

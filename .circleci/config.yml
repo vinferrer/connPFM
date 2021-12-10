@@ -312,7 +312,7 @@ workflows:
           requires:
             - py_env-3.9
       - py_unittest:
-          name: py_unittest-v<< matrix.PYTHON >>
+          name: py_unittest-<< matrix.PYTHON >>
           matrix:
             parameters:
               PYTHON: ["3.9", "3.8"]
@@ -323,7 +323,7 @@ workflows:
             - py_env
       - build_slim_latest:
           requires:
-           - py39_unittest_and_coverage
+           - py_unittest-3.9
           filters:
             branches:
               only: main

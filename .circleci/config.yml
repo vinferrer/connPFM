@@ -142,7 +142,7 @@ jobs:
             fi
             python setup.py install --user
       - save_cache:  # environment cache tied to requirements
-          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}
+          key: deps1-{{ checksum "connPFM/info.py" }}-{{ checksum "setup.py" }}-{{ "<< parameters.PYTHON >>" }} 
           paths:
             - "/opt/conda/envs/py<< parameters.PYTHON >>_env"
 

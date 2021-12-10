@@ -182,7 +182,7 @@ def _get_parser():
         "--peaks",
         dest="peak_detection",
         type=str,
-        default="rss",
+        default=["rss"],
         choices=["rss", "rss_time", "ets", "ets_time"],
         help=(
             "Method to detect peaks of co-fluctuations:"

@@ -9,6 +9,7 @@ A template repo to use for new repositories.
 [![Documentation Status](https://readthedocs.org/projects/connPFM/badge/?version=latest)](http://connPFM.readthedocs.io/en/latest/?badge=latest)
 [![Codecov](https://codecov.io/gh/SPiN-Lab/connPFM/branch/main/graph/badge.svg)](https://codecov.io/gh/SPiN-Lab/connPFM)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![DOI](https://zenodo.org/badge/413858406.svg)](https://zenodo.org/badge/latestdoi/413858406)
 
 ## Installation
 ```

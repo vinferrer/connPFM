@@ -24,10 +24,10 @@ font = {"weight": "normal", "size": 28}
 matplotlib.rc("font", **font)
 
 
-ets_denoised_rss = np.loadtxt("/home/vicente/nilearn_data/ets_AUC_denoised.txt")
-ets_denoised_ets = np.loadtxt("/home/vicente/nilearn_data/ets_AUC_denoised_ets.txt")
-ets_original = np.loadtxt("/home/vicente/nilearn_data/ets_AUC_original.txt")
-rss = np.loadtxt("/home/vicente/nilearn_data/ets_AUC_denoised_rss.txt")
+ets_denoised_rss = np.loadtxt("/bcbl/home/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100/ets_AUC_denoised.txt")
+ets_denoised_ets = np.loadtxt("/bcbl/home/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100/ets_AUC_denoised_ets.txt")
+ets_original = np.loadtxt("/bcbl/home/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100/ets_AUC_original.txt")
+rss = np.loadtxt("/bcbl/home/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100/ets_AUC_denoised_rss.txt")
 mask=np.zeros(ets_original.shape)
 mask[np.where(ets_denoised_rss>0)]=1
 mask[np.where(ets_denoised_ets>0)]=2

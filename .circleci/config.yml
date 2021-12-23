@@ -98,6 +98,7 @@ jobs:
             cp -r /opt/conda/envs/py<< parameters.PYTHON >>_env /opt/miniconda-latest/envs/py<< parameters.PYTHON >>_env
             source activate py<< parameters.PYTHON >>_env
             make integration
+          no_output_timeout: 20m
       - codecov/upload:
           file: /tmp/src/connPFM/coverage.xml
 

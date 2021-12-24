@@ -232,7 +232,6 @@ def ev_workflow(
             timepoints[idxpeak_auc] = 1
             np.savetxt(join(out_dir, afni_text) + "_timepoints.1D", timepoints)
         if peak_detection == "ets":
-            print("in progress")
             np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
 
     np.savetxt(matrix, ets_auc_denoised)

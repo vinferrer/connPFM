@@ -1,0 +1,18 @@
+Bootstrap: docker
+From: python:3.9-slim-bullseye
+
+%files
+    . .
+%post
+    apt-get update
+    apt-get -qq install git
+    pip install -e . \
+    pip install PyWavelets
+    
+%environment
+    export LC_ALL=C
+    export PATH=/usr/games:$PATH
+    export PYTHONPATH "${PYTHONPATH}:/connPFM"
+
+%runscript
+    connPFM

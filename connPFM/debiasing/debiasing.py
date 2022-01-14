@@ -18,7 +18,7 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, history_str):
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
         labels_img=mask,
-        standardize=False,
+        standardize="psc",
         strategy="mean",
     )
 
@@ -26,7 +26,7 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, history_str):
     data = masker.fit_transform(data_file)
 
     # Get number of time points/nodes
-    [t, n] = data.shape
+    [_, n] = data.shape
 
     # Get ETS indexes
     idx_u, idx_v = np.argwhere(np.triu(np.ones(n), 1)).T

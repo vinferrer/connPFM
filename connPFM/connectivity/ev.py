@@ -146,7 +146,8 @@ def event_detection(
 
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets, thr)
-
+        idxpeak = np.where(etspeaks != 0)[0]
+        rss = np.sqrt(np.sum(np.square(etspeaks), axis=1))
     # calculate mean co-fluctuation (edge time series) across all peaks
     mu = np.nanmean(etspeaks, 0)
 
@@ -222,11 +223,16 @@ def ev_workflow(
     # Save RSS time-series as text file for easier visualization on AFNI
     if afni_text is not None:
         np.savetxt(join(out_dir, afni_text) + "_peaks.txt", idxpeak_auc)
+        rss_out = np.zeros(rss_auc.shape)
         if peak_detection == "rss":
-            rss_out = np.zeros(rss_auc.shape)
             rss_out[idxpeak_auc] = rss_auc[idxpeak_auc]
             np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
             np.savetxt(join(out_dir, afni_text) + "_rss_th.txt", rss_out)
+            timepoints = np.zeros(rss_auc.shape)
+            timepoints[idxpeak_auc] = 1
+            np.savetxt(join(out_dir, afni_text) + "_timepoints.1D", timepoints)
+        if peak_detection == "ets":
+            np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
 
     np.savetxt(matrix, ets_auc_denoised)
 

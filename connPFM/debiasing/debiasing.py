@@ -13,7 +13,7 @@ from connPFM.utils.hrf_generator import HRFMatrix
 LGR = logging.getLogger(__name__)
 
 
-def debiasing(data_file, mask, mtx, tr, out_dir, prefix, history_str):
+def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
@@ -53,7 +53,7 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, history_str):
     hrf.generate_hrf()
 
     # Perform debiasing
-    deb_output = debiasing_spike(hrf, data, ets_mask)
+    deb_output = debiasing_spike(hrf, data, ets_mask, groups=groups, group_dist=groups_dist)
     beta = deb_output["beta"]
     fitt = deb_output["betafitts"]
 

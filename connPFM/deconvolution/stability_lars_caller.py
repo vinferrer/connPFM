@@ -101,17 +101,18 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                     job_idx,
                 )
             )
+            error_output=os.path.join(temp,f"error{job_idx}")
             subprocess.call(
                 "qsub "
                 + " -N "
                 + jobname
+                + f" -e {error_output} -o {error_output} "
                 + ' -v INPUT_ARGS="'
                 + input_parameters
                 + '"'
                 + f" {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh ",
                 shell=True,
             )
-
             while int(
                 bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]
             ) > (jobs - 1):

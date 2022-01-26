@@ -61,8 +61,8 @@ def roiPFM(
     LGR.info("Running stability selection on original data...")
     if which("singularity") is not None:
         cmd = (
-            "singularity build --force "
-            "$HOME/connpfm_slim.simg docker://connpfm/connpfm_slim_latest"
+            "singularity pull --force "
+            "$HOME/connpfm_slim.simg library://vferrer/default/connpfm_slim:latest"
         )
         subprocess.call(cmd, shell=True)
     auc = run_stability_lars(

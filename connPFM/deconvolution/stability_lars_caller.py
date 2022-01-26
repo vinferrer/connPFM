@@ -101,7 +101,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                     job_idx,
                 )
             )
-            error_output=os.path.join(temp,f"error{job_idx}")
+            error_output = os.path.join(temp, f"error{job_idx}")
             subprocess.call(
                 "qsub "
                 + " -N "

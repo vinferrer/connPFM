@@ -196,6 +196,37 @@ def _get_parser():
         nargs=1,
     )
     optoptions.add_argument(
+        "-pd",
+        "--prefix_debias",
+        dest="prefix",
+        help="Prefix for path and name for the beta and fitted files of the debiasing",
+        default=None,
+    )
+    optoptions.add_argument(
+        "-pp",
+        "--peaks_points",
+        dest="peaks_path",
+        help="Prefix for name for txt file of rss and txt file of selected timepoints",
+        default=None,
+    )
+    optoptions.add_argument(
+        "-groups",
+        "--groups",
+        dest="groups",
+        help="Whether to group continuous spikes when debiasing.",
+        default=False,
+        action="store_true",
+    )
+    optoptions.add_argument(
+        "-dist",
+        "--distance",
+        dest="groups_dist",
+        help="Distance (TRs) between groups when grouping continuous spikes.",
+        default=3,
+        type=int,
+        nargs=1,
+    )
+    optoptions.add_argument(
         "-q",
         "--quiet",
         dest="quiet",
@@ -211,18 +242,5 @@ def _get_parser():
         help="activate quiet logger mode",
         default=False,
     )
-    optoptions.add_argument(
-        "-pd",
-        "--prefix_debias",
-        dest="prefix",
-        help="Prefix for path and name for the beta and fitted files of the debiasing",
-        default=None,
-    )
-    optoptions.add_argument(
-        "-pp",
-        "--peaks_points",
-        dest="peaks_path",
-        help="Prefix for name for txt file of rss and txt file of selected timepoints",
-        default=None,
-    )
+
     return parser

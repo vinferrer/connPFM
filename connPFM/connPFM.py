@@ -84,6 +84,8 @@ def _main(argv=None):
             options["tr"][0],
             os.path.dirname(options["data"][0]),
             options["prefix"],
+            options["groups"],
+            options["groups_dist"],
             history_str,
         )
     elif selected_workflow == "pfm":
@@ -127,6 +129,8 @@ def _main(argv=None):
             options["tr"][0],
             os.path.dirname(options["data"][0]),
             options["prefix"],
+            options["groups"],
+            options["groups_dist"],
             history_str,
         )
     else:

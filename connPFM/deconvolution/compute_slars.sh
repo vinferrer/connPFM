@@ -9,7 +9,7 @@ if [[ -z "${INPUT_ARGS}" ]]; then
         INPUT_ARGS="$*"
     fi
 fi
-module load singularity
+module load singularity/3.7.0
 if ! command -v singularity &> /dev/null;
 then
     echo " singularity could not be found tryng to execute with conda env"
@@ -22,5 +22,5 @@ then
 else
     echo ${INPUT_ARGS[0]}
     cd /bcbl/home/public/PARK_VFERRER
-    singularity exec --bind $HOME $HOME/connpfm_slim.simg python -u /connPFM/deconvolution/compute_slars.py $INPUT_ARGS
+    singularity exec --bind $PWD $PWD/connpfm_slim.simg python -u /connPFM/deconvolution/compute_slars.py $INPUT_ARGS
 fi

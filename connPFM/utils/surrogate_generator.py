@@ -62,5 +62,5 @@ def generate_surrogate(data, atlas, output):
     output_filename, _ = splitext_(output)
 
     surrogate_output.to_filename(f"{output_filename}.nii.gz")
-    atlas_mod.inverse_transform(f"{output_filename}.nii.gz", data)
+    atlas_mod.inverse_transform(f"{output_filename}.nii.gz")
     return surrogate

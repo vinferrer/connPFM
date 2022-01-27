@@ -79,7 +79,7 @@ def roiPFM(
     LGR.info("Saving AUC results of original data...")
     auc_4d = masker.inverse_transform(auc)
     auc_4d.to_filename(output)
-    atlas_mod.inverse_transform(output, data)
+    atlas_mod.inverse_transform(output)
     LGR.info("AUC results on original data saved.")
 
     LGR.info("Updating file history...")
@@ -112,7 +112,7 @@ def roiPFM(
             # Save surrogate AUC
             surrogate_out = os.path.join(dir, f"surrogate_AUC_{n_sur}.nii.gz")
             auc_4d.to_filename(surrogate_out)
-            atlas_mod.inverse_transform(surrogate_out, data)
+            atlas_mod.inverse_transform(surrogate_out)
             LGR.info(f"{n_sur}/{nsurrogates -1 }")
 
         LGR.info(f"PFM on {nsurrogates} surrogates finished.")

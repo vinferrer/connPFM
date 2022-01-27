@@ -23,14 +23,11 @@ def transform(atlas_orig, data_tlrc, temp_dir):
     return os.path.join(temp_dir, TMP_name)
 
 
-def inverse_transform(data_tlrc, atlas_orig):
-    atlas_obj = nib.load(atlas_orig)
-    data_obj = nib.load(data_tlrc)
-    if np.any(atlas_obj.affine != data_obj.affine):
+def inverse_transform(data_tlrc):
+    proc = subprocess.run(f"3dinfo -space {data_tlrc}",  capture_output=True,shell=True)
+    if 'TLRC' in str(proc.stdout):
         subprocess.run(
             f"3drefit -space ORIG -view orig {data_tlrc}",
             shell=True,
         )
         sleep(5)
-        tmp_data = nib.Nifti1Image(data_obj.get_fdata(), data_obj.affine, data_obj.header)
-        nib.save(tmp_data, data_tlrc)

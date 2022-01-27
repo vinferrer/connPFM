@@ -24,7 +24,7 @@ def transform(atlas_orig, data_tlrc, temp_dir):
 
 
 def inverse_transform(data_tlrc):
-    proc = subprocess.run(f"3dinfo -space {data_tlrc}",  capture_output=True,shell=True)
+    proc = subprocess.run(f"3dinfo -space {data_tlrc}", capture_output=True, shell=True)
     if 'TLRC' in str(proc.stdout):
         subprocess.run(
             f"3drefit -space ORIG -view orig {data_tlrc}",

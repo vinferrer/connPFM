@@ -18,7 +18,7 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, hi
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     masker = NiftiLabelsMasker(
         labels_img=mask,
-        standardize="psc",
+        standardize=False,
         strategy="mean",
     )
 

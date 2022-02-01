@@ -76,7 +76,7 @@ class StabilityLars:
                     method="lasso",
                     Gram=np.dot(X_sub.T, X_sub),
                     Xy=np.dot(X_sub.T, np.squeeze(y_sub)),
-                    max_iter=nlambdas + 1,  # int(np.ceil(self.maxiterfactor * self.nscans)),
+                    max_iter=self.nscans,  # int(np.ceil(self.maxiterfactor * self.nscans)),
                     eps=1e-6,
                     alpha_min=lambda_min,
                 )

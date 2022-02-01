@@ -25,8 +25,6 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, hi
     # Read data
     data = masker.fit_transform(data_file)
 
-    breakpoint()
-
     # Get number of time points/nodes
     [_, n] = data.shape
 

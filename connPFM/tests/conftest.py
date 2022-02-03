@@ -62,7 +62,7 @@ def testpath(tmp_path_factory):
 @pytest.fixture
 def bold_file(testpath):
     return fetch_file(
-        "x6r8v", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold.nii.gz"
+        "y3wa9", testpath, "sub-pixar123_task-pixar_space-MNI152-preproc_bold.SPC.nii.gz"
     )
 
 

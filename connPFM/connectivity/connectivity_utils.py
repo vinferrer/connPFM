@@ -2,7 +2,6 @@
 import logging
 
 import numpy as np
-from joblib import Parallel, delayed
 from scipy.stats import zscore
 
 LGR = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ def calculate_ets(y, n):
     return ets, u, v
 
 
-def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
+def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=(0, 1)):
     """Calculate RSS on surrogate data."""
     [t, n] = z_ts.shape
 
@@ -42,7 +41,10 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand):
     # calcuate rss
     rssr = np.sqrt(np.sum(np.square(etsr), axis=1))
 
-    return (rssr, etsr, np.min(etsr), np.max(etsr))
+    # Calculate histogram
+    ets_hist, bin_edges = np.histogram(etsr.flatten(), bins=nbins, range=hist_range)
+
+    return (rssr, etsr, ets_hist, bin_edges)
 
 
 def remove_neighboring_peaks(rss, idx):
@@ -137,33 +139,21 @@ def calculate_hist_threshold(hist, bins, percentile=95):
     return thr
 
 
-def surrogates_histogram(
-    surrprefix,
-    sursufix,
-    masker,
-    hist_range,
-    numrand=100,
-    nbins=500,
-    percentile=95,
+def sum_histograms(
+    hist_list,
+    numrand,
+    nbins,
 ):
     """
-    Read AUCs of surrogates, calculate histogram and sum of all histograms to
+    Get histograms of all surrogates and sum them to
     obtain a single histogram that summarizes the data.
     """
-    ets_hist = np.zeros((numrand, nbins))
 
-    # calculate histogram for each surrogate
-    hist = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(calculate_hist)(surrprefix, sursufix, irand, masker, hist_range, nbins)
-        for irand in range(numrand)
-    )
+    all_hists = np.zeros((numrand, nbins))
 
-    for irand in range(numrand):
-        ets_hist[irand, :] = hist[irand][0]
+    for rand_idx in range(numrand):
+        all_hists[rand_idx, :] = hist_list[rand_idx][2]
 
-    bin_edges = hist[0][1]
+    ets_hist_sum = np.sum(all_hists, axis=0)
 
-    # calculate histogram threshold
-    thr = calculate_hist_threshold(ets_hist, bin_edges, percentile)
-
-    return thr
+    return ets_hist_sum

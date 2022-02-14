@@ -117,8 +117,9 @@ def event_detection(
                 nbins=nbins,
             )
             thr = connectivity_utils.calculate_hist_threshold(
-                hist_sum, surrogate_events[0][3], percentile=95
+                hist_sum, surrogate_events[0][3][:-1], percentile=95
             )
+
         elif peak_detection == "ets_time":
             # Initialize array for threshold
             thr = np.zeros(t)

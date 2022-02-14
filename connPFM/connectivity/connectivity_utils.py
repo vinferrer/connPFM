@@ -132,8 +132,7 @@ def calculate_hist(
 
 def calculate_hist_threshold(hist, bins, percentile=95):
     """Calculate histogram threshold."""
-    ets_hist_sum = np.sum(hist, axis=0)
-    cumsum_percentile = np.cumsum(ets_hist_sum) / np.sum(ets_hist_sum) * 100
+    cumsum_percentile = np.cumsum(hist) / np.sum(hist) * 100
     thr = bins[len(cumsum_percentile[cumsum_percentile <= percentile])]
 
     return thr

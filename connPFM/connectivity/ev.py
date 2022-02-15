@@ -21,6 +21,7 @@ def event_detection(
     nsur=100,
     segments=True,
     peak_detection="rss",
+    nbins=1000,
 ):
     """Perform event detection on given data."""
     masker = NiftiLabelsMasker(
@@ -55,18 +56,13 @@ def event_detection(
     rssr = np.zeros([t, nsur])
 
     # calculate ets and rss of surrogate data
+    LGR.info("Calculating edge-time matrix, RSS and histograms for surrogates...")
     surrogate_events = Parallel(n_jobs=-1, backend="multiprocessing")(
-        delayed(connectivity_utils.rss_surr)(z_ts, u, v, surrprefix, sursufix, masker, irand)
+        delayed(connectivity_utils.rss_surr)(
+            z_ts, u, v, surrprefix, sursufix, masker, irand, nbins
+        )
         for irand in range(nsur)
     )
-
-    hist_ranges = np.zeros((2, nsur))
-    for irand in range(nsur):
-        hist_ranges[0, irand] = surrogate_events[irand][2]
-        hist_ranges[1, irand] = surrogate_events[irand][3]
-
-    hist_min = np.min(hist_ranges, axis=1)[0]
-    hist_max = np.max(hist_ranges, axis=1)[1]
 
     # Make selection of points with RSS
     if "rss" in peak_detection:
@@ -117,13 +113,13 @@ def event_detection(
         LGR.info("Selecting points with edge time-series matrix...")
         if peak_detection == "ets":
             LGR.info("Reading AUC of surrogates to perform the thresholding step...")
-            thr = connectivity_utils.surrogates_histogram(
-                surrprefix,
-                sursufix,
-                masker,
-                hist_range=(hist_min, hist_max),
-                numrand=nsur,
+            hist_sum = connectivity_utils.sum_histograms(
+                surrogate_events,
             )
+            thr = connectivity_utils.calculate_hist_threshold(
+                hist_sum, surrogate_events[0][3][:-1], percentile=95
+            )
+
         elif peak_detection == "ets_time":
             # Initialize array for threshold
             thr = np.zeros(t)
@@ -137,9 +133,7 @@ def event_detection(
                     sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
 
                 # calculate histogram of all surrogate ets at time point
-                hist, bins = np.histogram(
-                    sur_ets_at_time.flatten(), bins=500, range=(hist_min, hist_max)
-                )
+                hist, bins = np.histogram(sur_ets_at_time.flatten(), bins=nbins, range=(0, 1))
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(

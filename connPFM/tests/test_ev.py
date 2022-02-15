@@ -26,11 +26,12 @@ def test_rss_surr(AUC_file, atlas_file, surr_dir, rssr_auc_file):
         standardize=False,
         strategy="mean",
     )
+    nbins = 1000
 
     AUC_img = masker.fit_transform(AUC_file)
     _, u, v = connectivity_utils.calculate_ets(AUC_img, AUC_img.shape[1])
     rssr, _, _, _ = connectivity_utils.rss_surr(
-        AUC_img, u, v, join(surr_dir, "surrogate_AUC_"), "", masker, 0
+        AUC_img, u, v, join(surr_dir, "surrogate_AUC_"), "", masker, 0, nbins
     )
     rssr_auc = np.loadtxt(rssr_auc_file)
     assert np.all(np.isclose(rssr, rssr_auc))

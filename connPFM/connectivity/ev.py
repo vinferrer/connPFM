@@ -108,7 +108,9 @@ def event_detection(
             idxpeak = idx
 
         # get co-fluctuation at peaks
-        etspeaks = connectivity_utils.threshold_ets_matrix(ets.copy(), thr=0, selected_idxs=idxpeak)
+        etspeaks = connectivity_utils.threshold_ets_matrix(
+            ets.copy(), thr=0, selected_idxs=idxpeak
+        )
 
     # Make selection of points with edge time-series matrix
     elif "ets" in peak_detection:

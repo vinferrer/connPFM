@@ -140,17 +140,16 @@ def calculate_hist_threshold(hist, bins, percentile=95):
 
 def sum_histograms(
     hist_list,
-    numrand,
-    nbins,
 ):
     """
     Get histograms of all surrogates and sum them to
     obtain a single histogram that summarizes the data.
     """
 
-    all_hists = np.zeros((numrand, nbins))
+    # Initialize matrix to store surrogate histograms
+    all_hists = np.zeros((len(hist_list), hist_list[0][3].shape[0] - 1))
 
-    for rand_idx in range(numrand):
+    for rand_idx in range(len(hist_list)):
         all_hists[rand_idx, :] = hist_list[rand_idx][2]
 
     ets_hist_sum = np.sum(all_hists, axis=0)

@@ -115,8 +115,6 @@ def event_detection(
             LGR.info("Reading AUC of surrogates to perform the thresholding step...")
             hist_sum = connectivity_utils.sum_histograms(
                 surrogate_events,
-                numrand=nsur,
-                nbins=nbins,
             )
             thr = connectivity_utils.calculate_hist_threshold(
                 hist_sum, surrogate_events[0][3][:-1], percentile=95

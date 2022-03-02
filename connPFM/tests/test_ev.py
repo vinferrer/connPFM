@@ -86,6 +86,7 @@ def test_event_detection_rss(
         surrprefix=join(surr_dir, "surrogate_AUC_"),
         nsur=10,
         peak_detection="rss",
+        te=[0],
     )
     assert np.allclose(ets_rss, np.loadtxt(ets_auc_original_file))
     assert np.allclose(ets_denoised_rss, np.loadtxt(ets_auc_denoised_file))
@@ -101,6 +102,7 @@ def test_event_detection_rss_time(
         surrprefix=join(surr_dir, "surrogate_AUC_"),
         nsur=10,
         peak_detection="rss_time",
+        te=[0],
     )
 
     assert np.allclose(ets_rss_time, np.load(ets_auc_all)[:, :, 1])
@@ -115,6 +117,7 @@ def test_event_detection_ets(AUC_file, atlas_file, surr_dir, ets_auc_all, ets_au
         surrprefix=join(surr_dir, "surrogate_AUC_"),
         nsur=10,
         peak_detection="ets",
+        te=[0],
     )
 
     assert np.allclose(ets, np.load(ets_auc_all)[:, :, 2])
@@ -131,6 +134,7 @@ def test_event_detection_ets_time(
         surrprefix=join(surr_dir, "surrogate_AUC_"),
         nsur=10,
         peak_detection="ets_time",
+        te=[0],
     )
 
     assert np.allclose(ets_time, np.load(ets_auc_all)[:, :, 3])

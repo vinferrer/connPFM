@@ -1,14 +1,11 @@
 """Main debiasing workflow."""
 import logging
-import subprocess
 from os.path import join
-from tempfile import template
 
 import numpy as np
-from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
-from connPFM.utils import atlas_mod, io
+from connPFM.utils import io
 from connPFM.utils.hrf_generator import HRFMatrix
 
 LGR = logging.getLogger(__name__)

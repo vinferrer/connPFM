@@ -3,10 +3,8 @@ import os
 import subprocess
 from shutil import which
 
-from nilearn.input_data import NiftiLabelsMasker
-
 from connPFM.deconvolution.stability_lars_caller import run_stability_lars
-from connPFM.utils import atlas_mod, hrf_generator, surrogate_generator
+from connPFM.utils import hrf_generator, surrogate_generator
 from connPFM.utils.io import load_data, save_img
 
 LGR = logging.getLogger(__name__)

@@ -4,12 +4,11 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
-from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
-from connPFM.utils.io import load_data, save_img
+from connPFM.utils.io import load_data
 
 LGR = logging.getLogger(__name__)
 

@@ -55,10 +55,7 @@ def generate_surrogate(data, atlas, output, n_echos=1):
             )
         )
 
-    surrogate_output = surrogate_masker.inverse_transform(surrogate)
-
     output_filename, _ = splitext_(output)
+    io.save_img(surrogate, f"{output_filename}.nii.gz", surrogate_masker)
 
-    surrogate_output.to_filename(f"{output_filename}.nii.gz")
-    atlas_mod.inverse_transform(f"{output_filename}.nii.gz")
     return surrogate

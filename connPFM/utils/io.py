@@ -34,7 +34,7 @@ def load_data(data, atlas, n_echos=1):
     return data_masked, masker
 
 
-def save_img(data, output, masker, history_str):
+def save_img(data, output, masker, history_str=None):
     """
     Save data as Nifti image, and update header history.
     """
@@ -47,6 +47,8 @@ def save_img(data, output, masker, history_str):
     # Transform space of image
     atlas_mod.inverse_transform(output)
 
-    LGR.info("Updating file history...")
-    subprocess.run('3dNotes -h "' + history_str + '" ' + output, shell=True)
-    LGR.info("File history updated.")
+    # If history_str is not None, update header history
+    if history_str is not None:
+        LGR.info("Updating file history...")
+        subprocess.run('3dNotes -h "' + history_str + '" ' + output, shell=True)
+        LGR.info("File history updated.")

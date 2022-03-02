@@ -4,7 +4,7 @@ import os
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
-from connPFM.utils import atlas_mod
+from connPFM.utils import atlas_mod, io
 
 LGR = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ def splitext_(path):
     return os.path.splitext(path)
 
 
-def generate_surrogate(data, atlas, output):
+def generate_surrogate(data, atlas, output, n_echos=1):
     """
     Generate surrogate data.
 
@@ -35,8 +35,7 @@ def generate_surrogate(data, atlas, output):
     """
     # Mask data
     LGR.info("Masking data...")
-    surrogate_masker = NiftiLabelsMasker(labels_img=atlas, standardize="psc", strategy="mean")
-    data_masked = surrogate_masker.fit_transform(data)
+    data_masked, surrogate_masker = io.load_data(data, atlas, n_echos=n_echos)
     LGR.info("Data masked.")
 
     surrogate = np.zeros(data_masked.shape)

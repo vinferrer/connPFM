@@ -9,6 +9,7 @@ from scipy.stats import zscore
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
+from connPFM.utils.io import load_data, save_img
 
 LGR = logging.getLogger(__name__)
 
@@ -22,15 +23,11 @@ def event_detection(
     segments=True,
     peak_detection="rss",
     nbins=1000,
+    te=[0],
 ):
     """Perform event detection on given data."""
-    masker = NiftiLabelsMasker(
-        labels_img=atlas,
-        standardize=False,
-        strategy="mean",
-    )
+    data, masker = load_data(data_file, atlas, n_echos=len(te))
 
-    data = masker.fit_transform(data_file)
     # load and zscore time series
     # AUC does not get z-scored
     if "AUC" in surrprefix:
@@ -157,6 +154,7 @@ def ev_workflow(
     surr_dir,
     out_dir,
     matrix,
+    te=[0],
     nsurrogates=100,
     dvars=None,
     enorm=None,
@@ -179,7 +177,7 @@ def ev_workflow(
         _,
         _,
         _,
-    ) = event_detection(data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates)
+    ) = event_detection(data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te)
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
@@ -189,6 +187,7 @@ def ev_workflow(
         join(surr_dir, "surrogate_AUC_"),
         nsur=nsurrogates,
         peak_detection=peak_detection,
+        te=[0],
     )
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")

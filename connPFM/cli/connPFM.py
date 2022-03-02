@@ -20,7 +20,7 @@ def _get_parser():
     # Required options
     reqoptions = parser.add_argument_group("Required arguments")
     reqoptions.add_argument(
-        "-i", "--input", dest="data", required=True, help="Input dataset.", nargs="+"
+        "-i", "--input", dest="data", required=True, help="Input data.", nargs="+", type=str
     )
     reqoptions.add_argument(
         "-a", "--atlas", dest="atlas", required=True, help="Input ROI or Atlas.", type=str, nargs=1
@@ -59,13 +59,13 @@ def _get_parser():
         "-te",
         "--te",
         dest="te",
-        type=list,
+        type=float,
         default=None,
         help=(
             "List of echo times (default=None). If no TE is given, "
             "the single echo version will be run."
         ),
-        nargs=1,
+        nargs="+",
     )
     optoptions.add_argument(
         "-d",

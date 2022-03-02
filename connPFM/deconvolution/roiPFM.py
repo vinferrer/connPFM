@@ -7,6 +7,7 @@ from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.deconvolution.stability_lars_caller import run_stability_lars
 from connPFM.utils import atlas_mod, hrf_generator, surrogate_generator
+from connPFM.utils.io import load_data, save_img
 
 LGR = logging.getLogger(__name__)
 
@@ -32,14 +33,16 @@ def roiPFM(
 
     if te is None:
         te = [0]
+    elif len(te) > 1:
+        # If all values in TE list are higher than 1, divide them by 1000.
+        # Only relevant for multi-echo data.
+        if all(te_val > 1 for te_val in te):
+            te = [te_val / 1000 for te_val in te]
 
     os.makedirs(dir, exist_ok=True)
 
-    # TODO: make it multi-echo compatible
     LGR.info("Masking data...")
-    atlas = atlas_mod.transform(atlas, data, dir)
-    masker = NiftiLabelsMasker(labels_img=atlas, standardize=False, strategy="mean")
-    data_masked = masker.fit_transform(data)
+    data_masked, masker = load_data(data, atlas, n_echos=len(te))
     LGR.info("Data masked.")
 
     LGR.info("Generating HRF...")
@@ -77,14 +80,8 @@ def roiPFM(
     LGR.info("Stability selection on original data finished.")
 
     LGR.info("Saving AUC results of original data...")
-    auc_4d = masker.inverse_transform(auc)
-    auc_4d.to_filename(output)
-    atlas_mod.inverse_transform(output)
+    save_img(auc, output, masker, history_str)
     LGR.info("AUC results on original data saved.")
-
-    LGR.info("Updating file history...")
-    subprocess.run('3dNotes -h "' + history_str + '" ' + output, shell=True)
-    LGR.info("File history updated.")
 
     if nsurrogates:
         LGR.info(f"Performing PFM on {nsurrogates} surrogates...")
@@ -93,7 +90,7 @@ def roiPFM(
             # Generate surrogate
             surrogate_name = os.path.join(dir, f"surrogate_{n_sur}.nii.gz")
             surrogate_masked = surrogate_generator.generate_surrogate(
-                data=data, atlas=atlas, output=surrogate_name
+                data=data, atlas=atlas, output=surrogate_name, n_echos=len(te)
             )
             # Calculate AUC
             auc = run_stability_lars(
@@ -106,13 +103,9 @@ def roiPFM(
                 maxiterfactor=maxiterfactor,
             )
 
-            # Transform back to 4D
-            auc_4d = masker.inverse_transform(auc)
-
             # Save surrogate AUC
             surrogate_out = os.path.join(dir, f"surrogate_AUC_{n_sur}.nii.gz")
-            auc_4d.to_filename(surrogate_out)
-            atlas_mod.inverse_transform(surrogate_out)
+            save_img(auc, surrogate_out, masker, history_str)
             LGR.info(f"{n_sur}/{nsurrogates -1 }")
 
         LGR.info(f"PFM on {nsurrogates} surrogates finished.")

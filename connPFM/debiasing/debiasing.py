@@ -2,30 +2,25 @@
 import logging
 import subprocess
 from os.path import join
+from tempfile import template
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
-from connPFM.utils import atlas_mod
+from connPFM.utils import atlas_mod, io
 from connPFM.utils.hrf_generator import HRFMatrix
 
 LGR = logging.getLogger(__name__)
 
 
-def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
+def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
-    masker = NiftiLabelsMasker(
-        labels_img=mask,
-        standardize=False,
-        strategy="mean",
-    )
-
     # Read data
-    data = masker.fit_transform(data_file)
+    data, masker = io.load_data(data_file, mask, n_echos=len(te))
 
-    # Get number of time points/nodes
+    # Get number of nodes
     [_, n] = data.shape
 
     # Get ETS indexes
@@ -58,17 +53,11 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, hi
     fitt = deb_output["betafitts"]
 
     # Transform results back to 4D
-    beta_4D = masker.inverse_transform(beta)
     beta_file = join(out_dir, f"{prefix}_beta_ETS.nii.gz")
-    beta_4D.to_filename(beta_file)
-    atlas_mod.inverse_transform(beta_file)
-    subprocess.run(f"3dNotes {beta_file} -h {history_str}", shell=True)
+    io.save_img(beta, beta_file, masker, history_str)
 
-    fitt_4D = masker.inverse_transform(fitt)
     fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
-    fitt_4D.to_filename(fitt_file)
-    subprocess.run(f"3dNotes {fitt_file} -h {history_str}", shell=True)
-    atlas_mod.inverse_transform(fitt_file)
+    io.save_img(fitt, fitt_file, masker, history_str)
 
     LGR.info("Debiasing finished and files saved.")
 

@@ -18,7 +18,10 @@ def load_data(data, atlas, n_echos=1):
 
     # If n_echos is 1 (single echo), mask and return data
     if n_echos == 1:
-        data_masked = masker.fit_transform(data[0])
+        # If data is a list, keep only first element
+        if isinstance(data, list):
+            data = data[0]
+        data_masked = masker.fit_transform(data)
     else:
         # If n_echos is > 1 (multi-echo), mask each echo in data list separately and
         # concatenate the masked data.

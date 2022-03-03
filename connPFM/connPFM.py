@@ -28,15 +28,21 @@ def _main(argv=None):
         arguments=args_str,
     )
     # create logfile name
-    dir = os.path.abspath(options["dir"])
-    os.makedirs(dir, exist_ok=True)
+    temp_dir = os.path.abspath(options["dir"])
+    os.makedirs(temp_dir, exist_ok=True)
+
+    # Get data directory
+    data_dir = os.path.dirname(os.path.abspath(options["data"][0]))
+
+    # Get AUC directory
+    auc_dir = os.path.dirname(os.path.abspath(options["auc"][0]))
 
     LGR = logging.getLogger("GENERAL")
     basename = "connPFM_"
     extension = "tsv"
     start_time = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
-    logname = os.path.join(dir, (basename + start_time + "." + extension))
-    refname = os.path.join(dir, "_references.txt")
+    logname = os.path.join(temp_dir, (basename + start_time + "." + extension))
+    refname = os.path.join(temp_dir, "_references.txt")
     loggers.setup_loggers(logname, refname, quiet=options["quiet"], debug=options["debug"])
 
     if type(options["workflow"]) is list:
@@ -52,7 +58,7 @@ def _main(argv=None):
             options["tr"][0],
             options["username"][0],
             options["te"],
-            dir,
+            temp_dir,
             options["block"],
             options["jobs"][0],
             options["nsurrogates"][0],
@@ -68,8 +74,8 @@ def _main(argv=None):
             options["data"],
             options["auc"][0],
             options["atlas"][0],
-            dir,
-            os.path.dirname(options["auc"][0]),
+            temp_dir,
+            auc_dir,
             options["matrix"][0],
             options["te"],
             options["nsurrogates"][0],
@@ -84,7 +90,7 @@ def _main(argv=None):
             options["te"],
             ets_auc_denoised,
             options["tr"][0],
-            os.path.dirname(options["data"]),
+            data_dir,
             options["prefix"],
             options["groups"],
             options["groups_dist"],
@@ -98,7 +104,7 @@ def _main(argv=None):
             options["tr"][0],
             options["username"][0],
             options["te"],
-            dir,
+            temp_dir,
             options["block"],
             options["jobs"][0],
             options["nsurrogates"][0],
@@ -114,8 +120,8 @@ def _main(argv=None):
             data_file=options["data"],
             auc_file=options["auc"][0],
             atlas=options["atlas"][0],
-            surr_dir=dir,
-            out_dir=os.path.dirname(options["auc"][0]),
+            surr_dir=temp_dir,
+            out_dir=auc_dir,
             te=options["te"],
             matrix=options["matrix"][0],
             nsurrogates=options["nsurrogates"][0],
@@ -131,7 +137,7 @@ def _main(argv=None):
             options["te"],
             ets_auc_denoised,
             options["tr"][0],
-            os.path.dirname(options["data"]),
+            data_dir,
             options["prefix"],
             options["groups"],
             options["groups_dist"],

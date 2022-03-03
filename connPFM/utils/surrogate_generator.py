@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from connPFM.utils import atlas_mod, io
+from connPFM.utils import io
 
 LGR = logging.getLogger(__name__)
 

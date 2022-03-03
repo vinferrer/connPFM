@@ -21,8 +21,9 @@ def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
     surrogate = surrogate_generator.generate_surrogate(
         bold_file, atlas_file, join(testpath, "generated_surrogate.nii.gz")
     )
+
     keeped_surrogate = masker.fit_transform(surrogate_200)
-    assert np.all(np.isclose(surrogate, keeped_surrogate))
+    assert np.allclose(surrogate, keeped_surrogate)
 
 
 def test_HRF_matrix(hrf_file, hrf_linear_file):

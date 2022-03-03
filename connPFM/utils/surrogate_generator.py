@@ -35,7 +35,7 @@ def generate_surrogate(data, atlas, output):
     """
     # Mask data
     LGR.info("Masking data...")
-    surrogate_masker = NiftiLabelsMasker(labels_img=atlas, standardize="psc", strategy="mean")
+    surrogate_masker = NiftiLabelsMasker(labels_img=atlas, standardize=False, strategy="mean")
     data_masked = surrogate_masker.fit_transform(data)
     LGR.info("Data masked.")
 

@@ -13,7 +13,7 @@ LGR = logging.getLogger(__name__)
 
 def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
-    if te is None:
+    if te is None and len(data_file) == 1:
         te = [0]
     elif len(te) > 1:
         # If all values in TE list are higher than 1, divide them by 1000.

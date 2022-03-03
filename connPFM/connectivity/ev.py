@@ -165,7 +165,7 @@ def ev_workflow(
     Main function to perform event detection and plot results.
     """
     #  If te is None, make it a list with 0
-    if te is None:
+    if te is None and len(data_file) == 1:
         te = [0]
 
     # Paths to files

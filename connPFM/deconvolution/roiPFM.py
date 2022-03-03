@@ -29,7 +29,7 @@ def roiPFM(
     history_str="",
 ):
 
-    if te is None:
+    if te is None and len(data) == 1:
         te = [0]
     elif len(te) > 1:
         # If all values in TE list are higher than 1, divide them by 1000.

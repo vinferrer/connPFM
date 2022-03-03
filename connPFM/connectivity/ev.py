@@ -164,6 +164,10 @@ def ev_workflow(
     """
     Main function to perform event detection and plot results.
     """
+    #  If te is None, make it a list with 0
+    if te is None:
+        te = [0]
+
     # Paths to files
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")

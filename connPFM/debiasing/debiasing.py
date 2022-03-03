@@ -13,6 +13,14 @@ LGR = logging.getLogger(__name__)
 
 def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
+    if te is None:
+        te = [0]
+    elif len(te) > 1:
+        # If all values in TE list are higher than 1, divide them by 1000.
+        # Only relevant for multi-echo data.
+        if all(te_val > 1 for te_val in te):
+            te = [te_val / 1000 for te_val in te]
+
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     # Read data
     data, masker = io.load_data(data_file, mask, n_echos=len(te))

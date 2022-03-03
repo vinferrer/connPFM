@@ -26,7 +26,7 @@ def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist
     data, masker = io.load_data(data_file, mask, n_echos=len(te))
 
     # Get number of nodes
-    [_, n] = data.shape
+    [, n] = data.shape
 
     # Get ETS indexes
     idx_u, idx_v = np.argwhere(np.triu(np.ones(n), 1)).T
@@ -61,8 +61,23 @@ def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist
     beta_file = join(out_dir, f"{prefix}_beta_ETS.nii.gz")
     io.save_img(beta, beta_file, masker, history_str)
 
-    fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
-    io.save_img(fitt, fitt_file, masker, history_str)
+    # If n_echos is 1, save betafitts as they are.
+    # If n_echos is > 1, loop through all echoes and
+    # save the betaffits of each echo as a separate file.
+    if len(te) == 1:
+        fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
+        io.save_img(fitt, fitt_file, masker, history_str)
+    else:
+        for echo_idx in range(len(te)):
+            # The number of scans is the shape[1] of the hrf matrix
+            nscans = hrf.shape[1]
+
+            # Get the betafitts of the current echo from the betafitts matrix
+            echo_fitt = fitt[echo_idx * nscans : (echo_idx + 1) * nscans, :]
+
+            # Save the betafitts of the current echo
+            fitt_file = join(out_dir, f"{prefix}_fitt_ETS_echo-1{echo_idx}.nii.gz")
+            io.save_img(echo_fitt, fitt_file, masker, history_str)
 
     LGR.info("Debiasing finished and files saved.")
 

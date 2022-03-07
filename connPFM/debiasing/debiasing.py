@@ -1,31 +1,31 @@
 """Main debiasing workflow."""
 import logging
-import subprocess
 from os.path import join
 
 import numpy as np
-from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
-from connPFM.utils import atlas_mod
+from connPFM.utils import io
 from connPFM.utils.hrf_generator import HRFMatrix
 
 LGR = logging.getLogger(__name__)
 
 
-def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
+def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
+    if te is None and len(data_file) == 1:
+        te = [0]
+    elif len(te) > 1:
+        # If all values in TE list are higher than 1, divide them by 1000.
+        # Only relevant for multi-echo data.
+        if all(te_val > 1 for te_val in te):
+            te = [te_val / 1000 for te_val in te]
+
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
-    masker = NiftiLabelsMasker(
-        labels_img=mask,
-        standardize=False,
-        strategy="mean",
-    )
-
     # Read data
-    data = masker.fit_transform(data_file)
+    data, masker = io.load_data(data_file, mask, n_echos=len(te))
 
-    # Get number of time points/nodes
+    # Get number of nodes
     [_, n] = data.shape
 
     # Get ETS indexes
@@ -45,7 +45,7 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, hi
     # Create HRF matrix
     hrf = HRFMatrix(
         TR=tr,
-        TE=[0],
+        TE=te,
         nscans=data.shape[0],
         r2only=True,
         is_afni=True,
@@ -58,17 +58,26 @@ def debiasing(data_file, mask, mtx, tr, out_dir, prefix, groups, groups_dist, hi
     fitt = deb_output["betafitts"]
 
     # Transform results back to 4D
-    beta_4D = masker.inverse_transform(beta)
     beta_file = join(out_dir, f"{prefix}_beta_ETS.nii.gz")
-    beta_4D.to_filename(beta_file)
-    atlas_mod.inverse_transform(beta_file)
-    subprocess.run(f"3dNotes {beta_file} -h {history_str}", shell=True)
+    io.save_img(beta, beta_file, masker, history_str)
 
-    fitt_4D = masker.inverse_transform(fitt)
-    fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
-    fitt_4D.to_filename(fitt_file)
-    subprocess.run(f"3dNotes {fitt_file} -h {history_str}", shell=True)
-    atlas_mod.inverse_transform(fitt_file)
+    # If n_echos is 1, save betafitts as they are.
+    # If n_echos is > 1, loop through all echoes and
+    # save the betaffits of each echo as a separate file.
+    if len(te) == 1:
+        fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
+        io.save_img(fitt, fitt_file, masker, history_str)
+    else:
+        for echo_idx in range(len(te)):
+            # The number of scans is the shape[1] of the hrf matrix
+            nscans = hrf.shape[1]
+
+            #  Get the betafitts of the current echo from the betafitts matrix
+            echo_fitt = fitt[echo_idx * nscans : (echo_idx + 1) * nscans, :]
+
+            #  Save the betafitts of the current echo
+            fitt_file = join(out_dir, f"{prefix}_fitt_ETS_echo-1{echo_idx}.nii.gz")
+            io.save_img(echo_fitt, fitt_file, masker, history_str)
 
     LGR.info("Debiasing finished and files saved.")
 

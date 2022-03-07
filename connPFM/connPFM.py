@@ -52,7 +52,7 @@ def _main(argv=None):
 
     if selected_workflow == "all":
         roiPFM(
-            options["data"][0],
+            options["data"],
             options["atlas"][0],
             options["auc"][0],
             options["tr"][0],
@@ -71,12 +71,13 @@ def _main(argv=None):
         )
 
         ets_auc_denoised = ev_workflow(
-            options["data"][0],
+            options["data"],
             options["auc"][0],
             options["atlas"][0],
             temp_dir,
             auc_dir,
             options["matrix"][0],
+            options["te"],
             options["nsurrogates"][0],
             history_str,
             options["peak_detection"][0],
@@ -84,8 +85,9 @@ def _main(argv=None):
         )
         LGR.info("Perform debiasing based on edge-time matrix.")
         debiasing(
-            options["data"][0],
+            options["data"],
             options["atlas"][0],
+            options["te"],
             ets_auc_denoised,
             options["tr"][0],
             data_dir,
@@ -96,7 +98,7 @@ def _main(argv=None):
         )
     elif selected_workflow == "pfm":
         roiPFM(
-            options["data"][0],
+            options["data"],
             options["atlas"][0],
             options["auc"][0],
             options["tr"][0],
@@ -115,11 +117,12 @@ def _main(argv=None):
         )
     elif selected_workflow == "ev":
         ev_workflow(
-            data_file=options["data"][0],
+            data_file=options["data"],
             auc_file=options["auc"][0],
             atlas=options["atlas"][0],
             surr_dir=temp_dir,
             out_dir=auc_dir,
+            te=options["te"],
             matrix=options["matrix"][0],
             nsurrogates=options["nsurrogates"][0],
             history_str=history_str,
@@ -129,8 +132,9 @@ def _main(argv=None):
     elif selected_workflow == "debias":
         ets_auc_denoised = loadtxt(options["matrix"][0])
         debiasing(
-            options["data"][0],
+            options["data"],
             options["atlas"][0],
+            options["te"],
             ets_auc_denoised,
             options["tr"][0],
             data_dir,

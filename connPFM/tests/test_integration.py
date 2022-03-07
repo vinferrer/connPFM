@@ -54,7 +54,7 @@ def test_integration_ev(
         shell=True,
     )
     ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))
-    ets_auc_osf = np.loadtxt(join(ets_auc_denoised_file))
+    ets_auc_osf = np.loadtxt(ets_auc_denoised_file)
     rss_out_local = np.loadtxt(join(testpath, "ets_AUC_denoised_rss_th.txt"))
     rss_out_osf = np.loadtxt(ets_rss_thr_file)
     np.allclose(ets_auc_denoised_local, ets_auc_osf)

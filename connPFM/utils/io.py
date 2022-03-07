@@ -25,11 +25,16 @@ def load_data(data, atlas, n_echos=1):
     else:
         # If n_echos is > 1 (multi-echo), mask each echo in data list separately and
         # concatenate the masked data.
-        for echo_idx, echo in enumerate(data):
-            if echo_idx == 0:
-                data_masked = masker.fit_transform(echo)
-            else:
-                data_masked = np.concatenate((data_masked, masker.fit_transform(echo)), axis=0)
+        # If n_echos and len(data) are equal, read data.
+        if n_echos == len(data):
+            for echo_idx, echo in enumerate(data):
+                if echo_idx == 0:
+                    data_masked = masker.fit_transform(echo)
+                else:
+                    data_masked = np.concatenate((data_masked, masker.fit_transform(echo)), axis=0)
+        #  If n_echos is different from len(data), raise error.
+        else:
+            raise ValueError("Please provide as many TE as input files.")
 
     return data_masked, masker
 

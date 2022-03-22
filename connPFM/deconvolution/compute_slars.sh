@@ -22,5 +22,5 @@ then
 else
     echo ${INPUT_ARGS[0]}
     cd /bcbl/home/public/PARK_VFERRER
-    singularity exec --bind $PWD $PWD/connpfm_slim.simg python -u /connPFM/deconvolution/compute_slars.py $INPUT_ARGS
+    singularity exec --bind $PWD /connPFM/deconvolution/connpfm_slim.simg python -u /connPFM/deconvolution/compute_slars.py $INPUT_ARGS
 fi

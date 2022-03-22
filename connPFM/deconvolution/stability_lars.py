@@ -20,20 +20,6 @@ class StabilityLars:
             subsample_idx = np.sort(
                 np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)
             )  # 60% of timepoints are kept
-            if self.nTE > 1:
-                for i in range(self.nTE - 1):
-                    subsample_idx = np.concatenate(
-                        (
-                            subsample_idx,
-                            np.sort(
-                                np.random.choice(
-                                    range((i + 1) * self.nscans, (i + 2) * self.nscans),
-                                    int(0.6 * self.nscans),
-                                    0,
-                                )
-                            ),
-                        )
-                    )
         elif self.mode > 1:  # same time points are selected across echoes
             subsample_idx = np.sort(
                 np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)

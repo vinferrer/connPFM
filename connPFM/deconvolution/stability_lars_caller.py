@@ -110,6 +110,8 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 + ' -v INPUT_ARGS="'
                 + input_parameters
                 + '"'
+                + f' -v FILE_DIR="{os.path.dirname(os.path.abspath(__file__))}"'
+                + f' -v WDIR="{os.path.dirname(os.path.abspath(data_filename))}"'
                 + f" {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh ",
                 shell=True,
             )

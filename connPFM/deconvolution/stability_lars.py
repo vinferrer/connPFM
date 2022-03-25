@@ -1,5 +1,4 @@
 import os
-from curses import echo
 
 import numpy as np
 from sklearn.linear_model import lars_path

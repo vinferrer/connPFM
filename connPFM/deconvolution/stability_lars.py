@@ -17,28 +17,24 @@ class StabilityLars:
             np.random.seed(200)
         # Subsampling for Stability Selection
         if self.mode == 1:  # different time points are selected across echoes
-            if self.nTE > 1:
-                echo_scans = self.scans / self.nTE
-                subsample_idx = np.sort(
-                    np.random.choice(range(echo_scans), int(0.6 * echo_scans), 0)
-                )
-                for i in range(self.nTE - 1):
-                    subsample_idx = np.concatenate(
-                        (
-                            subsample_idx,
-                            np.sort(
-                                np.random.choice(
-                                    range((i + 1) * echo_scans, (i + 2) * echo_scans),
-                                    int(0.6 * echo_scans),
-                                    0,
-                                )
-                            ),
-                        )
+            echo_scans = self.scans / self.nTE
+            subsample_idx = np.sort(
+                np.random.choice(range(echo_scans), int(0.6 * echo_scans), 0)
+            )
+            for i in range(self.nTE - 1):
+                subsample_idx = np.concatenate(
+                    (
+                        subsample_idx,
+                        np.sort(
+                            np.random.choice(
+                                range((i + 1) * echo_scans, (i + 2) * echo_scans),
+                                int(0.6 * echo_scans),
+                                0,
+                            )
+                        ),
                     )
-            else:
-                subsample_idx = np.sort(
-                    np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)
-                )  # 60% of timepoints are kept
+                )
+        # 60% of timepoints are kept
         elif self.mode > 1:  # same time points are selected across echoes
             subsample_idx = np.sort(
                 np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)

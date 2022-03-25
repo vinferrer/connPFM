@@ -1,9 +1,9 @@
 import logging
 import os
-import subprocess
 from shutil import which
 
 from connPFM.deconvolution.stability_lars_caller import run_stability_lars
+from connPFM.tests.conftest import fetch_file
 from connPFM.utils import hrf_generator, surrogate_generator
 from connPFM.utils.io import load_data, save_img
 
@@ -61,11 +61,7 @@ def roiPFM(
 
     LGR.info("Running stability selection on original data...")
     if which("singularity") is not None:
-        cmd = (
-            "singularity pull --force "
-            "$HOME/connpfm_slim.simg library://vferrer/default/connpfm_slim:latest"
-        )
-        subprocess.call(cmd, shell=True)
+        fetch_file("n7tzh", os.path.dirname(os.path.realpath(__file__)), "connpfm_slim.simg")
     auc = run_stability_lars(
         data=data_masked,
         hrf=hrf,

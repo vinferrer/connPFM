@@ -18,9 +18,7 @@ class StabilityLars:
         # Subsampling for Stability Selection
         if self.mode == 1:  # different time points are selected across echoes
             echo_scans = self.scans / self.nTE
-            subsample_idx = np.sort(
-                np.random.choice(range(echo_scans), int(0.6 * echo_scans), 0)
-            )
+            subsample_idx = np.sort(np.random.choice(range(echo_scans), int(0.6 * echo_scans), 0))
             for i in range(self.nTE - 1):
                 subsample_idx = np.concatenate(
                     (

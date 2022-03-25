@@ -1,5 +1,5 @@
-from curses import echo
 import os
+from curses import echo
 
 import numpy as np
 from sklearn.linear_model import lars_path
@@ -19,7 +19,7 @@ class StabilityLars:
         # Subsampling for Stability Selection
         if self.mode == 1:  # different time points are selected across echoes
             if self.nTE > 1:
-                echo_scans=self.scans/self.nTE
+                echo_scans = self.scans / self.nTE
                 subsample_idx = np.sort(
                     np.random.choice(range(echo_scans), int(0.6 * echo_scans), 0)
                 )
@@ -38,8 +38,8 @@ class StabilityLars:
                     )
             else:
                 subsample_idx = np.sort(
-                np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)
-            )  # 60% of timepoints are kept
+                    np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)
+                )  # 60% of timepoints are kept
         elif self.mode > 1:  # same time points are selected across echoes
             subsample_idx = np.sort(
                 np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)

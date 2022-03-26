@@ -19,9 +19,10 @@ def calculate_ets(y, n):
         number of nodes
     Returns
     -------
-    u : vector of indices for the upper triangle of the matrix y axis
-        
-    v : vector of indices for the upper triangle of the matrix x axis
+    u : ndarray
+        vector of indices for the upper triangle of the matrix y axis      
+    v : ndarray
+        vector of indices for the upper triangle of the matrix x axis
 
     ets: matrix
         edge time-series
@@ -43,9 +44,10 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
     ----------
     z_ts : numpy matrix
         z-scored time-series matrix fore each ROI
-    u : vector of indices for the upper triangle of the matrix y axis
-        
-    v : vector of indices for the upper triangle of the matrix x axis
+    u : ndarray
+        vector of indices for the upper triangle of the matrix y axis      
+    v : ndarray
+        vector of indices for the upper triangle of the matrix x axis
     surrprefix : string
         prefix of the surrogate file
     sursufix : string

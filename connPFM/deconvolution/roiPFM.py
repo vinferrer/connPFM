@@ -48,7 +48,7 @@ def roiPFM(
     hrf_matrix = hrf_generator.HRFMatrix(
         TR=tr,
         TE=te,
-        nscans=int(data_masked.shape[0]/len(te)),
+        nscans=int(data_masked.shape[0] / len(te)),
         r2only=True,
         block=block,
         is_afni=True,

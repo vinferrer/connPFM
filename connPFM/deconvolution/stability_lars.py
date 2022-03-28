@@ -43,7 +43,6 @@ class StabilityLars:
     def stability_lars(self, X, Y):
 
         self.nscans = X.shape[1]
-        te_concat = self.nscans * self.nTE
         nvoxels = Y.shape[1]
         nlambdas = self.nscans + 1
 
@@ -52,7 +51,7 @@ class StabilityLars:
         for vox_idx in range(nvoxels):
             lambdas = np.zeros((self.nsurrogates, nlambdas), dtype=np.float32)
             coef_path = np.zeros((self.nsurrogates, self.nscans, nlambdas), dtype=np.float32)
-            self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * te_concat)))
+            self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * self.nscans)*self.nTE))
             for surrogate_idx in range(self.nsurrogates):
 
                 idxs = self._subsampling()

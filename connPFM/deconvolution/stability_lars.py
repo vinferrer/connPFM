@@ -51,7 +51,7 @@ class StabilityLars:
         for vox_idx in range(nvoxels):
             lambdas = np.zeros((self.nsurrogates, nlambdas), dtype=np.float32)
             coef_path = np.zeros((self.nsurrogates, self.nscans, nlambdas), dtype=np.float32)
-            self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * self.nscans)*self.nTE))
+            self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * self.nscans) * self.nTE))
             for surrogate_idx in range(self.nsurrogates):
 
                 idxs = self._subsampling()

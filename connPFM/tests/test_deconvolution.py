@@ -67,5 +67,4 @@ def test_stability_lars_ME(ME_lars):
     # load saved AUC
     auc_osf = np.load(ME_lars[2])
     # Check if AUC is correct
-    breakpoint()
     assert np.all(auc == auc_osf)

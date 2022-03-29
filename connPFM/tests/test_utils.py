@@ -3,8 +3,7 @@ from os.path import join
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 
-from connPFM.utils import hrf_generator
-from connPFM.utils import io
+from connPFM.utils import hrf_generator, io
 
 
 def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):

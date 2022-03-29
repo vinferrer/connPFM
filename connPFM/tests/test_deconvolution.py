@@ -39,8 +39,9 @@ def test_stability_lars(surr_dir):
     # Check if AUC is correct
     assert np.all(auc == auc_osf)
 
+
 def test_stability_lars_ME(ME_lars):
-    # Test for multiecho data 
+    # Test for multiecho data
     data = np.load(ME_lars[0])
     first = 0
     last = 0
@@ -54,7 +55,7 @@ def test_stability_lars_ME(ME_lars):
     hrf = np.load(ME_lars[1])
 
     nvoxels = last - first + 1
-    nscans = int(data.shape[0]/5)
+    nscans = int(data.shape[0] / 5)
     auc = np.zeros((nscans, nvoxels))
     from connPFM.deconvolution.stability_lars import StabilityLars
 
@@ -68,4 +69,3 @@ def test_stability_lars_ME(ME_lars):
     # Check if AUC is correct
     breakpoint()
     assert np.all(auc == auc_osf)
-    

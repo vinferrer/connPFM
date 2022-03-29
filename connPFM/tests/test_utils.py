@@ -6,6 +6,7 @@ from nilearn.input_data import NiftiLabelsMasker
 from connPFM.utils import hrf_generator
 from connPFM.utils import io
 
+
 def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
     masker = NiftiLabelsMasker(
         labels_img=atlas_file,
@@ -40,9 +41,10 @@ def test_HRF_matrix(hrf_file, hrf_linear_file):
         np.isclose(hrf_block.hrf, np.matmul(hrf_loaded, np.tril(np.ones(hrf_loaded.shape[0]))))
     )
 
+
 def test_io(ME_files):
-    #test load for single file
-    data_loaded, masker=io.load_data(ME_files[0], ME_files[-1],5)
-    assert data_loaded.shape[0] == (75,1)
-    data_loaded, masker=io.load_data(ME_files[:-1], ME_files[-1],5)
-    assert data_loaded.shape == (75*5,1)
+    # test load for single file
+    data_loaded, masker = io.load_data(ME_files[0], ME_files[-1], 5)
+    assert data_loaded.shape[0] == (75, 1)
+    data_loaded, masker = io.load_data(ME_files[:-1], ME_files[-1], 5)
+    assert data_loaded.shape == (75 * 5, 1)

@@ -175,3 +175,10 @@ def ME_files(testpath):
     echo5=fetch_file("mxaq2", testpath, "p06.SBJ01_S09_Task11_e5.SPC.nii.gz")
     mask=fetch_file("m3fb6", testpath, "mask_ME.nii.gz")
     return echo1, echo2, echo3, echo4, echo5, mask
+
+@pytest.fixture
+def ME_lars(testpath):
+    data=fetch_file("q6xkd", testpath, "data_ME.npy")
+    hrf=fetch_file("k84u9", testpath, "hrf_ME.npy")
+    auc=fetch_file("n9wjz", testpath, "auc_ME.npy")
+    return data, hrf, auc

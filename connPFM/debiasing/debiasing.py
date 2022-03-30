@@ -46,7 +46,7 @@ def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist
     hrf = HRFMatrix(
         TR=tr,
         TE=te,
-        nscans=int(data.shape[0]/len(te)),
+        nscans=int(data.shape[0] / len(te)),
         r2only=True,
         is_afni=True,
     )

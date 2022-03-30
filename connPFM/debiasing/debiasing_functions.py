@@ -9,7 +9,7 @@ LGR = logging.getLogger(__name__)
 
 def group_hrf(hrf, non_zero_idxs, group_dist=3):
 
-    temp = np.zeros(hrf.shape[1])
+    temp = np.zeros(hrf.shape[0])
     hrf_out = np.zeros(hrf.shape)
     non_zeros_flipped = np.flip(non_zero_idxs)
     new_idxs = []

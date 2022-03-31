@@ -1,9 +1,12 @@
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
+from pytest import Testdir
 from scipy.stats import zscore
 
 from connPFM.debiasing.debiasing_functions import debiasing_block, debiasing_spike
+from connPFM.tests.conftest import fitt_file
 from connPFM.utils.hrf_generator import HRFMatrix
+from connPFM.debiasing.debiasing import debiasing
 
 
 def test_debiasing_spike(
@@ -83,3 +86,12 @@ def test_debiasing_block(
     hrf.generate_hrf()
     (beta, S) = debiasing_block(masker.fit_transform(AUC_file), hrf.hrf, data, True)
     assert np.allclose(beta, np.loadtxt(beta_block_file))
+
+def test_debias_ME(ME_files,ME_mask_2,ME_lars,ME_debias,testpath):
+    auc=np.load(ME_lars[2])
+    mtx=auc*(auc>np.percentile(auc,75))
+    beta, fitt = debiasing(ME_files[:-1], ME_mask_2, [15.4, 29.7, 44.0, 58.37, 2.6], mtx, 2,testpath, "ME", True, 3, None)
+    beta_osf_me=np.loadtxt(ME_debias[0])
+    fitt_osf_me=np.loadtxt(ME_debias[1])
+    assert np.allclose(beta,beta_osf_me)
+    assert np.allclose(fitt,fitt_osf_me)

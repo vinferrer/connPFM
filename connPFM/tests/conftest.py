@@ -184,3 +184,15 @@ def ME_lars(testpath):
     hrf = fetch_file("k84u9", testpath, "hrf_ME.npy")
     auc = fetch_file("n9wjz", testpath, "auc_ME.npy")
     return data, hrf, auc
+
+
+@pytest.fixture
+def ME_mask_2(testpath):
+    return fetch_file("h5mrg", testpath, "mask_ME_2_levels.nii.gz")
+
+
+@pytest.fixture
+def ME_debias(testpath):
+    beta_ME = fetch_file("jtxem", testpath, "beta_ME.txt")
+    fitt_ME = fetch_file("9zagb", testpath, "fitt_ME.txt")
+    return beta_ME, fitt_ME

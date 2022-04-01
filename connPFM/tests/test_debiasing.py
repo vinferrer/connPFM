@@ -97,7 +97,7 @@ def test_debias_ME(ME_files, ME_mask_2, ME_lars, ME_debias, testpath):
         [15.4, 29.7, 44.0, 58.37, 2.6],
         mtx,
         2,
-        join(testpath,"ME"),
+        join(testpath, "ME"),
         True,
         3,
         None,

@@ -3,8 +3,8 @@ import getpass
 import logging
 import os
 import socket
-from sre_compile import isstring
 import sys
+from sre_compile import isstring
 
 from numpy import loadtxt
 
@@ -46,7 +46,7 @@ def _main(argv=None):
         prefix_path = os.path.abspath(options["prefix"])
     if not isstring(options["prefix"]) and options["workflow"] == "debias":
         raise Exception("Debiasing requires a prefix path for fitted and beta files")
-    
+
     if type(options["workflow"]) is list:
         selected_workflow = options["workflow"][0]
     else:

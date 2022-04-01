@@ -42,7 +42,7 @@ def _main(argv=None):
     refname = os.path.join(temp_dir, "_references.txt")
     loggers.setup_loggers(logname, refname, quiet=options["quiet"], debug=options["debug"])
 
-    if isstring(options["prefix"]):
+    if isinstance(options["prefix"], str):
         prefix_path = os.path.abspath(options["prefix"])
     if not isstring(options["prefix"]) and options["workflow"] == "debias":
         raise Exception("Debiasing requires a prefix path for the activity-inducing and activity-related estimates.")

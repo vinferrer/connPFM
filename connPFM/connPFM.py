@@ -3,6 +3,7 @@ import getpass
 import logging
 import os
 import socket
+from sre_compile import isstring
 import sys
 
 from numpy import loadtxt
@@ -33,7 +34,6 @@ def _main(argv=None):
 
     # Get AUC directory
     auc_dir = os.path.dirname(os.path.abspath(options["auc"][0]))
-    prefix_path = os.path.abspath(options["prefix"])
     LGR = logging.getLogger("GENERAL")
     basename = "connPFM_"
     extension = "tsv"
@@ -42,6 +42,11 @@ def _main(argv=None):
     refname = os.path.join(temp_dir, "_references.txt")
     loggers.setup_loggers(logname, refname, quiet=options["quiet"], debug=options["debug"])
 
+    if isstring(options["prefix"]):
+        prefix_path = os.path.abspath(options["prefix"])
+    if not isstring(options["prefix"]) and options["workflow"] == "debias":
+        raise Exception("Debiasing requires a prefix path for fitted and beta files")
+    
     if type(options["workflow"]) is list:
         selected_workflow = options["workflow"][0]
     else:

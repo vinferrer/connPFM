@@ -57,6 +57,7 @@ def test_stability_lars_ME(ME_lars):
     nvoxels = last - first + 1
     nscans = int(data.shape[0] / 5)
     auc = np.zeros((nscans, nvoxels))
+    np.random.seed(200)
     from connPFM.deconvolution.stability_lars import StabilityLars
 
     sl = StabilityLars(nTE=5)

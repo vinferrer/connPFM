@@ -19,3 +19,4 @@ ignore:
   - 'connPFM/due.py'
   - 'connPFM/_version.py'
   - 'connPFM/info.py'
+  - 'connPFM/deconvolution/stability_lars_caller.py'

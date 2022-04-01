@@ -45,7 +45,7 @@ def _main(argv=None):
         prefix_path = os.path.abspath(options["prefix"])
     if not isinstance(options["prefix"], str) and options["workflow"] == "debias":
         raise Exception(
-            "Debiasing requires a prefix path for the activity-inducing"
+            "Debiasing requires a prefix path for the activity-inducing "
             "and activity-related estimates."
         )
     else:

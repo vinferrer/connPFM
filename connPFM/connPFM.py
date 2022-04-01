@@ -31,12 +31,9 @@ def _main(argv=None):
     temp_dir = os.path.abspath(options["dir"])
     os.makedirs(temp_dir, exist_ok=True)
 
-    # Get data directory
-    data_dir = os.path.dirname(os.path.abspath(options["data"][0]))
-
     # Get AUC directory
     auc_dir = os.path.dirname(os.path.abspath(options["auc"][0]))
-
+    prefix_path = os.path.abspath(options["prefix"])
     LGR = logging.getLogger("GENERAL")
     basename = "connPFM_"
     extension = "tsv"
@@ -90,8 +87,7 @@ def _main(argv=None):
             options["te"],
             ets_auc_denoised,
             options["tr"][0],
-            data_dir,
-            options["prefix"],
+            prefix_path,
             options["groups"],
             options["groups_dist"],
             history_str,
@@ -137,8 +133,7 @@ def _main(argv=None):
             options["te"],
             ets_auc_denoised,
             options["tr"][0],
-            data_dir,
-            options["prefix"],
+            prefix_path,
             options["groups"],
             options["groups_dist"],
             history_str,

@@ -1,6 +1,5 @@
 """Main debiasing workflow."""
 import logging
-from os.path import join
 
 import numpy as np
 
@@ -11,7 +10,7 @@ from connPFM.utils.hrf_generator import HRFMatrix
 LGR = logging.getLogger(__name__)
 
 
-def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist, history_str):
+def debiasing(data_file, mask, te, mtx, tr, prefix, groups, groups_dist, history_str):
     """Perform debiasing based on denoised edge-time matrix."""
     if te is None and len(data_file) == 1:
         te = [0]
@@ -57,14 +56,14 @@ def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist
     fitt = deb_output["betafitts"]
 
     # Transform results back to 4D
-    beta_file = join(out_dir, f"{prefix}_beta_ETS.nii.gz")
+    beta_file = f"{prefix}_beta_ETS.nii.gz"
     io.save_img(beta, beta_file, masker, history_str)
 
     # If n_echos is 1, save betafitts as they are.
     # If n_echos is > 1, loop through all echoes and
     # save the betaffits of each echo as a separate file.
     if len(te) == 1:
-        fitt_file = join(out_dir, f"{prefix}_fitt_ETS.nii.gz")
+        fitt_file = f"{prefix}_fitt_ETS.nii.gz"
         io.save_img(fitt, fitt_file, masker, history_str)
     else:
         for echo_idx in range(len(te)):
@@ -75,7 +74,7 @@ def debiasing(data_file, mask, te, mtx, tr, out_dir, prefix, groups, groups_dist
             echo_fitt = fitt[echo_idx * nscans : (echo_idx + 1) * nscans, :]
 
             #  Save the betafitts of the current echo
-            fitt_file = join(out_dir, f"{prefix}_fitt_ETS_echo-{echo_idx}.nii.gz")
+            fitt_file = f"{prefix}_fitt_ETS_echo-{echo_idx}.nii.gz"
             io.save_img(echo_fitt, fitt_file, masker, history_str)
 
     LGR.info("Debiasing finished and files saved.")

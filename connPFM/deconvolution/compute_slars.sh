@@ -10,11 +10,6 @@ if [[ -z "${INPUT_ARGS}" ]]; then
     fi
 fi
 module load singularity/3.7.0
-# if ! command -v singularity &> /dev/null;
-# then
-echo " singularity could not be found tryng to execute with conda env"
-module unload python/python3.6
-module load python/venv
 if ! command -v singularity &> /dev/null;
 then
     echo " singularity could not be found tryng to execute with conda env"

@@ -38,3 +38,34 @@ def test_stability_lars(surr_dir):
     auc_osf = np.load(auc_filename)
     # Check if AUC is correct
     assert np.all(auc == auc_osf)
+
+
+def test_stability_lars_ME(ME_lars):
+    # Test for multiecho data
+    data = np.load(ME_lars[0])
+    first = 0
+    last = 0
+    if first is None:
+        nvoxels = 1
+    else:
+        nvoxels = last - first + 1
+        voxel = first
+
+    # Load HRF
+    hrf = np.load(ME_lars[1])
+
+    nvoxels = last - first + 1
+    nscans = int(data.shape[0] / 5)
+    auc = np.zeros((nscans, nvoxels))
+    np.random.seed(200)
+    from connPFM.deconvolution.stability_lars import StabilityLars
+
+    sl = StabilityLars(nTE=5)
+    for vox_idx in range(nvoxels):
+        sl.stability_lars(hrf, np.expand_dims(data[:, voxel + vox_idx], axis=-1))
+        auc[:, vox_idx] = np.squeeze(sl.auc)
+
+    # load saved AUC
+    auc_osf = np.load(ME_lars[2])
+    # Check if AUC is correct
+    assert np.all(auc == auc_osf)

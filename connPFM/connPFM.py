@@ -46,6 +46,8 @@ def _main(argv=None):
         prefix_path = os.path.abspath(options["prefix"])
     if not isstring(options["prefix"]) and options["workflow"] == "debias":
         raise Exception("Debiasing requires a prefix path for fitted and beta files")
+    else:
+        prefix_path = options["prefix"]
 
     if type(options["workflow"]) is list:
         selected_workflow = options["workflow"][0]

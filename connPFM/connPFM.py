@@ -4,7 +4,6 @@ import logging
 import os
 import socket
 import sys
-from sre_compile import isstring
 
 from numpy import loadtxt
 

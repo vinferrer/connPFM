@@ -15,12 +15,17 @@ module load singularity/3.7.0
 echo " singularity could not be found tryng to execute with conda env"
 module unload python/python3.6
 module load python/venv
-source activate /bcbl/home/public/PARK_VFERRER/py38
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-echo ${INPUT_ARGS[0]}
-python -u $SCRIPT_DIR/compute_slars.py $INPUT_ARGS
-# else
-#     echo ${INPUT_ARGS[0]}
-#     # cd /bcbl/home/public/PARK_VFERRER
-#     singularity exec --bind $WDIR $FILE_DIR/connpfm_slim.simg python -u /connPFM/deconvolution/compute_slars.py $INPUT_ARGS
-# fi
+if ! command -v singularity &> /dev/null;
+then
+    echo " singularity could not be found tryng to execute with conda env"
+    module unload python/python3.6
+    module load python/venv
+    source activate /bcbl/home/public/PARK_VFERRER/py38
+    SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+    python -u $SCRIPT_DIR/compute_slars.py $INPUT_ARGS
+else
+    echo ${INPUT_ARGS[0]}
+    cd /bcbl/home/public/PARK_VFERRER
+    singularity exec --bind $WDIR $FILE_DIR/connpfm_slim.simg python -u /connPFM/deconvolution/compute_slars.py $INPUT_ARGS
+fi

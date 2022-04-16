@@ -22,7 +22,7 @@ def debiasing(data_file, mask, te, mtx, tr, prefix, groups, groups_dist, history
 
     LGR.info("Performing debiasing based on denoised edge-time matrix...")
     # Read data
-    data, masker = io.load_data(data_file, mask, n_echos=len(te))
+    data, masker = io.load_data(data_file, mask)
 
     # Get number of nodes
     [_, n] = data.shape

@@ -25,7 +25,7 @@ def event_detection(
     te=[0],
 ):
     """Perform event detection on given data."""
-    data, masker = load_data(data_file, atlas, n_echos=len(te))
+    data, masker = load_data(data_file, atlas)
 
     # load and zscore time series
     # AUC does not get z-scored

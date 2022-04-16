@@ -15,11 +15,11 @@ def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
         resampling_target=None,
     )
     np.random.seed(200)
-
+    data_masked, masker = io.load_data(bold_file, atlas_file)
     from connPFM.utils import surrogate_generator
 
     surrogate = surrogate_generator.generate_surrogate(
-        bold_file, atlas_file, join(testpath, "generated_surrogate.nii.gz")
+        data_masked, masker, join(testpath, "generated_surrogate.nii.gz")
     )
 
     keeped_surrogate = masker.fit_transform(surrogate_200)

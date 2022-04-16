@@ -50,7 +50,7 @@ def roiPFM(
     block: boolean
         if True, use the block design for the hrf
     jobs: integer
-        number of jobs to launch in a cluster, 
+        number of jobs to launch in a cluster,
         if 0 then use serial execution (recomended only for testing)
     nsurrogates: integer
         number of surrogate datasets to generate

@@ -48,7 +48,7 @@ def roiPFM(
     hrf_matrix = hrf_generator.HRFMatrix(
         TR=tr,
         TE=te,
-        nscans=data_masked.shape[0],
+        nscans=int(data_masked.shape[0] / len(te)),
         r2only=True,
         block=block,
         is_afni=True,
@@ -58,7 +58,6 @@ def roiPFM(
     hrf_matrix.generate_hrf()
     hrf = hrf_matrix.hrf_norm
     LGR.info("HRF generated.")
-
     LGR.info("Running stability selection on original data...")
     if which("singularity") is not None:
         fetch_file("n7tzh", os.path.dirname(os.path.realpath(__file__)), "connpfm_slim.simg")

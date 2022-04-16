@@ -18,8 +18,7 @@ def bget(cmd):
 
 # Check if temp directory exists
 def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
-
-    nscans = data.shape[0]
+    nscans = hrf.shape[1]
     nvoxels = data.shape[1]
 
     # Create temp folder if it doesn't exist

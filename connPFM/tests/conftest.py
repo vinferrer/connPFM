@@ -165,3 +165,34 @@ def surrogate_hist_file(testpath):
 @pytest.fixture
 def ets_rss_thr_file(testpath):
     return fetch_file("gn8x5", testpath, "ets_AUC_denoised_rss_th.txt")
+
+
+@pytest.fixture
+def ME_files(testpath):
+    echo1 = fetch_file("87b6v", testpath, "p06.SBJ01_S09_Task11_e1.SPC.nii.gz")
+    echo2 = fetch_file("e9qtw", testpath, "p06.SBJ01_S09_Task11_e2.SPC.nii.gz")
+    echo3 = fetch_file("4j3pg", testpath, "p06.SBJ01_S09_Task11_e3.SPC.nii.gz")
+    echo4 = fetch_file("6rd8b", testpath, "p06.SBJ01_S09_Task11_e4.SPC.nii.gz")
+    echo5 = fetch_file("mxaq2", testpath, "p06.SBJ01_S09_Task11_e5.SPC.nii.gz")
+    mask = fetch_file("m3fb6", testpath, "mask_ME.nii.gz")
+    return echo1, echo2, echo3, echo4, echo5, mask
+
+
+@pytest.fixture
+def ME_lars(testpath):
+    data = fetch_file("q6xkd", testpath, "data_ME.npy")
+    hrf = fetch_file("k84u9", testpath, "hrf_ME.npy")
+    auc = fetch_file("n9wjz", testpath, "auc_ME.npy")
+    return data, hrf, auc
+
+
+@pytest.fixture
+def ME_mask_2(testpath):
+    return fetch_file("h5mrg", testpath, "mask_ME_2_levels.nii.gz")
+
+
+@pytest.fixture
+def ME_debias(testpath):
+    beta_ME = fetch_file("jtxem", testpath, "beta_ME.txt")
+    fitt_ME = fetch_file("9zagb", testpath, "fitt_ME.txt")
+    return beta_ME, fitt_ME

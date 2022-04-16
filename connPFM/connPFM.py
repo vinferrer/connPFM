@@ -31,12 +31,8 @@ def _main(argv=None):
     temp_dir = os.path.abspath(options["dir"])
     os.makedirs(temp_dir, exist_ok=True)
 
-    # Get data directory
-    data_dir = os.path.dirname(os.path.abspath(options["data"][0]))
-
     # Get AUC directory
     auc_dir = os.path.dirname(os.path.abspath(options["auc"][0]))
-
     LGR = logging.getLogger("GENERAL")
     basename = "connPFM_"
     extension = "tsv"
@@ -44,6 +40,16 @@ def _main(argv=None):
     logname = os.path.join(temp_dir, (basename + start_time + "." + extension))
     refname = os.path.join(temp_dir, "_references.txt")
     loggers.setup_loggers(logname, refname, quiet=options["quiet"], debug=options["debug"])
+
+    if isinstance(options["prefix"], str):
+        prefix_path = os.path.abspath(options["prefix"])
+    if not isinstance(options["prefix"], str) and options["workflow"] == "debias":
+        raise Exception(
+            "Debiasing requires a prefix path for the activity-inducing "
+            "and activity-related estimates."
+        )
+    else:
+        prefix_path = options["prefix"]
 
     if type(options["workflow"]) is list:
         selected_workflow = options["workflow"][0]
@@ -90,8 +96,7 @@ def _main(argv=None):
             options["te"],
             ets_auc_denoised,
             options["tr"][0],
-            data_dir,
-            options["prefix"],
+            prefix_path,
             options["groups"],
             options["groups_dist"],
             history_str,
@@ -137,8 +142,7 @@ def _main(argv=None):
             options["te"],
             ets_auc_denoised,
             options["tr"][0],
-            data_dir,
-            options["prefix"],
+            prefix_path,
             options["groups"],
             options["groups_dist"],
             history_str,

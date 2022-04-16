@@ -20,20 +20,19 @@ class StabilityLars:
             subsample_idx = np.sort(
                 np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)
             )  # 60% of timepoints are kept
-            if self.nTE > 1:
-                for i in range(self.nTE - 1):
-                    subsample_idx = np.concatenate(
-                        (
-                            subsample_idx,
-                            np.sort(
-                                np.random.choice(
-                                    range((i + 1) * self.nscans, (i + 2) * self.nscans),
-                                    int(0.6 * self.nscans),
-                                    0,
-                                )
-                            ),
-                        )
+            for i in range(self.nTE - 1):
+                subsample_idx = np.concatenate(
+                    (
+                        subsample_idx,
+                        np.sort(
+                            np.random.choice(
+                                range((i + 1) * self.nscans, (i + 2) * self.nscans),
+                                int(0.6 * self.nscans),
+                                0,
+                            )
+                        ),
                     )
+                )
         elif self.mode > 1:  # same time points are selected across echoes
             subsample_idx = np.sort(
                 np.random.choice(range(self.nscans), int(0.6 * self.nscans), 0)
@@ -44,7 +43,6 @@ class StabilityLars:
     def stability_lars(self, X, Y):
 
         self.nscans = X.shape[1]
-
         nvoxels = Y.shape[1]
         nlambdas = self.nscans + 1
 
@@ -53,7 +51,7 @@ class StabilityLars:
         for vox_idx in range(nvoxels):
             lambdas = np.zeros((self.nsurrogates, nlambdas), dtype=np.float32)
             coef_path = np.zeros((self.nsurrogates, self.nscans, nlambdas), dtype=np.float32)
-            self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * self.nscans)))
+            self.sur_idxs = np.zeros((self.nsurrogates, int(0.6 * self.nscans) * self.nTE))
             for surrogate_idx in range(self.nsurrogates):
 
                 idxs = self._subsampling()
@@ -146,5 +144,4 @@ class StabilityLars:
             # demeaned_auc = auc_temp-np.mean(auc_temp)
             # demeaned_auc[demeaned_auc < 0] = 0
             demeaned_auc = auc_temp.copy()
-
             self.auc[:, vox_idx] = np.squeeze(demeaned_auc)

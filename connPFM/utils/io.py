@@ -9,13 +9,13 @@ from connPFM.utils import atlas_mod
 LGR = logging.getLogger(__name__)
 
 
-def load_data(data, atlas, n_echos=1):
+def load_data(data, atlas):
     """
     Load and mask data with atlas using NiftiLabelsMasker.
     """
     # Initialize masker object
     masker = NiftiLabelsMasker(labels_img=atlas, standardize=False, strategy="mean")
-
+    n_echos = len(data)
     # If n_echos is 1 (single echo), mask and return data
     if n_echos == 1:
         # If data is a list, keep only first element

@@ -17,6 +17,7 @@ def test_surrogate_generator(bold_file, atlas_file, testpath, surrogate_200):
     np.random.seed(200)
 
     from connPFM.utils import surrogate_generator
+
     data_masked, masker = io.load_data(bold_file, atlas_file)
     surrogate = surrogate_generator.generate_surrogate(
         data_masked, masker, join(testpath, "generated_surrogate.nii.gz")

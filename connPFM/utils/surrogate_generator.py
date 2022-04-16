@@ -14,7 +14,7 @@ def splitext_(path):
     return os.path.splitext(path)
 
 
-def generate_surrogate(data, atlas, output, n_echos=1):
+def generate_surrogate(data_masked, surrogate_masker, output):
     """
     Generate surrogate data.
 
@@ -32,10 +32,6 @@ def generate_surrogate(data, atlas, output, n_echos=1):
     surrogate : Niimg-like object
         Surrogate data.
     """
-    # Mask data
-    LGR.info("Masking data...")
-    data_masked, surrogate_masker = io.load_data(data, atlas, n_echos=n_echos)
-    LGR.info("Data masked.")
 
     surrogate = np.zeros(data_masked.shape)
     nscans = data_masked.shape[0]

@@ -45,5 +45,5 @@ def test_io(ME_files):
     # test load for single file
     data_loaded, masker = io.load_data(ME_files[0], ME_files[-1])
     assert data_loaded.shape == (75, 1)
-    data_loaded, masker = io.load_data(ME_files[:-1], ME_files[-1], 5)
+    data_loaded, masker = io.load_data(ME_files[:-1], ME_files[-1])
     assert data_loaded.shape == (75 * 5, 1)

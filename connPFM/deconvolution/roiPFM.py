@@ -40,7 +40,7 @@ def roiPFM(
     os.makedirs(dir, exist_ok=True)
 
     LGR.info("Masking data...")
-    data_masked, masker = load_data(data, atlas, n_echos=len(te))
+    data_masked, masker = load_data(data, atlas)
     LGR.info("Data masked.")
 
     LGR.info("Generating HRF...")
@@ -83,7 +83,7 @@ def roiPFM(
             # Generate surrogate
             surrogate_name = os.path.join(dir, f"surrogate_{n_sur}.nii.gz")
             surrogate_masked = surrogate_generator.generate_surrogate(
-                data=data, atlas=atlas, output=surrogate_name, n_echos=len(te)
+                data=data_masked, surrogate_masker=masker, output=surrogate_name
             )
             # Calculate AUC
             auc = run_stability_lars(

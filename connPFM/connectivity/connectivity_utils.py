@@ -10,7 +10,7 @@ LGR = logging.getLogger(__name__)
 def calculate_ets(y, n):
     """
     Calculate edge-time series.
-    
+
     Parameters
     ----------
     y : numpy matrix
@@ -20,7 +20,7 @@ def calculate_ets(y, n):
     Returns
     -------
     u : ndarray
-        vector of indices for the upper triangle of the matrix y axis      
+        vector of indices for the upper triangle of the matrix y axis
     v : ndarray
         vector of indices for the upper triangle of the matrix x axis
 
@@ -45,7 +45,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
     z_ts : numpy matrix
         z-scored time-series matrix fore each ROI
     u : ndarray
-        vector of indices for the upper triangle of the matrix y axis      
+        vector of indices for the upper triangle of the matrix y axis
     v : ndarray
         vector of indices for the upper triangle of the matrix x axis
     surrprefix : string
@@ -134,7 +134,7 @@ def threshold_ets_matrix(ets_matrix, thr, selected_idxs=None):
     """
     Threshold the edge time-series matrix based on the selected time-points and
     the surrogate matrices.
-    
+
     Parameters
     ----------
     ets_matrix : numpy matrix

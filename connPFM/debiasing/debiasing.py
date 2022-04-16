@@ -13,7 +13,7 @@ LGR = logging.getLogger(__name__)
 def debiasing(data_file, mask, te, mtx, tr, prefix, groups, groups_dist, history_str):
     """
     Perform debiasing based on denoised edge-time matrix.
-    
+
     Parameters
     ----------
     data_file : str or list of str

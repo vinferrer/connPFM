@@ -26,7 +26,7 @@ def event_detection(
 ):
     """
     Perform event detection on given data.
-    
+
     Parameters
     ----------
     data_file : str or list of str
@@ -62,7 +62,7 @@ def event_detection(
     mu : arrray
     mean co-fluctuation (edge time series) across all peaks
     u : ndarray
-        vector of indices for the upper triangle of the matrix y axis      
+        vector of indices for the upper triangle of the matrix y axis
     v : ndarray
         vector of indices for the upper triangle of the matrix x axis"""
     data, masker = load_data(data_file, atlas, n_echos=len(te))
@@ -203,7 +203,7 @@ def ev_workflow(
 ):
     """
     Main function to perform event detection and plot results.
-    
+
     Parameters
     ----------
     data_file : str
@@ -232,7 +232,7 @@ def ev_workflow(
         string to be added to the history of the output files
     peak_detection : str
         method to use for peak detection
-    
+
     Returns
     -------
     ets_auc_denoised : ndarray

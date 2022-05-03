@@ -23,7 +23,7 @@ def generate_surrogate(data_masked, surrogate_masker, output):
     data : numy.ndarray
         Data to generate surrogates from.
     atlas : Niimg-like object
-        masker to save the data
+        Masker to save the data
     output : str
         Path where surrogate data should be saved.
 

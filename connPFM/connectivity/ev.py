@@ -173,7 +173,7 @@ def ev_workflow(
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
     (_, rss_orig, _, idxpeak_orig, ets_orig_denoised, _, _, _,) = event_detection(
-        data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=1
+        data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=jobs
     )
 
     # Perform event detection on AUC
@@ -185,7 +185,7 @@ def ev_workflow(
         nsur=nsurrogates,
         peak_detection=peak_detection,
         te=[0],
-        jobs=1,
+        jobs=jobs,
     )
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")

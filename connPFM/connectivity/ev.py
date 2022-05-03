@@ -172,16 +172,9 @@ def ev_workflow(
     # Paths to files
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
-    (
-        _,
-        rss_orig,
-        _,
-        idxpeak_orig,
-        ets_orig_denoised,
-        _,
-        _,
-        _,
-    ) = event_detection(data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=1)
+    (_, rss_orig, _, idxpeak_orig, ets_orig_denoised, _, _, _,) = event_detection(
+        data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=1
+    )
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")

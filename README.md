@@ -15,8 +15,8 @@
 The connPFM method comprises of 3 steps (Fig1): 
 1. Deconvolution with stability-selection paradigm free mapping that computes the probability (area under the curve; AUC) that a neuronal-related event generates a BOLD event at each time; 
 2. Selection of significant CF events based on the pairwise CF matrix computed from the AUC timecourses (CF-AUC); this selection step can be done in 2 ways: 
-    Temporal: Thresholding of the root sum of squares (RSS) time-series calculated from the CF-AUC matrix, where the threshold is based on a null distribution of the RSS computed by repeating the same procedure with 100 phase-randomized surrogate datasets, and selecting all the events occurring at those exceeding times; 
-    Spatio-temporal selection: Thresholding of the CF-AUC matrix based on the null distribution of all the elements of the 100 surrogate CF-AUC matrices (e.g., p<0.05).
+    * Temporal: Thresholding of the root sum of squares (RSS) time-series calculated from the CF-AUC matrix, where the threshold is based on a null distribution of the RSS computed by repeating the same procedure with 100 phase-randomized surrogate datasets, and selecting all the events occurring at those exceeding times; 
+    * Spatio-temporal selection: Thresholding of the CF-AUC matrix based on the null distribution of all the elements of the 100 surrogate CF-AUC matrices (e.g., p<0.05).
 3. Debiasing of the neuronal related activity associated with the selected deconvolved events, which by definition show a significant CF with any other region, through ordinary least-squares regression. 
 
 ![connPFM flowchart](https://github.com/vinferrer/connPFM/blob/readme/docs/connPFM_flowchart.png?raw=true)

@@ -23,10 +23,10 @@ def event_detection(
     peak_detection="rss",
     nbins=1000,
     te=[0],
+    jobs=1,
 ):
     """Perform event detection on given data."""
     data, masker = load_data(data_file, atlas, n_echos=len(te))
-
     # load and zscore time series
     # AUC does not get z-scored
     if "AUC" in surrprefix:
@@ -53,7 +53,7 @@ def event_detection(
 
     # calculate ets and rss of surrogate data
     LGR.info("Calculating edge-time matrix, RSS and histograms for surrogates...")
-    surrogate_events = Parallel(n_jobs=-1, backend="multiprocessing")(
+    surrogate_events = Parallel(n_jobs=jobs, backend="multiprocessing")(
         delayed(connectivity_utils.rss_surr)(
             z_ts, u, v, surrprefix, sursufix, masker, irand, nbins
         )
@@ -160,6 +160,7 @@ def ev_workflow(
     afni_text=None,
     history_str="",
     peak_detection="rss",
+    jobs=1,
 ):
     """
     Main function to perform event detection and plot results.
@@ -180,7 +181,7 @@ def ev_workflow(
         _,
         _,
         _,
-    ) = event_detection(data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te)
+    ) = event_detection(data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=1)
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
@@ -191,6 +192,7 @@ def ev_workflow(
         nsur=nsurrogates,
         peak_detection=peak_detection,
         te=[0],
+        jobs=1,
     )
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")

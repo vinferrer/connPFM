@@ -12,7 +12,7 @@ def test_integration_pfm(testpath, bold_file, atlas_1roi, AUC_file, skip_integra
     auc_output = join(testpath, "auc_local.nii.gz")
     subprocess.call(
         "export mode=integration_pfm && "
-        "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -job 0 -nsur 1 -w pfm".format(
+        "connPFM -i {} -a {} --AUC {} -d {} -tr 1 -u vferrer -jobs 0 -nsur 1 -w pfm".format(
             bold_file, atlas_1roi, auc_output, join(testpath, "temp")
         ),
         shell=True,
@@ -50,7 +50,7 @@ def test_integration_ev(
             surr_dir,
             join(dirname(AUC_file), "ets_AUC_denoised.txt"),
         )
-        + "--peaks_points ets_AUC_denoised -tr 1 -u vferrer -nsur 50 -w ev",
+        + "--peaks_points ets_AUC_denoised -tr 1 -u vferrer -jobs 1 -nsur 50 -w ev",
         shell=True,
     )
     ets_auc_denoised_local = np.loadtxt(join(dirname(AUC_file), "ets_AUC_denoised.txt"))

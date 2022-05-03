@@ -83,7 +83,7 @@ def roiPFM(
             # Generate surrogate
             surrogate_name = os.path.join(dir, f"surrogate_{n_sur}.nii.gz")
             surrogate_masked = surrogate_generator.generate_surrogate(
-                data=data, atlas=atlas, output=surrogate_name, n_echos=len(te)
+                data_masked, masker, output=surrogate_name
             )
             # Calculate AUC
             auc = run_stability_lars(

@@ -19,7 +19,7 @@ The connPFM method comprises of 3 steps (Fig1):
     * Spatio-temporal selection: Thresholding of the CF-AUC matrix based on the null distribution of all the elements of the 100 surrogate CF-AUC matrices (e.g., p<0.05).
 3. Debiasing of the neuronal related activity associated with the selected deconvolved events, which by definition show a significant CF with any other region, through ordinary least-squares regression. This reduces the bias of using an L1 norm in the inverse problem, which biases estimates towards zero not reflecting the real amplitude of events.
 
-![connPFM flowchart](https://github.com/vinferrer/connPFM/blob/readme/docs/connPFM_flowchart.png?raw=true)
+![connPFM flowchart](https://github.com/SPiN-Lab/connPFM/blob/readme/docs/connPFM_flowchart.png?raw=true)
 
 ## Installation
 ```

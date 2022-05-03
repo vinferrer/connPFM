@@ -88,8 +88,8 @@ def _get_parser():
         "--jobs",
         dest="jobs",
         type=int,
-        help=("Number of jobs to run in parallel (default = 50)."),
-        default=50,
+        help=("Number of jobs to run in parallel (default = 1)."),
+        default=1,
         nargs=1,
     )
     optoptions.add_argument(

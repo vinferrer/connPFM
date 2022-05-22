@@ -6,16 +6,17 @@ from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.debiasing.debiasing import debiasing
 
-prj_dir = "/bcbl/home/public/PARK_VFERRER/toolbox_data/sub-002ParkMabCm_100"
-auc_file = opj(prj_dir, "sub-002ParkMabCm_AUC_100.nii.gz")
-temp_dir = opj(prj_dir, "temp_sub-002ParkMabCm_100")
-data = opj(prj_dir, "pb06.sub-002ParkMabCm.denoised_no_censor.nii.gz")
-atlas = opj(temp_dir, "atlas.nii.gz")
+prj_dir = "/bcbl/home/public/PJMASK_2/connPFM_data/sub-001/ses-01"
+auc_file = opj(prj_dir, "connPFM_echoes/sub-001_AUC_300.nii.gz")
+temp_dir = opj(prj_dir, "temp_sub-001_300_echoes")
+data = opj(prj_dir, "connPFM_echoes/pb06.sub-002ParkMabCm.denoised_no_censor.nii.gz")
+atlas = opj(prj_dir, "func_preproc/Schaefer2018_300Parcels_17Networks_subcorticals_func.nii.gz")
 surrprefix = opj(temp_dir, "surrogate_AUC_")
 surrsufix = ""
-prefix = "sub-002ParkMabCm_100"
+prefix = opj(prj_dir,"connPFM_echoess/sub-001_300_echoes_only_pfm")
 nsur = 100
-tr = 1
+tr = 1.5
+matrix_out = opj(prj_dir, "connPFM_echoes/only_pfm_matrix.txt")
 
 ###############################################################################
 # Code starts here
@@ -45,7 +46,7 @@ def main():
     auc = masker.fit_transform(auc_file)
 
     # Read AUC of surrogates
-    surr_auc = Parallel(n_jobs=-1, backend="multiprocessing")(
+    surr_auc = Parallel(n_jobs=10, backend="multiprocessing")(
         delayed(read_surrogate_auc)(surrprefix, surrsufix, masker, irand) for irand in range(nsur)
     )
 
@@ -54,9 +55,9 @@ def main():
 
     # Threshold AUC
     auc[auc < thr] = 0
-
+    np.savetxt(matrix_out, auc)
     # Debiasing with non-zero thresholded AUC
-    debiasing(data, atlas, auc, tr, temp_dir, prefix, "")
+    # debiasing(data, atlas, auc, tr, temp_dir, prefix, "")
 
 
 if __name__ == "__main__":

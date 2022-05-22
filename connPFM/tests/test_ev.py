@@ -80,7 +80,7 @@ def test_event_detection_rss(
     AUC_file, atlas_file, surr_dir, ets_auc_original_file, ets_auc_denoised_file
 ):
     # Test event detection with RSS option
-    (ets_rss, _, _, _, ets_denoised_rss, _, _, _,_,) = ev.event_detection(
+    (ets_rss, _, _, _, ets_denoised_rss, _, _, _, _,) = ev.event_detection(
         data_file=AUC_file,
         atlas=atlas_file,
         surrprefix=join(surr_dir, "surrogate_AUC_"),
@@ -96,7 +96,7 @@ def test_event_detection_rss_time(
     AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all
 ):
     # Test event detection with RSS_time option
-    (ets_rss_time, _, _, _, ets_denoised_rss_time, _, _, _,_,) = ev.event_detection(
+    (ets_rss_time, _, _, _, ets_denoised_rss_time, _, _, _, _,) = ev.event_detection(
         data_file=AUC_file,
         atlas=atlas_file,
         surrprefix=join(surr_dir, "surrogate_AUC_"),
@@ -111,7 +111,7 @@ def test_event_detection_rss_time(
 
 def test_event_detection_ets(AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all):
     # Test event detection with ETS option
-    (ets, _, _, _, ets_denoised, _, _, _,_,) = ev.event_detection(
+    (ets, _, _, _, ets_denoised, _, _, _, _,) = ev.event_detection(
         data_file=AUC_file,
         atlas=atlas_file,
         surrprefix=join(surr_dir, "surrogate_AUC_"),
@@ -128,7 +128,7 @@ def test_event_detection_ets_time(
     AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all
 ):
     # Test event detection with ETS_time option
-    (ets_time, _, _, _, ets_denoised_time, _, _, _,_,) = ev.event_detection(
+    (ets_time, _, _, _, ets_denoised_time, _, _, _, _,) = ev.event_detection(
         data_file=AUC_file,
         atlas=atlas_file,
         surrprefix=join(surr_dir, "surrogate_AUC_"),

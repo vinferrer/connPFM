@@ -94,7 +94,7 @@ def plot_ets_matrix(
         im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
         plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)
         ax1.plot(rss)
-        if thr != None:
+        if thr is not None:
             ax1.axhline(y=thr, color="r", linestyle="-")
         ax1.set_xlim(0, len(rss))
         ax0.set_title("Edge-time series")

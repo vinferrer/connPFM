@@ -89,7 +89,7 @@ def debiasing_block(auc, hrf, y, is_ls):
 
 def debiasing_spike(x, y, beta, nlambdas=20, groups=False, group_dist=3):
 
-    beta_out = np.zeros(beta.shape)
+    beta_out = np.zeros((x.hrf_norm.shape[1], beta.shape[1]))
     fitts_out = np.zeros(y.shape)
 
     x = x.hrf_norm.copy()
@@ -100,7 +100,7 @@ def debiasing_spike(x, y, beta, nlambdas=20, groups=False, group_dist=3):
         index_events_opt = np.where(abs(beta[:, index_voxels[voxidx]]) > 10 * np.finfo(float).eps)[
             0
         ]
-        beta2save = np.zeros((beta.shape[0], 1))
+        beta2save = np.zeros((beta_out.shape[0], 1))
 
         if groups:
             X_events, index_events_opt_group = group_hrf(x, index_events_opt, group_dist)

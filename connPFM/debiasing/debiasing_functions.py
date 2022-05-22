@@ -89,7 +89,7 @@ def debiasing_block(auc, hrf, y, is_ls):
 
 def debiasing_spike(x, y, beta, nlambdas=20, groups=False, group_dist=3):
 
-    beta_out = np.zeros((x.hrf_norm.shape[1],beta.shape[1]))
+    beta_out = np.zeros((x.hrf_norm.shape[1], beta.shape[1]))
     fitts_out = np.zeros(y.shape)
 
     x = x.hrf_norm.copy()

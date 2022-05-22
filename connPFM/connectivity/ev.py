@@ -47,7 +47,7 @@ def event_detection(
 
     # Initialize RSS with zeros
     rss = np.zeros(t)
-
+    rss_th = None
     # Initialize array for null RSS
     rssr = np.zeros([t, nsur])
 
@@ -103,7 +103,8 @@ def event_detection(
         etspeaks = connectivity_utils.threshold_ets_matrix(
             ets.copy(), thr=0, selected_idxs=idxpeak
         )
-
+        peaks_rss = rss[np.where(etspeaks != 0)[0]]
+        rss_th = np.min(peaks_rss[np.nonzero(peaks_rss)])
     # Make selection of points with edge time-series matrix
     elif "ets" in peak_detection:
         LGR.info("Selecting points with edge time-series matrix...")
@@ -143,7 +144,7 @@ def event_detection(
     # calculate mean co-fluctuation (edge time series) across all peaks
     mu = np.nanmean(etspeaks, 0)
 
-    return ets, rss, rssr, idxpeak, etspeaks, mu, u, v
+    return ets, rss, rssr, idxpeak, etspeaks, mu, u, v, rss_th
 
 
 def ev_workflow(
@@ -172,13 +173,13 @@ def ev_workflow(
     # Paths to files
     # Perform event detection on ORIGINAL data
     LGR.info("Performing event-detection on original data...")
-    (_, rss_orig, _, idxpeak_orig, ets_orig_denoised, _, _, _,) = event_detection(
+    (_, rss_orig, _, idxpeak_orig, ets_orig_denoised, _, _, _,_) = event_detection(
         data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=jobs
     )
 
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
-    (ets_auc, rss_auc, _, idxpeak_auc, ets_auc_denoised, _, _, _,) = event_detection(
+    (ets_auc, rss_auc, _, idxpeak_auc, ets_auc_denoised, _, _, _,rss_thr) = event_detection(
         auc_file,
         atlas,
         join(surr_dir, "surrogate_AUC_"),
@@ -200,7 +201,7 @@ def ev_workflow(
     )
     # Plot ETS and denoised ETS matrices of AUC
     plot_ets_matrix(
-        ets_auc, out_dir, rss_auc, "_AUC_original_" + peak_detection, dvars, enorm, idxpeak_auc
+        ets_auc, out_dir, rss_auc, "_AUC_original_" + peak_detection, dvars, enorm, idxpeak_auc,
     )
     plot_ets_matrix(
         ets_auc_denoised,
@@ -211,6 +212,7 @@ def ev_workflow(
         enorm,
         idxpeak_auc,
         vmax=0.02,
+        thr=rss_thr
     )
 
     # Save RSS time-series as text file for easier visualization on AFNI

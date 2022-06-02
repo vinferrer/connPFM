@@ -39,13 +39,19 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
             zr[:, i] = np.roll(zr[:, i], np.random.randint(t))
 
     # edge time series with circshift data
-    etsr = zr[:, u] * zr[:, v]
+    zr_u = csr_matrix(zr[:, u])
+    zr_v = csr_matrix(zr[:, v])
+    etsr = zr_u.multiply(zr_v)
 
     # calcuate rss
-    rssr = np.sqrt(np.sum(np.square(etsr), axis=1))
+    rssr = rss = np.array(np.sqrt(etsr.power(2).sum(axis=1)[:,0].flatten())).flatten()
 
     # Calculate histogram
-    ets_hist, bin_edges = np.histogram(etsr.flatten(), bins=nbins, range=hist_range)
+    ets_hist, bin_edges = np.histogram(etsr.data, bins=nbins, range=hist_range)
+    # Correct actual value of zero bin values
+    total_e = etsr.shape[0]*etsr.shape[1]
+    zero_e = total_e - etsr.count_nonzero()
+    ets_hist[0] = zero_e + ets_hist[0]
 
     return (rssr, etsr, ets_hist, bin_edges)
 
@@ -88,8 +94,7 @@ def threshold_ets_matrix(ets_matrix, thr, selected_idxs=None):
     the surrogate matrices.
     """
     # Initialize matrix with zeros
-    thresholded_matrix = np.zeros(ets_matrix.shape)
-
+    thresholded_matrix = csr_matrix(np.zeros(ets_matrix.shape))
     # Get selected columns from ETS matrix
     if selected_idxs is not None:
         thresholded_matrix[selected_idxs, :] = ets_matrix[selected_idxs, :]

@@ -2,7 +2,6 @@
 import logging
 
 import numpy as np
-from scipy.stats import zscore
 
 LGR = logging.getLogger(__name__)
 

@@ -4,7 +4,6 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
-from scipy.stats import zscore
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix

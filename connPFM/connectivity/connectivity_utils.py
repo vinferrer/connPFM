@@ -127,8 +127,12 @@ def calculate_hist(
 ):
     """Calculate histogram."""
     ets_temp = calculate_surrogate_ets(surrprefix, sursufix, irand, masker)
-
-    ets_hist, bin_edges = np.histogram(ets_temp.flatten(), bins=nbins, range=hist_range)
+    # data works properly for the histogram except for the zero values
+    ets_hist, bin_edges = np.histogram(ets_temp.data, bins=nbins, range=hist_range)
+    # Correct actual value of zero bin values
+    total_e = ets_temp.shape[0]*ets_temp.shape[1]
+    zero_e = total_e - ets_temp.count_nonzero()
+    ets_hist[0] = zero_e + ets_hist[0]
 
     return (ets_hist, bin_edges)
 

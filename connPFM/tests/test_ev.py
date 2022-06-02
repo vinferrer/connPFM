@@ -17,7 +17,7 @@ def test_calculate_ets(ets_auc_original_file, AUC_file, atlas_file):
     AUC_img = masker.fit_transform(AUC_file)
     ets_auc_orig = np.loadtxt(ets_auc_original_file)
     ets_auc_calc, u_vec, v_vec = connectivity_utils.calculate_ets(AUC_img, AUC_img.shape[1])
-    assert np.all(np.isclose(ets_auc_orig, ets_auc_calc))
+    assert np.all(np.isclose(ets_auc_orig, ets_auc_calc.toarray()))
 
 
 def test_rss_surr(AUC_file, atlas_file, surr_dir, rssr_auc_file):
@@ -56,7 +56,7 @@ def test_calculate_surrogate_ets(atlas_file, surr_dir, surrogate_ets_file):
     ets_surr = connectivity_utils.calculate_surrogate_ets(
         surrprefix=join(surr_dir, "surrogate_AUC_"), sursufix="", irand=0, masker=masker
     )
-    assert np.allclose(ets_surr, np.load(surrogate_ets_file))
+    assert np.allclose(ets_surr.toarray(), np.load(surrogate_ets_file))
 
 
 def test_calculate_hist(atlas_file, surr_dir, surrogate_hist_file):

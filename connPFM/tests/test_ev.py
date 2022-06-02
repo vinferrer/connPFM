@@ -43,7 +43,16 @@ def test_threshold_ets_matrix():
     dum_mat2 = np.zeros((3, 3))
     dum_mat2[2, 1] = 1
     th_dum = connectivity_utils.threshold_ets_matrix(dum_mat, thr=2, selected_idxs=2)
-    assert np.allclose(th_dum, dum_mat2)
+    assert np.allclose(th_dum.toarray(), dum_mat2)
+    dum_mat = np.ones((3, 3))
+    dum_mat[1, 1] = 2
+    dum_mat[2, 1] = 3
+    # test for differernt thresholds
+    dum_mat2 = np.zeros((3, 3))
+    dum_mat2[2, 1] = 1
+    dum_mat[1, 1] = 1
+    th_dum = connectivity_utils.threshold_ets_matrix(dum_mat, thr=np.array([1,1,2]), selected_idxs=[1,2])
+    assert np.allclose(th_dum.toarray(), dum_mat2)
 
 
 def test_calculate_surrogate_ets(atlas_file, surr_dir, surrogate_ets_file):
@@ -88,8 +97,8 @@ def test_event_detection_rss(
         peak_detection="rss",
         te=[0],
     )
-    assert np.allclose(ets_rss, np.loadtxt(ets_auc_original_file))
-    assert np.allclose(ets_denoised_rss, np.loadtxt(ets_auc_denoised_file))
+    assert np.allclose(ets_rss.toarray(), np.loadtxt(ets_auc_original_file))
+    assert np.allclose(ets_denoised_rss.toarray(), np.loadtxt(ets_auc_denoised_file))
 
 
 def test_event_detection_rss_time(
@@ -104,9 +113,8 @@ def test_event_detection_rss_time(
         peak_detection="rss_time",
         te=[0],
     )
-
-    assert np.allclose(ets_rss_time, np.load(ets_auc_all)[:, :, 1])
-    assert np.allclose(ets_denoised_rss_time, np.load(ets_auc_denoised_all)[:, :, 1])
+    assert np.allclose(ets_rss_time.toarray(), np.load(ets_auc_all)[:, :, 1])
+    assert np.allclose(ets_denoised_rss_time.toarray(), np.load(ets_auc_denoised_all)[:, :, 1])
 
 
 def test_event_detection_ets(AUC_file, atlas_file, surr_dir, ets_auc_all, ets_auc_denoised_all):
@@ -120,8 +128,8 @@ def test_event_detection_ets(AUC_file, atlas_file, surr_dir, ets_auc_all, ets_au
         te=[0],
     )
 
-    assert np.allclose(ets, np.load(ets_auc_all)[:, :, 2])
-    assert np.allclose(ets_denoised, np.load(ets_auc_denoised_all)[:, :, 2])
+    assert np.allclose(ets.toarray(), np.load(ets_auc_all)[:, :, 2])
+    assert np.allclose(ets_denoised.toarray(), np.load(ets_auc_denoised_all)[:, :, 2])
 
 
 def test_event_detection_ets_time(
@@ -136,9 +144,8 @@ def test_event_detection_ets_time(
         peak_detection="ets_time",
         te=[0],
     )
-
-    assert np.allclose(ets_time, np.load(ets_auc_all)[:, :, 3])
-    assert np.allclose(ets_denoised_time, np.load(ets_auc_denoised_all)[:, :, 3])
+    assert np.allclose(ets_time.toarray(), np.load(ets_auc_all)[:, :, 3])
+    assert np.allclose(ets_denoised_time.toarray(), np.load(ets_auc_denoised_all)[:, :, 3])
 
 
 def test_plotting(testpath, ets_auc_denoised_all):

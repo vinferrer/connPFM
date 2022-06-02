@@ -169,14 +169,6 @@ def ev_workflow(
     #  If te is None, make it a list with 0
     if te is None and len(data_file) == 1:
         te = [0]
-
-    # Paths to files
-    # Perform event detection on ORIGINAL data
-    LGR.info("Performing event-detection on original data...")
-    (_, rss_orig, _, idxpeak_orig, ets_orig_denoised, _, _, _, _) = event_detection(
-        data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=jobs
-    )
-
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
     (ets_auc, rss_auc, _, idxpeak_auc, ets_auc_denoised, _, _, _, rss_thr) = event_detection(
@@ -189,16 +181,7 @@ def ev_workflow(
         jobs=jobs,
     )
 
-    LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
-    plot_ets_matrix(
-        ets_orig_denoised,
-        out_dir,
-        rss_orig,
-        "_original_" + peak_detection,
-        dvars,
-        enorm,
-        idxpeak_orig,
-    )
+    LGR.info("Plotting AUC, and AUC-denoised ETS matrices...")
     # Plot ETS and denoised ETS matrices of AUC
     plot_ets_matrix(
         ets_auc,

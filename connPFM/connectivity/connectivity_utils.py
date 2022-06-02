@@ -1,8 +1,10 @@
 """Utility functions to perform event detection."""
 import logging
+from termios import CWERASE
 
 import numpy as np
 from scipy.stats import zscore
+from scipy.sparse import csr_matrix
 
 LGR = logging.getLogger(__name__)
 
@@ -11,9 +13,10 @@ def calculate_ets(y, n):
     """Calculate edge-time series."""
     # upper triangle indices (node pairs = edges)
     u, v = np.argwhere(np.triu(np.ones(n), 1)).T
-
+    y_u = csr_matrix(y[:, u])
+    y_v = csr_matrix(y[:, v])
     # edge time series
-    ets = y[:, u] * y[:, v]
+    ets = y_u.multiply(y_v)
 
     return ets, u, v
 

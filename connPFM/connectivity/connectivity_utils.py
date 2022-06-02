@@ -8,6 +8,15 @@ from scipy.sparse import csr_matrix
 
 LGR = logging.getLogger(__name__)
 
+def sparse_histogram(sparse_matrix, bins, range):
+    """Calculate histogram of sparse matrix."""
+    hist, bin_edges = np.histogram(sparse_matrix.data, bins=bins, range=range)
+    # Correct actual value of zero bin values
+    total_e = sparse_matrix.shape[0]*sparse_matrix.shape[1]
+    zero_e = total_e - sparse_matrix.count_nonzero()
+    hist[0] = zero_e + hist[0]
+
+    return hist, bin_edges    
 
 def calculate_ets(y, n):
     """Calculate edge-time series."""
@@ -47,11 +56,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
     rssr = rss = np.array(np.sqrt(etsr.power(2).sum(axis=1)[:,0].flatten())).flatten()
 
     # Calculate histogram
-    ets_hist, bin_edges = np.histogram(etsr.data, bins=nbins, range=hist_range)
-    # Correct actual value of zero bin values
-    total_e = etsr.shape[0]*etsr.shape[1]
-    zero_e = total_e - etsr.count_nonzero()
-    ets_hist[0] = zero_e + ets_hist[0]
+    ets_hist, bin_edges = sparse_histogram(etsr, nbins, hist_range)
 
     return (rssr, etsr, ets_hist, bin_edges)
 
@@ -135,11 +140,7 @@ def calculate_hist(
     """Calculate histogram."""
     ets_temp = calculate_surrogate_ets(surrprefix, sursufix, irand, masker)
     # data works properly for the histogram except for the zero values
-    ets_hist, bin_edges = np.histogram(ets_temp.data, bins=nbins, range=hist_range)
-    # Correct actual value of zero bin values
-    total_e = ets_temp.shape[0]*ets_temp.shape[1]
-    zero_e = total_e - ets_temp.count_nonzero()
-    ets_hist[0] = zero_e + ets_hist[0]
+    ets_hist, bin_edges = sparse_histogram(ets_temp.data, nbins, hist_range)
 
     return (ets_hist, bin_edges)
 

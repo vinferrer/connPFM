@@ -140,7 +140,7 @@ def calculate_hist(
     """Calculate histogram."""
     ets_temp = calculate_surrogate_ets(surrprefix, sursufix, irand, masker)
     # data works properly for the histogram except for the zero values
-    ets_hist, bin_edges = sparse_histogram(ets_temp.data, nbins, hist_range)
+    ets_hist, bin_edges = sparse_histogram(ets_temp, nbins, hist_range)
 
     return (ets_hist, bin_edges)
 

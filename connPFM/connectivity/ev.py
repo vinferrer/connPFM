@@ -192,7 +192,7 @@ def ev_workflow(
 
     LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
     plot_ets_matrix(
-        ets_orig_denoised,
+        ets_orig_denoised.toarray(),
         out_dir,
         rss_orig,
         "_original_" + peak_detection,
@@ -202,7 +202,7 @@ def ev_workflow(
     )
     # Plot ETS and denoised ETS matrices of AUC
     plot_ets_matrix(
-        ets_auc,
+        ets_auc.toarray(),
         out_dir,
         rss_auc,
         "_AUC_original_" + peak_detection,
@@ -211,7 +211,7 @@ def ev_workflow(
         idxpeak_auc,
     )
     plot_ets_matrix(
-        ets_auc_denoised,
+        ets_auc_denoised.toarray(),
         out_dir,
         rss_auc,
         "_AUC_denoised_" + peak_detection,
@@ -236,6 +236,6 @@ def ev_workflow(
         if peak_detection == "ets":
             np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
 
-    np.savetxt(matrix, ets_auc_denoised)
+    np.savetxt(matrix, ets_auc_denoised.toarray())
 
     return ets_auc_denoised

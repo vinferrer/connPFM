@@ -26,13 +26,7 @@ def event_detection(
     jobs=1,
 ):
     """Perform event detection on given data."""
-    data, masker = load_data(data_file, atlas, n_echos=len(te))
-    # load and zscore time series
-    # AUC does not get z-scored
-    if "AUC" in surrprefix:
-        z_ts = data
-    else:
-        z_ts = np.nan_to_num(zscore(data, ddof=1))
+    z_ts, masker = load_data(data_file, atlas, n_echos=len(te))
     # Get number of time points/nodes
     [t, n] = z_ts.shape
 

@@ -5,7 +5,6 @@ from os.path import join
 import numpy as np
 from joblib import Parallel, delayed
 from scipy.sparse import csr_matrix
-from scipy.stats import zscore
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
@@ -27,18 +26,12 @@ def event_detection(
     jobs=1,
 ):
     """Perform event detection on given data."""
-    data, masker = load_data(data_file, atlas, n_echos=len(te))
-    # load and zscore time series
-    # AUC does not get z-scored
-    if "AUC" in surrprefix:
-        z_ts = data
-    else:
-        z_ts = np.nan_to_num(zscore(data, ddof=1))
+    auc_ts, masker = load_data(data_file, atlas, n_echos=len(te))
     # Get number of time points/nodes
-    [t, n] = z_ts.shape
+    [t, n] = auc_ts.shape
 
     # calculate ets
-    ets, u, v = connectivity_utils.calculate_ets(z_ts, n)
+    ets, u, v = connectivity_utils.calculate_ets(auc_ts, n)
 
     # Initialize thresholded edge time-series matrix with zeros
     etspeaks = np.zeros(ets.shape)
@@ -56,7 +49,7 @@ def event_detection(
     LGR.info("Calculating edge-time matrix, RSS and histograms for surrogates...")
     surrogate_events = Parallel(n_jobs=jobs, backend="multiprocessing")(
         delayed(connectivity_utils.rss_surr)(
-            z_ts, u, v, surrprefix, sursufix, masker, irand, nbins
+            auc_ts, u, v, surrprefix, sursufix, masker, irand, nbins
         )
         for irand in range(nsur)
     )
@@ -92,7 +85,7 @@ def event_detection(
             for i in range(t):
                 p_value[i] = np.mean(np.squeeze(rssr[i, :]) >= rss[i])
 
-        # find frames that pass statistical testz_ts
+        # find frames that pass statistical test auc_ts
         idx = np.argwhere(p_value < pcrit)[:, 0]
         if segments:
             idxpeak = connectivity_utils.remove_neighboring_peaks(rss, idx)
@@ -172,14 +165,6 @@ def ev_workflow(
     #  If te is None, make it a list with 0
     if te is None and len(data_file) == 1:
         te = [0]
-
-    # Paths to files
-    # Perform event detection on ORIGINAL data
-    LGR.info("Performing event-detection on original data...")
-    (_, rss_orig, _, idxpeak_orig, ets_orig_denoised, _, _, _, _) = event_detection(
-        data_file, atlas, join(surr_dir, "surrogate_"), nsur=nsurrogates, te=te, jobs=jobs
-    )
-
     # Perform event detection on AUC
     LGR.info("Performing event-detection on AUC...")
     (ets_auc, rss_auc, _, idxpeak_auc, ets_auc_denoised, _, _, _, rss_thr) = event_detection(
@@ -192,16 +177,7 @@ def ev_workflow(
         jobs=jobs,
     )
 
-    LGR.info("Plotting original, AUC, and AUC-denoised ETS matrices...")
-    plot_ets_matrix(
-        ets_orig_denoised.toarray(),
-        out_dir,
-        rss_orig,
-        "_original_" + peak_detection,
-        dvars,
-        enorm,
-        idxpeak_orig,
-    )
+    LGR.info("Plotting AUC, and AUC-denoised ETS matrices...")
     # Plot ETS and denoised ETS matrices of AUC
     plot_ets_matrix(
         ets_auc.toarray(),

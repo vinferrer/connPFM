@@ -3,7 +3,6 @@ import logging
 
 import numpy as np
 from scipy.sparse import csr_matrix
-from scipy.stats import zscore
 
 LGR = logging.getLogger(__name__)
 
@@ -37,8 +36,6 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
 
     if surrprefix != "":
         zr = masker.fit_transform(f"{surrprefix}{irand}{sursufix}.nii.gz")
-        if "AUC" not in surrprefix:
-            zr = np.nan_to_num(zscore(zr, ddof=1))
 
         # TODO: find out why surrogates of AUC have NaNs after reading data with masker.
         zr = np.nan_to_num(zr)

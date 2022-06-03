@@ -11,7 +11,7 @@ def sparse_histogram(sparse_matrix, bins, range):
     """Calculate histogram of sparse matrix."""
     hist, bin_edges = np.histogram(sparse_matrix.data, bins=bins, range=range)
     # Correct actual value of zero bin values
-    zeros_in_data = np.sum(sparse_matrix.data==0)
+    zeros_in_data = np.sum(sparse_matrix.data == 0)
     total_e = sparse_matrix.shape[0] * sparse_matrix.shape[1]
     zero_e = total_e - sparse_matrix.count_nonzero() - zeros_in_data
     hist[0] = zero_e + hist[0]

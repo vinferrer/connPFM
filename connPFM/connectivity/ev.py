@@ -130,7 +130,8 @@ def event_detection(
                 for sur_idx in range(nsur):
                     sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
 
-                # calculate histogram of all surrogate ets at time point, this is still done without sparse matrix
+                # calculate histogram of all surrogate ets at time point,
+                # this is still done without sparse matrix
                 hist, bins = np.histogram(
                     sur_ets_at_time.toarray().flatten(), bins=nbins, range=(0, 1)
                 )

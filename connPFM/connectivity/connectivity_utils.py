@@ -1,6 +1,5 @@
 """Utility functions to perform event detection."""
 import logging
-from termios import CWERASE
 
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -55,7 +54,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
     etsr = zr_u.multiply(zr_v)
 
     # calcuate rss
-    rssr = rss = np.array(np.sqrt(etsr.power(2).sum(axis=1)[:, 0].flatten())).flatten()
+    rssr = np.array(np.sqrt(etsr.power(2).sum(axis=1)[:, 0].flatten())).flatten()
 
     # Calculate histogram
     ets_hist, bin_edges = sparse_histogram(etsr, nbins, hist_range)

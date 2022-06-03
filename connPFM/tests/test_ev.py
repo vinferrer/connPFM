@@ -51,7 +51,9 @@ def test_threshold_ets_matrix():
     dum_mat2 = np.zeros((3, 3))
     dum_mat2[2, 1] = 1
     dum_mat[1, 1] = 1
-    th_dum = connectivity_utils.threshold_ets_matrix(dum_mat, thr=np.array([1,1,2]), selected_idxs=[1,2])
+    th_dum = connectivity_utils.threshold_ets_matrix(
+        dum_mat, thr=np.array([1, 1, 2]), selected_idxs=[1, 2]
+    )
     assert np.allclose(th_dum.toarray(), dum_mat2)
 
 

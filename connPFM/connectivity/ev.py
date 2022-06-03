@@ -125,8 +125,8 @@ def event_detection(
 
                 # calculate histogram of all surrogate ets at time point,
                 # this is still done without sparse matrix
-                hist, bins = np.histogram(
-                    sur_ets_at_time.toarray().flatten(), bins=nbins, range=(0, 1)
+                hist, bins = connectivity_utils.sparse_histogram(
+                    sur_ets_at_time, bins=nbins, range=(0, 1)
                 )
 
                 # calculate threshold for time point

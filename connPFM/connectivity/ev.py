@@ -4,6 +4,7 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
+from scipy.sparse import csr_matrix
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
@@ -57,7 +58,7 @@ def event_detection(
     if "rss" in peak_detection:
         LGR.info("Selecting points with RSS...")
         # calculate rss
-        rss = np.sqrt(np.sum(np.square(ets), axis=1))
+        rss = np.array(np.sqrt(ets.power(2).sum(axis=1)[:, 0].flatten())).flatten()
 
         for irand in range(nsur):
             rssr[:, irand] = surrogate_events[irand][0]
@@ -96,7 +97,7 @@ def event_detection(
         etspeaks = connectivity_utils.threshold_ets_matrix(
             ets.copy(), thr=0, selected_idxs=idxpeak
         )
-        peaks_rss = rss[np.where(etspeaks != 0)[0]]
+        peaks_rss = rss[etspeaks.nonzero()[0]]
         rss_th = np.min(peaks_rss[np.nonzero(peaks_rss)])
     # Make selection of points with edge time-series matrix
     elif "ets" in peak_detection:
@@ -115,27 +116,30 @@ def event_detection(
             thr = np.zeros(t)
 
             # initialize array for surrogate ets at each time point
-            sur_ets_at_time = np.zeros((nsur, surrogate_events[0][1].shape[1]))
+            sur_ets_at_time = csr_matrix(np.zeros((nsur, surrogate_events[0][1].shape[1])))
 
             for time_idx in range(t):
                 # get first column of all sur_ets into a matrix
                 for sur_idx in range(nsur):
                     sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
+                    sur_ets_at_time.eliminate_zeros()
 
-                # calculate histogram of all surrogate ets at time point
-                hist, bins = np.histogram(sur_ets_at_time.flatten(), bins=nbins, range=(0, 1))
+                # calculate histogram of all surrogate ets at time point,
+                # this is still done without sparse matrix
+                hist, bins = connectivity_utils.sparse_histogram(
+                    sur_ets_at_time, bins=nbins, range=(0, 1)
+                )
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(
                     hist, bins, percentile=95
                 )
-
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets.copy(), thr)
-        idxpeak = np.where(etspeaks != 0)[0]
-        rss = np.sqrt(np.sum(np.square(etspeaks), axis=1))
+        idxpeak = etspeaks.nonzero()[0]
+        rss = np.array(np.sqrt(ets.power(2).sum(axis=1)[:, 0].flatten())).flatten()
     # calculate mean co-fluctuation (edge time series) across all peaks
-    mu = np.nanmean(etspeaks, 0)
+    mu = np.mean(etspeaks, 0)
 
     return ets, rss, rssr, idxpeak, etspeaks, mu, u, v, rss_th
 
@@ -177,7 +181,7 @@ def ev_workflow(
     LGR.info("Plotting AUC, and AUC-denoised ETS matrices...")
     # Plot ETS and denoised ETS matrices of AUC
     plot_ets_matrix(
-        ets_auc,
+        ets_auc.toarray(),
         out_dir,
         rss_auc,
         "_AUC_original_" + peak_detection,
@@ -186,7 +190,7 @@ def ev_workflow(
         idxpeak_auc,
     )
     plot_ets_matrix(
-        ets_auc_denoised,
+        ets_auc_denoised.toarray(),
         out_dir,
         rss_auc,
         "_AUC_denoised_" + peak_detection,
@@ -211,6 +215,6 @@ def ev_workflow(
         if peak_detection == "ets":
             np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
 
-    np.savetxt(matrix, ets_auc_denoised)
+    np.savetxt(matrix, ets_auc_denoised.toarray())
 
     return ets_auc_denoised

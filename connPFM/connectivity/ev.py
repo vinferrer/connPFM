@@ -25,12 +25,12 @@ def event_detection(
     jobs=1,
 ):
     """Perform event detection on given data."""
-    z_ts, masker = load_data(data_file, atlas, n_echos=len(te))
+    auc_ts, masker = load_data(data_file, atlas, n_echos=len(te))
     # Get number of time points/nodes
-    [t, n] = z_ts.shape
+    [t, n] = auc_ts.shape
 
     # calculate ets
-    ets, u, v = connectivity_utils.calculate_ets(z_ts, n)
+    ets, u, v = connectivity_utils.calculate_ets(auc_ts, n)
 
     # Initialize thresholded edge time-series matrix with zeros
     etspeaks = np.zeros(ets.shape)
@@ -48,7 +48,7 @@ def event_detection(
     LGR.info("Calculating edge-time matrix, RSS and histograms for surrogates...")
     surrogate_events = Parallel(n_jobs=jobs, backend="multiprocessing")(
         delayed(connectivity_utils.rss_surr)(
-            z_ts, u, v, surrprefix, sursufix, masker, irand, nbins
+            auc_ts, u, v, surrprefix, sursufix, masker, irand, nbins
         )
         for irand in range(nsur)
     )
@@ -84,7 +84,7 @@ def event_detection(
             for i in range(t):
                 p_value[i] = np.mean(np.squeeze(rssr[i, :]) >= rss[i])
 
-        # find frames that pass statistical testz_ts
+        # find frames that pass statistical test auc_ts
         idx = np.argwhere(p_value < pcrit)[:, 0]
         if segments:
             idxpeak = connectivity_utils.remove_neighboring_peaks(rss, idx)

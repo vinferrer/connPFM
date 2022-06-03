@@ -4,8 +4,8 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
-from scipy.stats import zscore
 from scipy.sparse import csr_matrix
+from scipy.stats import zscore
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
@@ -65,7 +65,7 @@ def event_detection(
     if "rss" in peak_detection:
         LGR.info("Selecting points with RSS...")
         # calculate rss
-        rss = np.array(np.sqrt(ets.power(2).sum(axis=1)[:,0].flatten())).flatten()
+        rss = np.array(np.sqrt(ets.power(2).sum(axis=1)[:, 0].flatten())).flatten()
 
         for irand in range(nsur):
             rssr[:, irand] = surrogate_events[irand][0]
@@ -131,7 +131,9 @@ def event_detection(
                     sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
 
                 # calculate histogram of all surrogate ets at time point, this is still done without sparse matrix
-                hist, bins = np.histogram(sur_ets_at_time.toarray().flatten(), bins=nbins, range=(0, 1))
+                hist, bins = np.histogram(
+                    sur_ets_at_time.toarray().flatten(), bins=nbins, range=(0, 1)
+                )
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(
@@ -140,7 +142,7 @@ def event_detection(
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets.copy(), thr)
         idxpeak = etspeaks.nonzero()[0]
-        rss = np.array(np.sqrt(ets.power(2).sum(axis=1)[:,0].flatten())).flatten()
+        rss = np.array(np.sqrt(ets.power(2).sum(axis=1)[:, 0].flatten())).flatten()
     # calculate mean co-fluctuation (edge time series) across all peaks
     mu = np.mean(etspeaks, 0)
 

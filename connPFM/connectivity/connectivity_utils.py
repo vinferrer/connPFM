@@ -3,20 +3,22 @@ import logging
 from termios import CWERASE
 
 import numpy as np
-from scipy.stats import zscore
 from scipy.sparse import csr_matrix
+from scipy.stats import zscore
 
 LGR = logging.getLogger(__name__)
+
 
 def sparse_histogram(sparse_matrix, bins, range):
     """Calculate histogram of sparse matrix."""
     hist, bin_edges = np.histogram(sparse_matrix.data, bins=bins, range=range)
     # Correct actual value of zero bin values
-    total_e = sparse_matrix.shape[0]*sparse_matrix.shape[1]
+    total_e = sparse_matrix.shape[0] * sparse_matrix.shape[1]
     zero_e = total_e - sparse_matrix.count_nonzero()
     hist[0] = zero_e + hist[0]
 
-    return hist, bin_edges    
+    return hist, bin_edges
+
 
 def calculate_ets(y, n):
     """Calculate edge-time series."""
@@ -53,7 +55,7 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
     etsr = zr_u.multiply(zr_v)
 
     # calcuate rss
-    rssr = rss = np.array(np.sqrt(etsr.power(2).sum(axis=1)[:,0].flatten())).flatten()
+    rssr = rss = np.array(np.sqrt(etsr.power(2).sum(axis=1)[:, 0].flatten())).flatten()
 
     # Calculate histogram
     ets_hist, bin_edges = sparse_histogram(etsr, nbins, hist_range)

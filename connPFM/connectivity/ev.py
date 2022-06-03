@@ -130,14 +130,13 @@ def event_detection(
                 for sur_idx in range(nsur):
                     sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
 
-                # calculate histogram of all surrogate ets at time point
-                hist, bins = connectivity_utils.sparse_histogram(sur_ets_at_time, bins=nbins, range=(0, 1))
+                # calculate histogram of all surrogate ets at time point, this is still done without sparse matrix
+                hist, bins = np.histogram(sur_ets_at_time.toarray().flatten(), bins=nbins, range=(0, 1))
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(
                     hist, bins, percentile=95
                 )
-
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets.copy(), thr)
         idxpeak = etspeaks.nonzero()[0]

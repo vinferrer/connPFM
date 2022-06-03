@@ -115,7 +115,7 @@ def threshold_ets_matrix(ets_matrix, thr, selected_idxs=None):
         thresholded_matrix = csr_matrix(thresholded_matrix)
     thresholded_matrix[thresholded_matrix < 0] = 0
     # reconvert so compression is done properly
-    thresholded_matrix = csr_matrix(thresholded_matrix.toarray())
+    thresholded_matrix.eliminate_zeros()
     return thresholded_matrix
 
 

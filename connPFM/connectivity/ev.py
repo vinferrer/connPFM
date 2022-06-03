@@ -122,6 +122,7 @@ def event_detection(
                 # get first column of all sur_ets into a matrix
                 for sur_idx in range(nsur):
                     sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
+                    sur_ets_at_time.eliminate_zeros()
 
                 # calculate histogram of all surrogate ets at time point,
                 # this is still done without sparse matrix

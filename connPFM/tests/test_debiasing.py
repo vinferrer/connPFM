@@ -1,8 +1,10 @@
 from os.path import join
+from re import M
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
 from scipy.stats import zscore
+from scipy.sparse import csr_matrix, save_npz
 
 from connPFM.debiasing.debiasing import debiasing
 from connPFM.debiasing.debiasing_functions import debiasing_block, debiasing_spike
@@ -91,11 +93,14 @@ def test_debiasing_block(
 def test_debias_ME(ME_files, ME_mask_2, ME_lars, ME_debias, testpath):
     auc = np.load(ME_lars[2])
     mtx = auc * (auc > np.percentile(auc, 75))
+    mtx_file = testpath + "/debias_ME_mtx.npz"
+    save_npz(mtx_file, csr_matrix(mtx))
+    np.savetxt(mtx_file, mtx)
     beta, fitt = debiasing(
         ME_files[:-1],
         ME_mask_2,
         [15.4, 29.7, 44.0, 58.37, 2.6],
-        mtx,
+        mtx_file,
         2,
         join(testpath, "ME"),
         True,

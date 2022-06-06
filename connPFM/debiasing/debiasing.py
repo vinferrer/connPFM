@@ -2,6 +2,7 @@
 import logging
 
 import numpy as np
+from scipy.sparse import load_npz, issparse, find as sp_find
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from connPFM.utils import io
@@ -32,7 +33,17 @@ def debiasing(data_file, mask, te, mtx, tr, prefix, groups, groups_dist, history
 
     # Generate mask of significant edge-time connections
     ets_mask = np.zeros(data.shape)
-    idxs = np.where(mtx != 0)
+    # check if matrix is not loaded from file
+    if type(mtx) is str:
+        if ".txt" in mtx:
+            mtx = np.loadtxt(mtx)
+        elif ".npz" in mtx:
+            mtx = load_npz(mtx)
+    # get indices depending of the format type
+    if type(mtx) is np.ndarray:
+        idxs = np.where(mtx != 0)
+    elif issparse(mtx):
+        idxs = sp_find(mtx)
     time_idxs = idxs[0]
     edge_idxs = idxs[1]
 

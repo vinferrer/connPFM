@@ -172,7 +172,7 @@ def _get_parser():
         "-m",
         "--matrix",
         dest="matrix",
-        help="Path to the connectivity matrix.",
+        help="Path to the connectivity matrix. Can be in sparse .npz or .txt file.",
         default=None,
         type=str,
         nargs=1,

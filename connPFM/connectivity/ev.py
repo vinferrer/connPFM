@@ -4,7 +4,7 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, save_npz
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
@@ -215,6 +215,15 @@ def ev_workflow(
         if peak_detection == "ets":
             np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
 
-    np.savetxt(matrix, ets_auc_denoised.toarray())
+    # if txt extension 
+    if ".txt" in matrix:
+        LGR.info("saving as .txt file...")
+        np.savetxt(matrix, ets_auc_denoised.toarray())
+    elif ".npz" in matrix:
+        LGR.info("saving as .npz")
+        save_npz(matrix, ets_auc_denoised)
+    else:
+        LGR.info("No extension indicated in matrix, saving as .npz")
+        save_npz(matrix, ets_auc_denoised)
 
     return ets_auc_denoised

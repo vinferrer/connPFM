@@ -5,8 +5,6 @@ import os
 import socket
 import sys
 
-from numpy import loadtxt
-
 from connPFM.cli.connPFM import _get_parser
 from connPFM.connectivity.ev import ev_workflow
 from connPFM.debiasing.debiasing import debiasing
@@ -137,12 +135,11 @@ def _main(argv=None):
             jobs=options["jobs"][0],
         )
     elif selected_workflow == "debias":
-        ets_auc_denoised = loadtxt(options["matrix"][0])
         debiasing(
             options["data"],
             options["atlas"][0],
             options["te"],
-            ets_auc_denoised,
+            options["matrix"][0],
             options["tr"][0],
             prefix_path,
             options["groups"],

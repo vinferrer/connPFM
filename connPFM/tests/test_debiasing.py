@@ -95,7 +95,6 @@ def test_debias_ME(ME_files, ME_mask_2, ME_lars, ME_debias, testpath):
     mtx = auc * (auc > np.percentile(auc, 75))
     mtx_file = join(testpath, "debias_ME_mtx.npz")
     save_npz(mtx_file, csr_matrix(mtx))
-    np.savetxt(mtx_file, mtx)
     beta, fitt = debiasing(
         ME_files[:-1],
         ME_mask_2,

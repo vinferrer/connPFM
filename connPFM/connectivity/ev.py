@@ -217,10 +217,10 @@ def ev_workflow(
 
     # if txt extension
     if ".txt" in matrix:
-        LGR.info("saving as .txt file...")
+        LGR.info("Saving as .txt file...")
         np.savetxt(matrix, ets_auc_denoised.toarray())
     elif ".npz" in matrix:
-        LGR.info("saving as .npz")
+        LGR.info("Saving as .npz")
         save_npz(matrix, ets_auc_denoised)
     else:
         LGR.info("No extension indicated in matrix, saving as .npz")

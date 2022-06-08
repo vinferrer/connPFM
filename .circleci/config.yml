@@ -42,7 +42,7 @@ jobs:
                 echo "Restoring environment from cache"
                 source activate py<< parameters.PYTHON >>_env
             else
-                conda create -n py<< parameters.PYTHON >>_env python=3.9 numpy -yq
+                conda create -n py<< parameters.PYTHON >>_env python=parameters.PYTHON  numpy -yq
                 source activate py<< parameters.PYTHON >>_env
                 pip install -e .[tests,doc]
             fi

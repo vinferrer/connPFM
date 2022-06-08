@@ -5,7 +5,6 @@ import os
 import socket
 import sys
 
-from numpy import loadtxt
 
 from connPFM.cli.connPFM import _get_parser
 from connPFM.connectivity.ev import ev_workflow

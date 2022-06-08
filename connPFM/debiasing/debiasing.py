@@ -2,7 +2,8 @@
 import logging
 
 import numpy as np
-from scipy.sparse import load_npz, issparse, find as sp_find
+from scipy.sparse import find as sp_find
+from scipy.sparse import issparse, load_npz
 
 from connPFM.debiasing.debiasing_functions import debiasing_spike  # or debiasing_block
 from connPFM.utils import io

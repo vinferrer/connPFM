@@ -3,8 +3,8 @@ from re import M
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker
-from scipy.stats import zscore
 from scipy.sparse import csr_matrix, save_npz
+from scipy.stats import zscore
 
 from connPFM.debiasing.debiasing import debiasing
 from connPFM.debiasing.debiasing_functions import debiasing_block, debiasing_spike

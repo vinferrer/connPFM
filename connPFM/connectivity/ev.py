@@ -215,7 +215,7 @@ def ev_workflow(
         if peak_detection == "ets":
             np.savetxt(join(out_dir, afni_text) + "_rss.txt", rss_auc)
 
-    # if txt extension 
+    # if txt extension
     if ".txt" in matrix:
         LGR.info("saving as .txt file...")
         np.savetxt(matrix, ets_auc_denoised.toarray())

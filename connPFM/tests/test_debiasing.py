@@ -1,5 +1,4 @@
 from os.path import join
-from re import M
 
 import numpy as np
 from nilearn.input_data import NiftiLabelsMasker

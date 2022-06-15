@@ -71,7 +71,7 @@ def plot_ets_matrix(
         ax1 = divider.append_axes("bottom", size="25%", pad=1)
         ax2 = divider.append_axes("bottom", size="25%", pad=1)
         cax = divider.append_axes("right", size="5%", pad=0.08)
-        im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
+        im = ax0.spy(ets.T, cmap="OrRd", aspect="auto")
         ax0.set_ylabel("Edge-edge connections")
         plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)  # ax=axs.ravel().tolist()
         # dvars[1] = np.mean(dvars)
@@ -91,7 +91,7 @@ def plot_ets_matrix(
         divider = make_axes_locatable(ax0)
         ax1 = divider.append_axes("bottom", size="25%", pad=1)
         cax = divider.append_axes("right", size="5%", pad=0.05)
-        im = ax0.imshow(ets.T, vmin=vmin, vmax=vmax, cmap="OrRd", aspect="auto")
+        im = ax0.spy(ets.T, cmap="OrRd", aspect="auto")
         plt.colorbar(im, orientation="vertical", ax=ax0, cax=cax)
         ax1.plot(rss)
         if thr is not None:

@@ -6,6 +6,7 @@ from connPFM.deconvolution.stability_lars_caller import run_stability_lars
 from connPFM.tests.conftest import fetch_file
 from connPFM.utils import hrf_generator, surrogate_generator
 from connPFM.utils.io import load_data, save_img
+from connPFM.utils.io import dask_scheduler
 
 LGR = logging.getLogger(__name__)
 
@@ -61,6 +62,8 @@ def roiPFM(
     LGR.info("Running stability selection on original data...")
     if which("singularity") is not None:
         fetch_file("n7tzh", os.path.dirname(os.path.realpath(__file__)), "connpfm_slim.simg")
+    if jobs != 0:
+        _, cluster = dask_scheduler(jobs)
     auc = run_stability_lars(
         data=data_masked,
         hrf=hrf,

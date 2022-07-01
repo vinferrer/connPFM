@@ -4,11 +4,12 @@ import os
 import numpy as np
 from connPFM.deconvolution import compute_slars
 from dask import delayed, compute
+from utils.io import dask_scheduler
 
 LGR = logging.getLogger(__name__)
 
 # Check if temp directory exists
-def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor, client):
+def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
     nscans = hrf.shape[1]
     nvoxels = data.shape[1]
 
@@ -47,6 +48,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor, cl
         auc_filename = temp + "/auc_" + str(0) + ".npy"
         auc = np.load(auc_filename)
     else:
+        _, cluster = dask_scheduler(jobs)
         futures = []  
         for job_idx in range(jobs):
             jobs_left = jobs - job_idx
@@ -87,4 +89,5 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor, cl
                 auc = np.load(auc_filename)
             else:
                 auc = np.hstack((auc, np.load(auc_filename)))
+        cluster.close()
     return auc

@@ -1,23 +1,14 @@
 import logging
 import os
-import subprocess
-import time
 
 import numpy as np
+from connPFM.deconvolution import compute_slars
+from dask import delayed, compute
 
 LGR = logging.getLogger(__name__)
 
-
-def bget(cmd):
-    from subprocess import PIPE, Popen
-
-    out = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    (stdout, stderr) = out.communicate()
-    return stdout.decode().split()
-
-
 # Check if temp directory exists
-def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
+def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor, client):
     nscans = hrf.shape[1]
     nvoxels = data.shape[1]
 
@@ -39,10 +30,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
     LGR.info("Numer of voxels: {}".format(nvoxels))
     if jobs == 0:
         LGR.info("non paraleized option for testing")
-        input_parameters = (
-            "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
-            " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
-            " --n_job {}".format(
+        compute_slars.main(
                 data_filename,
                 filename_hrf,
                 str(nscans),
@@ -55,16 +43,11 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 int(data.shape[1]),
                 nvoxels,
                 0,
-            )
-        )
-        subprocess.call(
-            f" bash {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh "
-            + input_parameters,
-            shell=True,
         )
         auc_filename = temp + "/auc_" + str(0) + ".npy"
         auc = np.load(auc_filename)
     else:
+        futures = []  
         for job_idx in range(jobs):
             jobs_left = jobs - job_idx
             voxels_left = nvoxels - last
@@ -82,10 +65,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
             LGR.info("Last voxel: {}".format(last))
 
             jobname = "lars" + str(job_idx)
-            input_parameters = (
-                "--data {} --hrf {} --nscans {} --maxiterfactor {} --nsurrogates {}"
-                " --nte {} --mode {} --tempdir {} --first {} --last {} --voxels {}"
-                " --n_job {}".format(
+            fut = delayed(compute_slars.main,pure=False)(
                     data_filename,
                     filename_hrf,
                     str(nscans),
@@ -99,29 +79,8 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                     nvoxels,
                     job_idx,
                 )
-            )
-            error_output = os.path.join(temp, f"connPFM_job_{job_idx}")
-            subprocess.call(
-                "qsub "
-                + " -N "
-                + jobname
-                + f" -e {error_output} -o {error_output} "
-                + ' -v INPUT_ARGS="'
-                + input_parameters
-                + '"'
-                + f' -v FILE_DIR="{os.path.dirname(os.path.abspath(__file__))}"'
-                + f' -v WDIR="{os.path.dirname(os.path.abspath(data_filename))}"'
-                + f" {os.path.dirname(os.path.abspath(__file__))}/compute_slars.sh ",
-                shell=True,
-            )
-            while int(
-                bget("qstat -u " + username + " | grep -v C | grep -c short" + username)[0]
-            ) > (jobs - 1):
-                time.sleep(1)
-
-        while int(bget("qstat -u " + username + " | grep -F 'lars' | grep -c " + username)[0]) > 0:
-            time.sleep(0.5)
-
+            futures.append(fut)
+        compute(futures)
         for job_idx in range(jobs):
             auc_filename = temp + "/auc_" + str(job_idx) + ".npy"
             if job_idx == 0:

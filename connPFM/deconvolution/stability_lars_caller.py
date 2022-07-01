@@ -4,7 +4,6 @@ import os
 import numpy as np
 from connPFM.deconvolution import compute_slars
 from dask import delayed, compute
-from utils.io import dask_scheduler
 
 LGR = logging.getLogger(__name__)
 
@@ -34,21 +33,20 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
         compute_slars.main(
                 data_filename,
                 filename_hrf,
-                str(nscans),
-                str(maxiterfactor),
-                niter,
-                nTE,
-                str(1),
-                temp,
-                int(0),
-                int(data.shape[1]),
-                nvoxels,
+                nscans,
+                maxiterfactor,
                 0,
+                nsurrogates=niter,
+                nte=nTE,
+                mode=1,
+                tempdir=temp,
+                first=int(0),
+                last=int(data.shape[1]),
+                voxels_total=nvoxels,
         )
         auc_filename = temp + "/auc_" + str(0) + ".npy"
         auc = np.load(auc_filename)
     else:
-        _, cluster = dask_scheduler(jobs)
         futures = []  
         for job_idx in range(jobs):
             jobs_left = jobs - job_idx
@@ -67,19 +65,20 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
             LGR.info("Last voxel: {}".format(last))
 
             jobname = "lars" + str(job_idx)
+            
             fut = delayed(compute_slars.main,pure=False)(
-                    data_filename,
-                    filename_hrf,
-                    str(nscans),
-                    str(maxiterfactor),
-                    niter,
-                    nTE,
-                    str(1),
-                    temp,
-                    int(first),
-                    int(last),
-                    nvoxels,
-                    job_idx,
+                data_filename,
+                filename_hrf,
+                nscans,
+                maxiterfactor,
+                job_idx,
+                nsurrogates=niter,
+                nte=nTE,
+                mode=1,
+                tempdir=temp,
+                first=first,
+                last=last,
+                voxels_total=nvoxels,
                 )
             futures.append(fut)
         compute(futures)
@@ -89,5 +88,4 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 auc = np.load(auc_filename)
             else:
                 auc = np.hstack((auc, np.load(auc_filename)))
-        cluster.close()
     return auc

@@ -60,6 +60,7 @@ REQUIRES = [
     "PyWavelets",
     "dask",
     "distributed",
+    "dask_jobqueue",
 ]
 
 TESTS_REQUIRES = [

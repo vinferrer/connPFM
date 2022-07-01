@@ -11,7 +11,7 @@ from connPFM.deconvolution.stability_lars import StabilityLars
 LGR = logging.getLogger(__name__)
 
 
-def main(data_filename, hrf_file, voxel, nscans, maxiterfactor, nsurrogates, nte, mode, tempdir,first, last, voxels_total, n_job):
+def main(data_filename, hrf_file,nscans, maxiterfactor,  n_job, voxel=1,nsurrogates=100, nte=1, mode=1, tempdir=None,first=None, last=None, voxels_total=1):
 
     LGR.info("Data file is ", data_filename)
     LGR.info("HRF file is ", hrf_file)

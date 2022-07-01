@@ -59,7 +59,7 @@ REQUIRES = [
     "sklearn",
     "PyWavelets",
     "dask",
-    "distribute",
+    "distributed",
 ]
 
 TESTS_REQUIRES = [

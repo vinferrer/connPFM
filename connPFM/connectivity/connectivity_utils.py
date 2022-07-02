@@ -58,11 +58,11 @@ def rss_surr(z_ts, u, v, surrprefix, sursufix, masker, irand, nbins, hist_range=
     ets_hist, bin_edges = sparse_histogram(etsr, nbins, hist_range)
 
     # calculate histogram for each timepoint
-    ets_hist_time = np.zeros((t,nbins))
+    ets_hist_time = np.zeros((t, nbins))
     for time in range(t):
-        ets_hist_time[time,:], _ = sparse_histogram(etsr[time,:], nbins, hist_range)
+        ets_hist_time[time, :], _ = sparse_histogram(etsr[time, :], nbins, hist_range)
 
-    return (rssr, ets_hist,ets_hist_time, bin_edges)
+    return (rssr, ets_hist, ets_hist_time, bin_edges)
 
 
 def remove_neighboring_peaks(rss, idx):

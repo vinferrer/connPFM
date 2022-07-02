@@ -114,17 +114,15 @@ def event_detection(
             # Initialize array for threshold
             thr = np.zeros(t)
             # initialize array for surrogate ets at each time point
-            hist_time_surrogates = np.zeros([ nsur, t, nbins])
+            hist_time_surrogates = np.zeros([nsur, t, nbins])
             for sur_idx in range(nsur):
-                hist_time_surrogates[sur_idx, :,:] = surrogate_events[sur_idx][2]
-            
-
+                hist_time_surrogates[sur_idx, :, :] = surrogate_events[sur_idx][2]
 
             for time_idx in range(t):
                 # get first column of all sur_ets into a matrix
                 # calculate histogram of all surrogate ets at time point,
                 # this is still done without sparse matrix
-                hist = np.sum(hist_time_surrogates[:,time_idx,:],axis=0)
+                hist = np.sum(hist_time_surrogates[:, time_idx, :], axis=0)
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(

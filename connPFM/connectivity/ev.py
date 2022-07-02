@@ -4,7 +4,7 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
-from scipy.sparse import csr_matrix, save_npz
+from scipy.sparse import save_npz
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix

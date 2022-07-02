@@ -110,7 +110,6 @@ def event_detection(
             thr = connectivity_utils.calculate_hist_threshold(
                 hist_sum, surrogate_events[0][3][:-1], percentile=95
             )
-            breakpoint()
         elif peak_detection == "ets_time":
             # Initialize array for threshold
             thr = np.zeros(t)

@@ -110,11 +110,10 @@ def event_detection(
             thr = connectivity_utils.calculate_hist_threshold(
                 hist_sum, surrogate_events[0][3][:-1], percentile=95
             )
-
+            breakpoint()
         elif peak_detection == "ets_time":
             # Initialize array for threshold
             thr = np.zeros(t)
-
             # initialize array for surrogate ets at each time point
             hist_time_surrogates = np.zeros([ nsur, t, nbins])
             for sur_idx in range(nsur):
@@ -130,7 +129,7 @@ def event_detection(
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(
-                    hist, bins, percentile=95
+                    hist, surrogate_events[0][3][:-1], percentile=95
                 )
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets.copy(), thr)

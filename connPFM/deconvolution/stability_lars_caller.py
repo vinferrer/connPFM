@@ -8,6 +8,7 @@ from connPFM.deconvolution import compute_slars
 
 LGR = logging.getLogger(__name__)
 
+
 # Check if temp directory exists
 def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
     nscans = hrf.shape[1]
@@ -64,8 +65,6 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 last = nvoxels
             LGR.info("First voxel: {}".format(first))
             LGR.info("Last voxel: {}".format(last))
-
-            jobname = "lars" + str(job_idx)
 
             fut = delayed(compute_slars.main, pure=False)(
                 data_filename,

@@ -3,7 +3,7 @@ import subprocess
 
 import numpy as np
 from dask import config
-from dask.distributed import Client, as_completed
+from dask.distributed import Client
 from dask_jobqueue import SGECluster
 from nilearn.input_data import NiftiLabelsMasker
 

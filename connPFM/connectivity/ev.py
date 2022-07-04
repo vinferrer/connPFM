@@ -5,7 +5,6 @@ from os.path import join
 import numpy as np
 from dask import compute
 from dask import delayed as delayed_dask
-from joblib import Parallel, delayed
 from scipy.sparse import csr_matrix, save_npz
 
 from connPFM.connectivity import connectivity_utils
@@ -51,7 +50,7 @@ def event_detection(
     LGR.info("Calculating edge-time matrix, RSS and histograms for surrogates...")
     try:
         _, cluster = dask_scheduler(jobs)
-    except:
+    except Exception:
         LGR.warning(
             "dask configuration wasn't detected, "
             "if you are using a SGE cluster please look at "

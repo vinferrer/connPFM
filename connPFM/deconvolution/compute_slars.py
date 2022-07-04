@@ -69,7 +69,7 @@ def main(
             "AUC of voxel {}/{} calculated and stored...".format(str(vox_idx + 1), str(nvoxels))
         )
 
-    filename = tempdir + "/auc_" + str(n_job) + ".npy"
+    filename = os.path.join(tempdir, "auc_" + str(n_job) + ".npy")
     np.save(filename, auc)
 
 

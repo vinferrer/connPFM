@@ -3,13 +3,14 @@ import logging
 from os.path import join
 
 import numpy as np
+from dask import compute
+from dask import delayed as delayed_dask
 from joblib import Parallel, delayed
 from scipy.sparse import csr_matrix, save_npz
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
-from connPFM.utils.io import load_data, dask_scheduler
-from dask import delayed as delayed_dask, compute
+from connPFM.utils.io import dask_scheduler, load_data
 
 LGR = logging.getLogger(__name__)
 
@@ -51,13 +52,15 @@ def event_detection(
     try:
         _, cluster = dask_scheduler(jobs)
     except:
-        LGR.warning("dask configuration wasn't detected, "
-                    "if you are using a SGE cluster please look at "
-                    "the jobqueue YAML example, modify it so it works in your cluster "
-                    "and add it to ~/.config/dask ")
+        LGR.warning(
+            "dask configuration wasn't detected, "
+            "if you are using a SGE cluster please look at "
+            "the jobqueue YAML example, modify it so it works in your cluster "
+            "and add it to ~/.config/dask "
+        )
     futures = []
     for irand in range(nsur):
-        fut = delayed_dask(connectivity_utils.rss_surr,pure=False)(
+        fut = delayed_dask(connectivity_utils.rss_surr, pure=False)(
             auc_ts, u, v, surrprefix, sursufix, masker, irand, nbins
         )
         futures.append(fut)

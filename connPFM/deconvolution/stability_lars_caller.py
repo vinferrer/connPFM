@@ -2,8 +2,9 @@ import logging
 import os
 
 import numpy as np
+from dask import compute, delayed
+
 from connPFM.deconvolution import compute_slars
-from dask import delayed, compute
 
 LGR = logging.getLogger(__name__)
 
@@ -31,23 +32,23 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
     if jobs == 0:
         LGR.info("non paraleized option for testing")
         compute_slars.main(
-                data_filename,
-                filename_hrf,
-                nscans,
-                maxiterfactor,
-                0,
-                nsurrogates=niter,
-                nte=nTE,
-                mode=1,
-                tempdir=temp,
-                first=int(0),
-                last=int(data.shape[1]),
-                voxels_total=nvoxels,
+            data_filename,
+            filename_hrf,
+            nscans,
+            maxiterfactor,
+            0,
+            nsurrogates=niter,
+            nte=nTE,
+            mode=1,
+            tempdir=temp,
+            first=int(0),
+            last=int(data.shape[1]),
+            voxels_total=nvoxels,
         )
         auc_filename = temp + "/auc_" + str(0) + ".npy"
         auc = np.load(auc_filename)
     else:
-        futures = []  
+        futures = []
         for job_idx in range(jobs):
             jobs_left = jobs - job_idx
             voxels_left = nvoxels - last
@@ -65,8 +66,8 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
             LGR.info("Last voxel: {}".format(last))
 
             jobname = "lars" + str(job_idx)
-            
-            fut = delayed(compute_slars.main,pure=False)(
+
+            fut = delayed(compute_slars.main, pure=False)(
                 data_filename,
                 filename_hrf,
                 nscans,
@@ -79,7 +80,7 @@ def run_stability_lars(data, hrf, temp, jobs, username, niter, maxiterfactor):
                 first=first,
                 last=last,
                 voxels_total=nvoxels,
-                )
+            )
             futures.append(fut)
         compute(futures)
         for job_idx in range(jobs):

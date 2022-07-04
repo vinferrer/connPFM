@@ -61,13 +61,14 @@ def save_img(data, output, masker, history_str=None):
         subprocess.run('3dNotes -h "' + history_str + '" ' + output, shell=True)
         LGR.info("File history updated.")
 
+
 def dask_scheduler(jobs):
-    config.set(distributed__comm__timeouts__tcp='90s')
-    config.set(distributed__comm__timeouts__connect='90s')
-    config.set(scheduler='single-threaded')
-    config.set({'distributed.scheduler.allowed-failures': 50}) 
-    config.set(admin__tick__limit='3h')
-    cluster = SGECluster(memory="20Gb") # assumees dask configuration file
+    config.set(distributed__comm__timeouts__tcp="90s")
+    config.set(distributed__comm__timeouts__connect="90s")
+    config.set(scheduler="single-threaded")
+    config.set({"distributed.scheduler.allowed-failures": 50})
+    config.set(admin__tick__limit="3h")
+    cluster = SGECluster(memory="20Gb")  # assumees dask configuration file
     client = Client(cluster)
     cluster.scale(jobs)
     return client, cluster

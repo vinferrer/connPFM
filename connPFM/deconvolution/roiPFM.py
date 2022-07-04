@@ -5,8 +5,7 @@ from shutil import which
 from connPFM.deconvolution.stability_lars_caller import run_stability_lars
 from connPFM.tests.conftest import fetch_file
 from connPFM.utils import hrf_generator, surrogate_generator
-from connPFM.utils.io import load_data, save_img
-from connPFM.utils.io import dask_scheduler
+from connPFM.utils.io import dask_scheduler, load_data, save_img
 
 LGR = logging.getLogger(__name__)
 

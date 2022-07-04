@@ -4,7 +4,7 @@ from os.path import join
 
 import numpy as np
 from joblib import Parallel, delayed
-from scipy.sparse import csr_matrix, save_npz
+from scipy.sparse import save_npz
 
 from connPFM.connectivity import connectivity_utils
 from connPFM.connectivity.plotting import plot_ets_matrix
@@ -110,29 +110,23 @@ def event_detection(
             thr = connectivity_utils.calculate_hist_threshold(
                 hist_sum, surrogate_events[0][3][:-1], percentile=95
             )
-
         elif peak_detection == "ets_time":
             # Initialize array for threshold
             thr = np.zeros(t)
-
             # initialize array for surrogate ets at each time point
-            sur_ets_at_time = csr_matrix(np.zeros((nsur, surrogate_events[0][1].shape[1])))
+            hist_time_surrogates = np.zeros([nsur, t, nbins])
+            for sur_idx in range(nsur):
+                hist_time_surrogates[sur_idx, :, :] = surrogate_events[sur_idx][2]
 
             for time_idx in range(t):
                 # get first column of all sur_ets into a matrix
-                for sur_idx in range(nsur):
-                    sur_ets_at_time[sur_idx, :] = surrogate_events[sur_idx][1][time_idx, :]
-                    sur_ets_at_time.eliminate_zeros()
-
                 # calculate histogram of all surrogate ets at time point,
                 # this is still done without sparse matrix
-                hist, bins = connectivity_utils.sparse_histogram(
-                    sur_ets_at_time, bins=nbins, range=(0, 1)
-                )
+                hist = np.sum(hist_time_surrogates[:, time_idx, :], axis=0)
 
                 # calculate threshold for time point
                 thr[time_idx] = connectivity_utils.calculate_hist_threshold(
-                    hist, bins, percentile=95
+                    hist, surrogate_events[0][3][:-1], percentile=95
                 )
         # Apply threshold on edge time-series matrix
         etspeaks = connectivity_utils.threshold_ets_matrix(ets.copy(), thr)

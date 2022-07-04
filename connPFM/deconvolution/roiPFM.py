@@ -59,8 +59,6 @@ def roiPFM(
     hrf = hrf_matrix.hrf_norm
     LGR.info("HRF generated.")
     LGR.info("Running stability selection on original data...")
-    if which("singularity") is not None:
-        fetch_file("n7tzh", os.path.dirname(os.path.realpath(__file__)), "connpfm_slim.simg")
     if jobs != 0:
         _, cluster = dask_scheduler(jobs)
     auc = run_stability_lars(

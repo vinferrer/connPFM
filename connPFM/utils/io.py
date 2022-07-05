@@ -5,7 +5,7 @@ from os.path import join, expanduser
 
 import numpy as np
 from dask import config
-from dask.distributed import Client
+from dask.distributed import Client, LocalCluster
 from dask_jobqueue import SGECluster, PBSCluster, SLURMCluster
 from nilearn.input_data import NiftiLabelsMasker
 
@@ -77,6 +77,7 @@ def dask_scheduler(jobs):
             "local configuration will be used"
         )
         client = Client()
+        cluster = LocalCluster() 
     else:
         config.set(distributed__comm__timeouts__tcp="90s")
         config.set(distributed__comm__timeouts__connect="90s")
@@ -98,5 +99,6 @@ def dask_scheduler(jobs):
             "local configuration will be used"
         )
             client = Client()
+            cluster = LocalCluster() 
     cluster.scale(jobs)
     return client, cluster

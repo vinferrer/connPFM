@@ -68,7 +68,7 @@ def dask_scheduler(jobs):
     # look if default ~ .config/dask/jobqueue.yaml exitsts
     with open(join(expanduser("~"), ".config/dask/jobqueue.yaml"), "r") as stream:
         data = yaml.load(stream, Loader=yaml.FullLoader)
-    if data == None:
+    if data is None:
         LGR.warning(
             "dask configuration wasn't detected, "
             "if you are using a cluster please look at "

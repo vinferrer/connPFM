@@ -5,7 +5,7 @@ from os.path import expanduser, join
 import numpy as np
 import yaml
 from dask import config
-from dask.distributed import Client, LocalCluster
+from dask.distributed import Client
 from dask_jobqueue import PBSCluster, SGECluster, SLURMCluster
 from nilearn.input_data import NiftiLabelsMasker
 

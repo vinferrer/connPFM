@@ -3,7 +3,6 @@ import subprocess
 from os.path import expanduser, join
 
 import numpy as np
-from soupsieve import escape
 import yaml
 from dask import config
 from dask.distributed import Client

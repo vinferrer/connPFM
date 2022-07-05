@@ -83,13 +83,13 @@ def dask_scheduler(jobs):
         config.set(scheduler="single-threaded")
         config.set({"distributed.scheduler.allowed-failures": 50})
         config.set(admin__tick__limit="3h")
-        if "sge" in data['jobqueue']:
+        if "sge" in data["jobqueue"]:
             cluster = SGECluster(memory="20Gb")
             cluster.scale(jobs)
-        elif "pbs" in data['jobqueue']:
+        elif "pbs" in data["jobqueue"]:
             cluster = PBSCluster(memory="20Gb")
             cluster.scale(jobs)
-        elif "slurm" in data['jobqueue']:
+        elif "slurm" in data["jobqueue"]:
             cluster = SLURMCluster(memory="20Gb")
             cluster.scale(jobs)
         else:

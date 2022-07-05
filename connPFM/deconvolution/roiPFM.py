@@ -57,7 +57,7 @@ def roiPFM(
     hrf = hrf_matrix.hrf_norm
     LGR.info("HRF generated.")
     LGR.info("Running stability selection on original data...")
-    
+
     _, cluster = dask_scheduler(jobs)
     auc = run_stability_lars(
         data=data_masked,

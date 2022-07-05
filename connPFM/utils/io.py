@@ -1,12 +1,12 @@
 import logging
 import subprocess
-import yaml
-from os.path import join, expanduser
+from os.path import expanduser, join
 
 import numpy as np
+import yaml
 from dask import config
 from dask.distributed import Client, LocalCluster
-from dask_jobqueue import SGECluster, PBSCluster, SLURMCluster
+from dask_jobqueue import PBSCluster, SGECluster, SLURMCluster
 from nilearn.input_data import NiftiLabelsMasker
 
 from connPFM.utils import atlas_mod
@@ -66,8 +66,8 @@ def save_img(data, output, masker, history_str=None):
 
 def dask_scheduler(jobs):
     # look if default ~ .config/dask/jobqueue.yaml exitsts
-    with open(join( expanduser("~"),".config/dask/jobqueue.yaml"), "r") as stream:
-        data =yaml.load(stream, Loader=yaml.FullLoader)
+    with open(join(expanduser("~"), ".config/dask/jobqueue.yaml"), "r") as stream:
+        data = yaml.load(stream, Loader=yaml.FullLoader)
     if data == None:
         LGR.warning(
             "dask configuration wasn't detected, "
@@ -77,28 +77,28 @@ def dask_scheduler(jobs):
             "local configuration will be used"
         )
         client = Client()
-        cluster = LocalCluster() 
+        cluster = LocalCluster()
     else:
         config.set(distributed__comm__timeouts__tcp="90s")
         config.set(distributed__comm__timeouts__connect="90s")
         config.set(scheduler="single-threaded")
         config.set({"distributed.scheduler.allowed-failures": 50})
         config.set(admin__tick__limit="3h")
-        if 'sge' in data:
+        if "sge" in data:
             cluster = SGECluster(memory="20Gb")
-        elif 'pbs' in data:
+        elif "pbs" in data:
             cluster = PBSCluster(memory="20Gb")
-        elif 'slurm' in data:
+        elif "slurm" in data:
             cluster = SLURMCluster(memory="20Gb")
         else:
             LGR.warning(
-            "dask configuration wasn't detected, "
-            "if you are using a cluster please look at "
-            "the jobqueue YAML example, modify it so it works in your cluster "
-            "and add it to ~/.config/dask "
-            "local configuration will be used"
-        )
+                "dask configuration wasn't detected, "
+                "if you are using a cluster please look at "
+                "the jobqueue YAML example, modify it so it works in your cluster "
+                "and add it to ~/.config/dask "
+                "local configuration will be used"
+            )
             client = Client()
-            cluster = LocalCluster() 
+            cluster = LocalCluster()
     cluster.scale(jobs)
     return client, cluster

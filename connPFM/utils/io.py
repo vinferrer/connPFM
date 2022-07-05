@@ -3,6 +3,7 @@ import subprocess
 from os.path import expanduser, join
 
 import numpy as np
+from soupsieve import escape
 import yaml
 from dask import config
 from dask.distributed import Client
@@ -101,5 +102,8 @@ def dask_scheduler(jobs):
                 "local configuration will be used"
             )
             cluster = None
-    client = Client(cluster)
+    if cluster is None:
+        client = None
+    else:
+        client = Client(cluster)
     return client, cluster

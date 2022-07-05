@@ -71,7 +71,7 @@ def dask_scheduler(jobs):
     if data == None:
         LGR.warning(
             "dask configuration wasn't detected, "
-            "if you are using a SGE cluster please look at "
+            "if you are using a cluster please look at "
             "the jobqueue YAML example, modify it so it works in your cluster "
             "and add it to ~/.config/dask "
             "local configuration will be used"
@@ -90,6 +90,13 @@ def dask_scheduler(jobs):
         elif 'slurm' in data:
             cluster = SLURMCluster(memory="20Gb")
         else:
-        client = Client(cluster)
+            LGR.warning(
+            "dask configuration wasn't detected, "
+            "if you are using a cluster please look at "
+            "the jobqueue YAML example, modify it so it works in your cluster "
+            "and add it to ~/.config/dask "
+            "local configuration will be used"
+        )
+            client = Client()
     cluster.scale(jobs)
     return client, cluster

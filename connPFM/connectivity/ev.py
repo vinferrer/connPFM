@@ -49,8 +49,6 @@ def event_detection(
     # calculate ets and rss of surrogate data
     LGR.info("Calculating edge-time matrix, RSS and histograms for surrogates...")
     _, cluster = dask_scheduler(jobs)
-"and add it to ~/.config/dask "
-        )
     futures = []
     for irand in range(nsur):
         fut = delayed_dask(connectivity_utils.rss_surr, pure=False)(

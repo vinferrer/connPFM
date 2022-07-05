@@ -76,8 +76,7 @@ def dask_scheduler(jobs):
             "and add it to ~/.config/dask "
             "local configuration will be used"
         )
-        client = Client()
-        cluster = LocalCluster()
+        cluster = None
     else:
         config.set(distributed__comm__timeouts__tcp="90s")
         config.set(distributed__comm__timeouts__connect="90s")
@@ -86,10 +85,13 @@ def dask_scheduler(jobs):
         config.set(admin__tick__limit="3h")
         if "sge" in data:
             cluster = SGECluster(memory="20Gb")
+            cluster.scale(jobs)
         elif "pbs" in data:
             cluster = PBSCluster(memory="20Gb")
+            cluster.scale(jobs)
         elif "slurm" in data:
             cluster = SLURMCluster(memory="20Gb")
+            cluster.scale(jobs)
         else:
             LGR.warning(
                 "dask configuration wasn't detected, "
@@ -98,7 +100,6 @@ def dask_scheduler(jobs):
                 "and add it to ~/.config/dask "
                 "local configuration will be used"
             )
-            client = Client()
-            cluster = LocalCluster()
-    cluster.scale(jobs)
+            cluster = None
+    client = Client(cluster)
     return client, cluster

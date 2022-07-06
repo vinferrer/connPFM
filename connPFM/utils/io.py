@@ -65,6 +65,10 @@ def save_img(data, output, masker, history_str=None):
 
 
 def dask_scheduler(jobs):
+    """
+    Checks if the user has a dask_jobqueue configuration file, and if so,
+    returns the appropriate scheduler according to the file parameters
+    """
     # look if default ~ .config/dask/jobqueue.yaml exists
     with open(join(expanduser("~"), ".config/dask/jobqueue.yaml"), "r") as stream:
         data = yaml.load(stream, Loader=yaml.FullLoader)
@@ -84,13 +88,13 @@ def dask_scheduler(jobs):
         config.set({"distributed.scheduler.allowed-failures": 50})
         config.set(admin__tick__limit="3h")
         if "sge" in data["jobqueue"]:
-            cluster = SGECluster(memory="20Gb")
+            cluster = SGECluster()
             cluster.scale(jobs)
         elif "pbs" in data["jobqueue"]:
-            cluster = PBSCluster(memory="20Gb")
+            cluster = PBSCluster()
             cluster.scale(jobs)
         elif "slurm" in data["jobqueue"]:
-            cluster = SLURMCluster(memory="20Gb")
+            cluster = SLURMCluster()
             cluster.scale(jobs)
         else:
             LGR.warning(

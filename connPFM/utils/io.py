@@ -65,7 +65,7 @@ def save_img(data, output, masker, history_str=None):
 
 
 def dask_scheduler(jobs):
-    # look if default ~ .config/dask/jobqueue.yaml exitsts
+    # look if default ~ .config/dask/jobqueue.yaml exists
     with open(join(expanduser("~"), ".config/dask/jobqueue.yaml"), "r") as stream:
         data = yaml.load(stream, Loader=yaml.FullLoader)
     if data is None:

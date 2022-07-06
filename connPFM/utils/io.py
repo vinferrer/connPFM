@@ -78,7 +78,8 @@ def dask_scheduler(jobs):
             "if you are using a cluster please look at "
             "the jobqueue YAML example, modify it so it works in your cluster "
             "and add it to ~/.config/dask "
-            "local configuration will be used"
+            "local configuration will be used."
+            "You can find a jobqueue YAML example in the connPFM/utils/jobqueue.yaml file."
         )
         cluster = None
     else:
@@ -102,7 +103,8 @@ def dask_scheduler(jobs):
                 "if you are using a cluster please look at "
                 "the jobqueue YAML example, modify it so it works in your cluster "
                 "and add it to ~/.config/dask "
-                "local configuration will be used"
+                "local configuration will be used."
+                "You can find a jobqueue YAML example in the connPFM/utils/jobqueue.yaml file."
             )
             cluster = None
     if cluster is None:
